@@ -1,0 +1,128 @@
+<project name="FedoraConnector"  basedir=".">
+
+    <property name="version" value="0.2.2"/>
+
+    <property name="global.path" value="${basedir}"/>
+    <!--
+       Module specific properties
+    -->
+
+
+    <property file="${global.path}/build.properties" />
+
+
+    <property name="warfilename" value="${ant.project.name}-${version}"/>
+
+    <property name="srcpack.zip" value="${ant.project.name}-${version}-src.zip"/>
+
+    <property name="release.zip" value="${ant.project.name}-${version}-release.zip"/>
+
+
+    <!-- Global- and module specific libs -->
+
+
+    <fileset id="build.libs" dir="${global.path}/lib" >
+        <include name="**/*.jar"/>
+
+    </fileset>
+
+
+    <fileset  id="run.libs" dir="${global.path}/lib" >
+        <!--<exclude name="**/*servlet*.jar"/>-->
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="build.classpath">
+        <fileset refid="build.libs"/>
+    </path>
+
+
+    <target name="compile"
+            description="Compile all production classes, and copy properties to class dir">
+
+        <mkdir dir="classes"/>
+
+        <javac source="1.5" destdir="classes" debug="on"
+               encoding="UTF-8">
+            <src path="src"/>
+
+            <classpath refid="build.classpath"/>
+        </javac>
+        <copy todir="classes" >
+            <fileset dir="src" includes="**/*.xml"/>
+
+        </copy>
+
+    </target>
+
+
+
+    <target name="jarfile" depends="compile"
+            description="Pack the webdirectory into a warfile ready for deployment">
+        <mkdir dir="dist"/>
+        <mkdir dir="libtemp"/>
+
+        <copy  todir="libtemp" flatten="true" >
+            <fileset refid="run.libs"/>
+        </copy>
+
+        <jar jarfile="dist/${warfilename}.jar">
+            <fileset dir="classes"/>
+
+
+        </jar>
+        <delete dir="libtemp"/>
+    </target>
+
+
+    <target name="clean">
+        <delete dir="dist"/>
+        <delete dir="classes"/>
+        <delete dir="dependencies"/>
+        <delete dir="libtemp"/>
+        <delete dir="server/build"/>
+
+        <mkdir dir="server/build"/>
+
+    </target>
+
+
+    <target name="src" depends="clean">
+        <mkdir dir="dist"/>
+
+        <zip destfile="dist/${srcpack.zip}">
+            <zipfileset prefix="lib" dir="${basedir}/lib"/>
+
+            <zipfileset prefix="src" dir="${basedir}/modules/templates/src"/>
+            <zipfileset prefix="src" dir="${basedir}/modules/validator/src"/>
+            <zipfileset prefix="src" dir="${basedir}/modules/view/src"/>
+            <zipfileset prefix="src" dir="${basedir}/modules/repository/src"/>
+            <zipfileset prefix="src" dir="${basedir}/modules/webservice/src"/>
+            <zipfileset prefix="src" dir="${basedir}/modules/FedoraSoapConnector/src"/>
+
+            <zipfileset dir="${basedir}">
+                <include name="*.xml"/>
+                <include name="*.properties"/>
+                <include name="*NOTES*"/>
+                <include name="*INSTALL*"/>
+                <include name="*LICENSE*"/>
+            </zipfileset>
+        </zip>
+
+
+
+    </target>
+
+
+
+
+</project>
+
+
+
+
+
+
+
+
+
