@@ -87,6 +87,11 @@
     </target>
 
 
+    <target name="dist">
+
+    </target>
+
+
     <target name="src" depends="clean">
         <mkdir dir="dist"/>
 
