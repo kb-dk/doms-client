@@ -87,7 +87,7 @@
     </target>
 
 
-    <target name="dist">
+    <target name="dist" depends="jarfile">
 
     </target>
 
