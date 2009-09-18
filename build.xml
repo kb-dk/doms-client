@@ -50,7 +50,7 @@
         </javac>
         <copy todir="classes" >
             <fileset dir="src" includes="**/*.xml"/>
-
+            <fileset dir="interface/src" includes="**/*.xml"/>
         </copy>
 
     </target>
