@@ -45,7 +45,7 @@
         <javac source="1.5" destdir="classes" debug="on"
                encoding="UTF-8">
             <src path="src"/>
-
+            <src path="interface/src"/>
             <classpath refid="build.classpath"/>
         </javac>
         <copy todir="classes" >
