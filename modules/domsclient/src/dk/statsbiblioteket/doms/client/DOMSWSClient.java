@@ -24,7 +24,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package dk.statsbiblioteket.doms.ingesters.radiotv;
+package dk.statsbiblioteket.doms.client;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
