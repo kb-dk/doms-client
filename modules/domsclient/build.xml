@@ -34,6 +34,7 @@
 
 	<dirset id="build.project.libs" dir="${global.dir}/lib">
 		<include name="${sbutils.lib}" />
+		<include name="${centralWebserviceInterface.lib}" />
 	</dirset>
 
 </project>
