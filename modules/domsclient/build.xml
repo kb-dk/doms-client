@@ -25,23 +25,41 @@
   ~ under the License.
   -->
 
-<project name="doms-client" basedir=".">
+<project name="domsclient" basedir=".">
 
-    <property name="global.dir" value="${basedir}/../.."/>
-    <property name="executableName" value="radio-tv-bin.zip"/>
+	<property name="global.dir" value="${basedir}/../../" />
+	<property name="warfilename" value="iprolemapping.war" />
 
-    <!--Contain the normal build tasks, including war-->
-    <import file="${global.dir}/build/build-executable-module.xml"/>
+	<property file="${global.dir}/build.properties" />
 
-    <!--Project libs used by this module-->
-    <dirset id="project.libs" dir="${global.dir}/lib/">
-        <include name="${domsutil.lib}"/>
-        <include name="${sbutils.lib}"/>
-        <!-- include name="${jaxws-ri.lib}"/ -->
-        <!-- include name="${jersey.lib}"/ -->
-        <!-- include name="${jsr311-api.lib}"/ -->
-        <include name="${commons-logging.lib}"/>
-    	<include name="${centralWebserviceInterface.lib}"/>
-    </dirset>
+	<!--Contain the normal build tasks, including war-->
+	<import file="${global.dir}/build/build-webservice-module.xml" />
 
+	<!--The location of the fedora schemas-->
+	<!--fileset id="schema.files" dir="${basedir}/data/fedora-return-types">
+        <include name="*.xsd"/>
+    </fileset-->
+
+	<!--Project libs used by this module-->
+	<dirset id="project.libs" dir="${global.dir}/lib/">
+		<include name="${sbutils.lib}" />
+		<include name="${domsutils.lib}" />
+		<include name="${surveillance.lib}" />
+		<include name="${servlet.lib}" />
+		<include name="${commons-logging.lib}" />
+		<include name="${jersey.lib}" />
+		<include name="${jsr311-api.lib}" />
+	</dirset>
+
+	<!--dirset id="build.project.libs" dir="${global.dir}/lib/">
+        <include name="${servlet.lib}"/>
+    </dirset-->
+
+	<!-- dirset id="module.dependencies" dir="${global.dir}/modules/">
+        <include name="repository"/>
+        <include name="services/view"/>
+        <include name="services/validator"/>
+        <include name="services/templates"/>
+        <include name="fedoraconnectors/fedoraclient"/>
+    </dirset-->
 </project>
