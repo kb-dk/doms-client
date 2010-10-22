@@ -322,8 +322,9 @@ public class DOMSWSClient {
 
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed retrieving the modification time-stamp for the collection with this PID: "
-                            + collectionPID, exception);
+                    "Failed retrieving the modification time-stamp for the "
+                            + "collection with this PID: '" + collectionPID
+                            + "' and this viewID: '" + viewID + "'.", exception);
         }
     }
 
@@ -344,8 +345,9 @@ public class DOMSWSClient {
      * retrieve the next 10 records <code>offsetIndex</code> must be set to 10
      * and <code>maxRecordCount</code> to 10, and so on.
      * 
-     *  
-     * FIXME! objectState should probably not be a string. This class should provide an Enum.
+     * 
+     * FIXME! objectState should probably not be a string. This class should
+     * provide an Enum.
      * 
      * @param collectionPID
      *            the PID of the collection to make the query on.
@@ -377,9 +379,9 @@ public class DOMSWSClient {
                     viewID, objectState, offset, limit);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed retrieving objects (collectionPID=" + collectionPID
+                    "Failed retrieving objects (collectionPID = " + collectionPID
                             + ") associated with the specified view "
-                            + "(viewID=" + viewID
+                            + "(viewID = " + viewID
                             + ") and with the specified state (" + objectState
                             + "), modified later than the "
                             + "specified time-stamp (" + timeStamp
@@ -407,7 +409,7 @@ public class DOMSWSClient {
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed retrieving the view record (viewID=" + viewID
-                            + ") containing the specified object (objectPID="
+                            + ") containing the specified object (objectPID = "
                             + entryObjectPID + ").", exception);
         }
     }
