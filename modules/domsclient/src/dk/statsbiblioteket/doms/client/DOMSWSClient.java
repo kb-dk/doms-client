@@ -373,10 +373,10 @@ public class DOMSWSClient {
             String viewID, long timeStamp, String objectState,
             long offsetIndex, long maxRecordCount) throws ServerOperationFailed {
         try {
-            final int offset = 0;
-            final int limit = Integer.MAX_VALUE;
             return domsAPI.getIDsModified(timeStamp, collectionPID.toString(),
-                    viewID, objectState, offset, limit);
+                    viewID, objectState, (int)offsetIndex, (int)maxRecordCount);
+            //TODO: The casts to int should be removed once the DOMS web service interface
+            //      has been corrected to accept long!
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed retrieving objects (collectionPID = " + collectionPID
