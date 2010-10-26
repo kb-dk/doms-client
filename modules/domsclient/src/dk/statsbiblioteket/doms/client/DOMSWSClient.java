@@ -27,7 +27,6 @@
 package dk.statsbiblioteket.doms.client;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -96,10 +95,10 @@ public class DOMSWSClient {
             throws ServerOperationFailed {
         try {
             return domsAPI.newObject(templatePID);
-        } catch (Exception e) {
+        } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed creating a new object from template: "
-                            + templatePID, e);
+                            + templatePID, exception);
         }
     }
 
@@ -124,18 +123,47 @@ public class DOMSWSClient {
 
         try {
             final String fileObjectPID = createObjectFromTemplate(templatePID);
-
-            domsAPI.addFileFromPermanentURL(fileObjectPID, fileInfo
-                    .getFileName(), fileInfo.getMd5Sum(), fileInfo
-                    .getFileLocation().toString(), fileInfo.getFileFormatURI()
-                    .toString());
-
+            addFileToFileObject(fileObjectPID, fileInfo);
             return fileObjectPID;
 
         } catch (Exception e) {
             throw new ServerOperationFailed(
                     "Failed creating a new file object (template PID: "
                             + templatePID + ") from this file information: "
+                            + fileInfo, e);
+        }
+    }
+
+    /**
+     * Add a physical file to an existing file object in the DOMS.
+     * <p/>
+     * 
+     * The existing file object in DOMS with <code>fileObjectPID</code> will be
+     * associated with the physical file described by the <code>FileInfo</code>
+     * instance.
+     * 
+     * @param fileObjectPID
+     *            The PID of the DOMS file object to associate the physical file
+     *            with.
+     * @param fileInfo
+     *            File location, checksum and so on for the physical file
+     *            associated with the file object.
+     * @throws ServerOperationFailed
+     *             if the operation fails.
+     * @see FileInfo
+     */
+    public void addFileToFileObject(String fileObjectPID, FileInfo fileInfo)
+            throws ServerOperationFailed {
+
+        try {
+            domsAPI.addFileFromPermanentURL(fileObjectPID, fileInfo
+                    .getFileName(), fileInfo.getMd5Sum(), fileInfo
+                    .getFileLocation().toString(), fileInfo.getFileFormatURI()
+                    .toString());
+        } catch (Exception e) {
+            throw new ServerOperationFailed(
+                    "Failed adding a file to a file object (file object PID: "
+                            + fileObjectPID + ") from this file information: "
                             + fileInfo, e);
         }
     }
@@ -311,12 +339,11 @@ public class DOMSWSClient {
      * @throws ServerOperationFailed
      *             if the time-stamp cannot be retrieved.
      */
-    public long getModificationTime(URI collectionPID, String viewID,
+    public long getModificationTime(String collectionPID, String viewID,
             String state) throws ServerOperationFailed {
 
         try {
-            return domsAPI.getLatestModified(collectionPID.toString(), viewID,
-                    state);
+            return domsAPI.getLatestModified(collectionPID, viewID, state);
 
         } catch (Exception exception) {
             throw new ServerOperationFailed(
@@ -367,13 +394,13 @@ public class DOMSWSClient {
      * @throws ServerOperationFailed
      *             if the operation fails.
      */
-    public List<RecordDescription> getModifiedEntryObjects(URI collectionPID,
-            String viewID, long timeStamp, String objectState,
-            long offsetIndex, long maxRecordCount) throws ServerOperationFailed {
+    public List<RecordDescription> getModifiedEntryObjects(
+            String collectionPID, String viewID, long timeStamp,
+            String objectState, long offsetIndex, long maxRecordCount)
+            throws ServerOperationFailed {
         try {
-            return domsAPI.getIDsModified(timeStamp, collectionPID.toString(),
-                    viewID, objectState, (int) offsetIndex,
-                    (int) maxRecordCount);
+            return domsAPI.getIDsModified(timeStamp, collectionPID, viewID,
+                    objectState, (int) offsetIndex, (int) maxRecordCount);
             // TODO: The casts to int should be removed once the DOMS web
             // service interface has been corrected to accept long!
         } catch (Exception exception) {
@@ -410,11 +437,10 @@ public class DOMSWSClient {
      * @throws ServerOperationFailed
      *             if the view bundle cannot be retrieved from the DOMS.
      */
-    public String getViewBundle(URI entryObjectPID, String viewID)
+    public String getViewBundle(String entryObjectPID, String viewID)
             throws ServerOperationFailed {
         try {
-            final String entryObjectPIDString = entryObjectPID.toString();
-            ViewBundle viewBundle = domsAPI.getViewBundle(entryObjectPIDString,
+            ViewBundle viewBundle = domsAPI.getViewBundle(entryObjectPID,
                     viewID);
             return viewBundle.getContents();
         } catch (Exception exception) {
@@ -436,11 +462,10 @@ public class DOMSWSClient {
      * @throws ServerOperationFailed
      *             if the label could not be set on the object.
      */
-    public void setObjectLabel(URI objectPID, String objectLabel)
+    public void setObjectLabel(String objectPID, String objectLabel)
             throws ServerOperationFailed {
         try {
-            final String PIDString = objectPID.toString();
-            domsAPI.setObjectLabel(PIDString, objectLabel);
+            domsAPI.setObjectLabel(objectPID, objectLabel);
         } catch (Exception exception) {
             throw new ServerOperationFailed("Failed setting label ('"
                     + objectLabel + "') on DOMS object (PID = " + objectPID
