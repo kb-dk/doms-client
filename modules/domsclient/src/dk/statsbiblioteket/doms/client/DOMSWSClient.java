@@ -46,11 +46,8 @@ import dk.statsbiblioteket.doms.centralWebservice.ViewBundle;
 import dk.statsbiblioteket.util.xml.DOM;
 
 /**
- * TODO: This class is based on the DOMSWSClient class from the radio-tv example
- * ingester project. It should be moved into some utility library some time!
- * <p/>
- * Utility class for making it simple and easy to access the DOMS server
- * webservice.
+ * Utility class for making it simple and easy to access the DOMS server main
+ * web service.
  * 
  * @author Thomas Skou Hansen &lt;tsh@statsbiblioteket.dk&gt;
  */
@@ -62,18 +59,19 @@ public class DOMSWSClient {
     private CentralWebservice domsAPI;
 
     /**
-     * Login to the DOMS webservice, using the endpoint <code>URL</code>
+     * Login to the DOMS web service, using the end-point <code>URL</code>
      * specified by <code>domsWSAPIEndpoint</code> and the credentials given by
      * <code>userName</code> and <code>password</code>.
      * 
      * @param domsWSAPIEndpoint
-     *            <code>URL</code> of the DOMS server webservice endpoint.
+     *            <code>URL</code> of the DOMS server web service end-point.
      * @param userName
      *            Name of the user to use for identification.
      * @param password
      *            Password of the user to use for identification.
      */
     public void login(URL domsWSAPIEndpoint, String userName, String password) {
+        // TODO: QName parameters should probably be method parameters.
         domsAPI = new CentralWebserviceService(domsWSAPIEndpoint, new QName(
                 "http://central.doms.statsbiblioteket.dk/",
                 "CentralWebserviceService")).getCentralWebservicePort();
@@ -374,12 +372,14 @@ public class DOMSWSClient {
             long offsetIndex, long maxRecordCount) throws ServerOperationFailed {
         try {
             return domsAPI.getIDsModified(timeStamp, collectionPID.toString(),
-                    viewID, objectState, (int)offsetIndex, (int)maxRecordCount);
-            //TODO: The casts to int should be removed once the DOMS web service interface
-            //      has been corrected to accept long!
+                    viewID, objectState, (int) offsetIndex,
+                    (int) maxRecordCount);
+            // TODO: The casts to int should be removed once the DOMS web
+            // service interface has been corrected to accept long!
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed retrieving objects (collectionPID = " + collectionPID
+                    "Failed retrieving objects (collectionPID = "
+                            + collectionPID
                             + ") associated with the specified view "
                             + "(viewID = " + viewID
                             + ") and with the specified state (" + objectState
@@ -393,11 +393,22 @@ public class DOMSWSClient {
     }
 
     /**
+     * Get the view bundle for the view specified by <code>viewID</code> for the
+     * DOMS object with the PID <code>entryObjectPID</code>. The returned bundle
+     * contains all information from the object, and objects associated with it,
+     * which is relevant for the specified view.
      * 
      * @param entryObjectPID
+     *            The PID of the entry (i.e. root) object to fetch a view bundle
+     *            for.
      * @param viewID
-     * @return
+     *            ID of the view which the DOMS must use when building the
+     *            bundle.
+     * @return A <code>String</code> containing an XML document with all the
+     *         information from the object and its associated objects which is
+     *         relevant to the specified view.
      * @throws ServerOperationFailed
+     *             if the view bundle cannot be retrieved from the DOMS.
      */
     public String getViewBundle(URI entryObjectPID, String viewID)
             throws ServerOperationFailed {
@@ -411,6 +422,29 @@ public class DOMSWSClient {
                     "Failed retrieving the view record (viewID=" + viewID
                             + ") containing the specified object (objectPID = "
                             + entryObjectPID + ").", exception);
+        }
+    }
+
+    /**
+     * Set the object label specified by <code>objectLabel</code> on the DOMS
+     * object identified by the PID specified by <code>objectPID</code>.
+     * 
+     * @param objectPID
+     *            The PID identifying the object to set the label on.
+     * @param objectLabel
+     *            The label to set on the object.
+     * @throws ServerOperationFailed
+     *             if the label could not be set on the object.
+     */
+    public void setObjectLabel(URI objectPID, String objectLabel)
+            throws ServerOperationFailed {
+        try {
+            final String PIDString = objectPID.toString();
+            domsAPI.setObjectLabel(PIDString, objectLabel);
+        } catch (Exception exception) {
+            throw new ServerOperationFailed("Failed setting label ('"
+                    + objectLabel + "') on DOMS object (PID = " + objectPID
+                    + ").");
         }
     }
 }
