@@ -32,7 +32,7 @@
 	<!-- Import the normal build tasks -->
 	<import file="${global.dir}/build/build-module.xml" />
 
-	<dirset id="build.project.libs" dir="${global.dir}/lib">
+	<dirset id="project.libs" dir="${global.dir}/lib">
 		<include name="${sbutils.lib}" />
 		<include name="${centralWebserviceInterface.lib}" />
 	</dirset>
