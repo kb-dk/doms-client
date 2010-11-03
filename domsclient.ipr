@@ -370,101 +370,25 @@
     <history />
     <find-history />
   </component>
-  <component name="masterDetails">
-    <option name="states">
-      <map>
-        <entry key="Copyright.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-        <entry key="Errors.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-        <entry key="ProjectJDKs.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl>
-                  <option name="proportions">
-                    <list>
-                      <option value="0.2" />
-                    </list>
-                  </option>
-                </SplitterProportionsDataImpl>
-              </option>
-              <option name="lastEditedConfigurable" value="1.6" />
-            </UIState>
-          </value>
-        </entry>
-        <entry key="ScopeChooserConfigurable.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="myStates">
-      <map>
-        <entry key="Copyright.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-        <entry key="Errors.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-        <entry key="ProjectJDKs.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl>
-                  <option name="proportions">
-                    <list>
-                      <option value="0.2" />
-                    </list>
-                  </option>
-                </SplitterProportionsDataImpl>
-              </option>
-              <option name="lastEditedConfigurable" value="1.6" />
-            </UIState>
-          </value>
-        </entry>
-        <entry key="ScopeChooserConfigurable.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="libraryTable">
+    <library name="domsserver">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/domsserver-0.0.11/jars/centralWebserviceInterface.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/domsserver-0.0.11/src/centralWebserviceInterface-src.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="sbutil">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.5.1/jars/sbutil-0.5.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.5.1/src/sbutil-0.5.1-src.zip!/sbutil-0.5.1/src" />
+      </SOURCES>
+    </library>
   </component>
 </project>
 
