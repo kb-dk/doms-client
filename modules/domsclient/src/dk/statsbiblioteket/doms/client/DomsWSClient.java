@@ -42,6 +42,22 @@ public interface DomsWSClient {
             throws ServerOperationFailed;
 
     /**
+     * Create a new DOMS object from an object template already stored in the
+     * DOMS. Set the old identifiers of the object to this list. The old
+     * identifiers are whatever this object have been known as beforehand.
+     *
+     * @param templatePID
+     *            PID identifying the template object to use.
+     * @param oldIdentifiers the old identifiers of the object
+     * @return PID of the created object.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *             if the object creation failed.
+     * @see #createObjectFromTemplate(String)
+     */
+    String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers)
+            throws ServerOperationFailed;
+
+    /**
      * Create a new file object from an existing file object template, based on
      * the information provided by the <code>FileInfo</code> instance, in the
      * DOMS.
@@ -97,7 +113,7 @@ public interface DomsWSClient {
      *             object.
      */
     String getFileObjectPID(URL fileURL) throws NoObjectFound,
-                                                       ServerOperationFailed;
+                                                ServerOperationFailed;
 
     /**
      * Get the XML content of the datastream identified by
@@ -133,7 +149,7 @@ public interface DomsWSClient {
      *             if the datastream contents cannot be updated.
      */
     void updateDataStream(String objectPID, String dataStreamID,
-                                 Document newDataStreamContents) throws ServerOperationFailed;
+                          Document newDataStreamContents) throws ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -153,7 +169,7 @@ public interface DomsWSClient {
      *             if the relation cannot be added.
      */
     void addObjectRelation(String sourcePID, String relationType,
-                                  String targetPID) throws ServerOperationFailed;
+                           String targetPID) throws ServerOperationFailed;
 
     /**
      * Mark the objects identified by the the PIDs in <code>pidsToPublish</code>
@@ -199,7 +215,7 @@ public interface DomsWSClient {
      *             if the time-stamp cannot be retrieved.
      */
     long getModificationTime(String collectionPID, String viewID,
-                                    String state) throws ServerOperationFailed;
+                             String state) throws ServerOperationFailed;
 
     /**
      * Get a <code>List</code> of <code>RecordDescription</code> instances
