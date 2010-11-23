@@ -347,6 +347,58 @@
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags">
+                    <value>
+                      <list>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1288798126087" />
+                          <option name="revision" value="1212" />
+                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/release0.0.4" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1288791889598" />
+                          <option name="revision" value="1203" />
+                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/release0.0.3" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1288096339292" />
+                          <option name="revision" value="1118" />
+                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/release0.0.2" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1288082105949" />
+                          <option name="revision" value="1098" />
+                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/release0.0.1" />
+                        </SvnBranchItem>
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/branches" />
+                  <option value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://doms.svn.sourceforge.net/svnroot/doms/domsclient/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="SvnConfiguration">
