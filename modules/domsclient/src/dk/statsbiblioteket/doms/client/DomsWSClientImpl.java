@@ -39,6 +39,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,13 +71,25 @@ public class DomsWSClientImpl implements DomsWSClient {
     public String createObjectFromTemplate(String templatePID)
             throws ServerOperationFailed {
         try {
-            return domsAPI.newObject(templatePID);
+            return domsAPI.newObject(templatePID, new ArrayList<String>());
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed creating a new object from template: "
                     + templatePID, exception);
         }
     }
+
+    public String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers)
+            throws ServerOperationFailed {
+        try {
+            return domsAPI.newObject(templatePID,oldIdentifiers);
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Failed creating a new object from template: "
+                    + templatePID, exception);
+        }
+    }
+
 
     public String createFileObject(String templatePID, FileInfo fileInfo)
             throws ServerOperationFailed {

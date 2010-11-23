@@ -373,11 +373,11 @@
   <component name="libraryTable">
     <library name="domsserver">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/domsserver-0.0.11/jars/centralWebserviceInterface.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsserver-0.0.13/jars/centralWebserviceInterface.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/domsserver-0.0.11/src/centralWebserviceInterface-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsserver-0.0.13/src/centralWebserviceInterface-src.zip!/" />
       </SOURCES>
     </library>
     <library name="sbutil">
