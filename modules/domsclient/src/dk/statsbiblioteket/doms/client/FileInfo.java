@@ -54,8 +54,7 @@ public class FileInfo {
      *            A PRONOM <code>URI</code> which identifies the format of the
      *            file.
      */
-    public FileInfo(String fileName, URL fileLocation, String md5Sum,
-                    URI fileFormatURI) {
+    public FileInfo(String fileName, URL fileLocation, String md5Sum, URI fileFormatURI) {
         this.fileName = fileName;
         this.fileLocation = fileLocation;
         this.md5Sum = md5Sum;

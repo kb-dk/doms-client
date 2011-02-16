@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client;
 import dk.statsbiblioteket.doms.centralWebservice.RecordDescription;
 import org.w3c.dom.Document;
 
+import javax.xml.namespace.QName;
 import java.net.URL;
 import java.util.List;
 
@@ -12,9 +13,14 @@ import java.util.List;
  * Date: Nov 3, 2010
  * Time: 4:53:19 PM
  * To change this template use File | Settings | File Templates.
+ * @author Thomas Skou Hansen &lt;tsh@statsbiblioteket.dk&gt;
+ * @author Esben Agerbæk Black &lt;eab@statsbiblioteket.dk&gt;
  */
 public interface DomsWSClient {
     /**
+     * @deprecated please use setCredentials(URL, String, String)
+     * @see #setCredentials(URL, String, String)
+     *
      * Login to the DOMS web service, using the end-point <code>URL</code>
      * specified by <code>domsWSAPIEndpoint</code> and the credentials given by
      * <code>userName</code> and <code>password</code>.
@@ -26,7 +32,22 @@ public interface DomsWSClient {
      * @param password
      *            Password of the user to use for identification.
      */
+    @Deprecated
     void login(URL domsWSAPIEndpoint, String userName, String password);
+
+     /**
+     * User credentials to the DOMS web service, using the end-point <code>URL</code>
+     * specified by <code>domsWSAPIEndpoint</code> and the credentials given by
+     * <code>userName</code> and <code>password</code>.
+     *
+     * @param domsWSAPIEndpoint
+     *            <code>URL</code> of the DOMS server web service end-point.
+     * @param userName
+     *            Name of the user to use for identification.
+     * @param password
+     *            Password of the user to use for identification.
+     */
+    void setCredentials(URL domsWSAPIEndpoint, String userName, String password);
 
     /**
      * Create a new DOMS object from an object template already stored in the

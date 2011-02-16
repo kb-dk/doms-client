@@ -48,19 +48,27 @@ import java.util.Map;
  * web service.
  *
  * @author Thomas Skou Hansen &lt;tsh@statsbiblioteket.dk&gt;
+ * @author Esben Agerbæk Black &lt;eab@statsbiblioteket.dk&gt;
  */
 public class DomsWSClientImpl implements DomsWSClient {
 
+    private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
+            "http://central.doms.statsbiblioteket.dk/",
+            "CentralWebserviceService");
     /**
      * Reference to the active DOMS webservice client instance.
      */
     private CentralWebservice domsAPI;
 
+    @Deprecated
     public void login(URL domsWSAPIEndpoint, String userName, String password) {
-        // TODO: QName parameters should probably be method parameters.
-        domsAPI = new CentralWebserviceService(domsWSAPIEndpoint, new QName(
-                "http://central.doms.statsbiblioteket.dk/",
-                "CentralWebserviceService")).getCentralWebservicePort();
+        setCredentials(domsWSAPIEndpoint, userName, password);
+    }
+
+    public void setCredentials(URL domsWSAPIEndpoint, String userName,
+                               String password) {
+        domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
+                CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
         Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI)
                 .getRequestContext();
