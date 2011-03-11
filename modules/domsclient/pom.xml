@@ -5,12 +5,12 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.client</groupId>
         <artifactId>client</artifactId>
-        <version>0.0.6</version>
+        <version>0.0.7-SNAPSHOT</version>
     </parent>
 
     <groupId>dk.statsbiblioteket.doms.client</groupId>
     <artifactId>domsclient</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
