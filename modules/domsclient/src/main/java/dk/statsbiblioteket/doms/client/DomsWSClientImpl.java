@@ -40,6 +40,7 @@ import javax.xml.ws.BindingProvider;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -149,6 +150,25 @@ public class DomsWSClientImpl implements DomsWSClient {
         return pid;
     }
 
+    @Override
+    public List<String> getPidFromOldIdentifier(String oldIdentifier) throws NoObjectFound, ServerOperationFailed {
+
+        List<String> pids;
+        try {
+            pids = domsAPI.findObjectFromDCIdentifier(oldIdentifier);
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Unable to retrieve an object with this identifer: " + oldIdentifier,
+                    exception);
+        }
+        if (pids == null || pids.isEmpty()) {
+            throw new NoObjectFound("Unable to retrieve an object with this identifer: "
+                                    + oldIdentifier);
+        }
+        return pids;
+
+    }
+
     public Document getDataStream(String objectPID, String datastreamID)
             throws ServerOperationFailed {
         try {
@@ -201,10 +221,50 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public void publishObjects(List<String> pidsToPublish)
+    @Override
+    public void removeObjectRelation(String sourcePID, String relationType, String targetPID)
             throws ServerOperationFailed {
         try {
-            domsAPI.markPublishedObject(pidsToPublish);
+            domsAPI.deleteRelation(sourcePID, "info:fedora/" + sourcePID,
+                                   relationType, "info:fedora/" + targetPID);
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Failed removing object relation (type: " + relationType
+                    + ") from the source object (PID: " + sourcePID
+                    + ") to the target object (PID: " + targetPID + ")",
+                    exception);
+        }
+
+    }
+
+    @Override
+    public List<Relation> listObjectRelations(String objectPID, String relationType)
+            throws ServerOperationFailed {
+        try {
+            List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
+                    domsAPI.getNamedRelations(objectPID, relationType);
+
+            ArrayList<Relation> clientRelations = new ArrayList<Relation>();
+            for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) {
+                clientRelations.add(new Relation(domsRelation.getSubject(),
+                                                 domsRelation.getPredicate(),
+                                                 domsRelation.getObject()));
+            }
+            return clientRelations;
+
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Failed listing object relations (type: " + relationType
+                    + ") from the source object (PID: " + objectPID
+                    + ")",
+                    exception);
+        }
+    }
+
+    public void publishObjects(String... pidsToPublish)
+            throws ServerOperationFailed {
+        try {
+            domsAPI.markPublishedObject(Arrays.asList(pidsToPublish));
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed marking objects as published. PIDs: "
@@ -212,10 +272,22 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public void deleteObjects(List<String> pidsToDelete)
+    @Override
+    public void unpublishObjects(String... pidsToUnpublish) throws ServerOperationFailed {
+        try {
+            domsAPI.markInProgressObject(Arrays.asList(pidsToUnpublish));
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Failed marking objects as unpublished. PIDs: "
+                    + pidsToUnpublish, exception);
+        }
+
+    }
+
+    public void deleteObjects(String... pidsToDelete)
             throws ServerOperationFailed {
         try {
-            domsAPI.deleteObject(pidsToDelete);
+            domsAPI.deleteObject(Arrays.asList(pidsToDelete));
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed marking objects as deleted. PIDs: "

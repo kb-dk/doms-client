@@ -124,6 +124,23 @@ public interface DomsWSClient {
                                                 ServerOperationFailed;
 
     /**
+     * Get the PID of an existing file object in the DOMS which is associated
+     * with the physical file specified by <code>fileURL</code>.
+     *
+     * @param oldIdentifier the old identifier of the object
+     * @return PID of the DOMS file object.
+     * @throws dk.statsbiblioteket.doms.client.NoObjectFound
+     *          if there does not exist DOMS file object associated with
+     *          <code>fileURL</code>.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          if any errors are encountered while looking up the file
+     *          object.
+     */
+    List<String> getPidFromOldIdentifier(String oldIdentifier) throws NoObjectFound,
+                                                                      ServerOperationFailed;
+
+
+    /**
      * Get the XML content of the datastream identified by
      * <code>datastreamID</code> of the DOMS object identified by
      * <code>objectPID</code>.
@@ -172,6 +189,40 @@ public interface DomsWSClient {
                            String targetPID) throws ServerOperationFailed;
 
     /**
+     * Add a relation between the objects identified by <code>sourcePID</code>
+     * and <code>targetPID</code>. The information about the relation will be
+     * stored in the source object identified by <code>sourcePID</code> and the
+     * type specified by <code>relationType</code> must be valid according to
+     * the content model for the object.
+     *
+     * @param sourcePID    ID of the source object in the relation.
+     * @param relationType Relation type ID which is valid according the the content
+     *                     model for the source object.
+     * @param targetPID    ID of the target ("to") object of the relation.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          if the relation cannot be added.
+     */
+    void removeObjectRelation(String sourcePID, String relationType,
+                              String targetPID) throws ServerOperationFailed;
+
+    /**
+     * Add a relation between the objects identified by <code>sourcePID</code>
+     * and <code>targetPID</code>. The information about the relation will be
+     * stored in the source object identified by <code>sourcePID</code> and the
+     * type specified by <code>relationType</code> must be valid according to
+     * the content model for the object.
+     *
+     * @param objectPID    ID of the object housing the relation.
+     * @param relationType Relation type ID which is valid according the the content
+     *                     model for the source object.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          if the relation cannot be added.
+     */
+    List<Relation> listObjectRelations(String objectPID, String relationType
+    ) throws ServerOperationFailed;
+
+
+    /**
      * Mark the objects identified by the the PIDs in <code>pidsToPublish</code>
      * as published, and thus viewable from the DOMS.
      *
@@ -179,8 +230,20 @@ public interface DomsWSClient {
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if any errors are encountered while publishing the objects.
      */
-    void publishObjects(List<String> pidsToPublish)
+    void publishObjects(String... pidsToPublish)
             throws ServerOperationFailed;
+
+    /**
+     * Mark the objects identified by the the PIDs in <code>pidsToPublish</code>
+     * as unpublished, and thus not viewable from the DOMS.
+     *
+     * @param pidsToUnpublish <code>List</code> of PIDs for the objects to unpublish.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          if any errors are encountered while publishing the objects.
+     */
+    void unpublishObjects(String... pidsToUnpublish)
+            throws ServerOperationFailed;
+
 
     /**
      * Mark the objects identified by the the PIDs in <code>pidsToDelete</code>
@@ -190,7 +253,7 @@ public interface DomsWSClient {
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if any errors are encountered while deleting the objects.
      */
-    void deleteObjects(List<String> pidsToDelete)
+    void deleteObjects(String... pidsToDelete)
             throws ServerOperationFailed;
 
     /**
