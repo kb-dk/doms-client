@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>dk.statsbiblioteket.doms</groupId>
@@ -9,16 +8,16 @@
 
     <groupId>dk.statsbiblioteket.doms.client</groupId>
     <artifactId>client</artifactId>
-    <version>0.0.8-SNAPSHOT</version>
+    <version>0.0.8</version>
     <name>Doms Admin Client</name>
 
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/trunk</connection>
-        <developerConnection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/trunk
+        <connection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/client-0.0.8</connection>
+        <developerConnection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/client-0.0.8
         </developerConnection>
-        <url>http://doms.svn.sourceforge.net/viewvc/doms/domsclient/trunk</url>
+        <url>http://doms.svn.sourceforge.net/viewvc/doms/domsclient/tags/client-0.0.8</url>
     </scm>
 
 
@@ -32,7 +31,7 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
                 <artifactId>centralWebservice-interface</artifactId>
-                <version>0.0.21-SNAPSHOT</version>
+                <version>0.0.21</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
