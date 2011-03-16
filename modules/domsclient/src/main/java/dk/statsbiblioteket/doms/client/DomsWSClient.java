@@ -48,11 +48,12 @@ public interface DomsWSClient {
      * DOMS.
      *
      * @param templatePID PID identifying the template object to use.
+     * @param comment     The message to store in Fedora
      * @return PID of the created object.
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the object creation failed.
      */
-    String createObjectFromTemplate(String templatePID)
+    String createObjectFromTemplate(String templatePID, String comment)
             throws ServerOperationFailed;
 
     /**
@@ -62,12 +63,13 @@ public interface DomsWSClient {
      *
      * @param templatePID    PID identifying the template object to use.
      * @param oldIdentifiers the old identifiers of the object
+     * @param comment        The message to store in Fedora
      * @return PID of the created object.
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the object creation failed.
-     * @see #createObjectFromTemplate(String)
+     * @see #createObjectFromTemplate(String, String)
      */
-    String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers)
+    String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers, String comment)
             throws ServerOperationFailed;
 
     /**
@@ -99,11 +101,12 @@ public interface DomsWSClient {
      *                      with.
      * @param fileInfo      File location, checksum and so on for the physical file
      *                      associated with the file object.
+     * @param comment       The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the operation fails.
      * @see dk.statsbiblioteket.doms.client.FileInfo
      */
-    void addFileToFileObject(String fileObjectPID, FileInfo fileInfo)
+    void addFileToFileObject(String fileObjectPID, FileInfo fileInfo, String comment)
             throws ServerOperationFailed;
 
     /**
@@ -165,11 +168,12 @@ public interface DomsWSClient {
      * @param dataStreamID          ID of the datastream to replace the contents of.
      * @param newDataStreamContents <code>Document</code> containing the new datastream XML
      *                              contents.
+     * @param comment               The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the datastream contents cannot be updated.
      */
     void updateDataStream(String objectPID, String dataStreamID,
-                          Document newDataStreamContents) throws ServerOperationFailed;
+                          Document newDataStreamContents, String comment) throws ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -178,15 +182,12 @@ public interface DomsWSClient {
      * type specified by <code>relationType</code> must be valid according to
      * the content model for the object.
      *
-     * @param sourcePID    ID of the source object in the relation.
-     * @param relationType Relation type ID which is valid according the the content
-     *                     model for the source object.
-     * @param targetPID    ID of the target ("to") object of the relation.
+     * @param relation the Relation to add
+     * @param comment  The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the relation cannot be added.
      */
-    void addObjectRelation(String sourcePID, String relationType,
-                           String targetPID) throws ServerOperationFailed;
+    public void addObjectRelation(Relation relation, String comment) throws ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -195,15 +196,12 @@ public interface DomsWSClient {
      * type specified by <code>relationType</code> must be valid according to
      * the content model for the object.
      *
-     * @param sourcePID    ID of the source object in the relation.
-     * @param relationType Relation type ID which is valid according the the content
-     *                     model for the source object.
-     * @param targetPID    ID of the target ("to") object of the relation.
+     * @param relation the Relation to remove
+     * @param comment  The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the relation cannot be added.
      */
-    void removeObjectRelation(String sourcePID, String relationType,
-                              String targetPID) throws ServerOperationFailed;
+    void removeObjectRelation(Relation relation, String comment) throws ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -215,6 +213,7 @@ public interface DomsWSClient {
      * @param objectPID    ID of the object housing the relation.
      * @param relationType Relation type ID which is valid according the the content
      *                     model for the source object.
+     * @return a List of Relations matching the restrictions
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the relation cannot be added.
      */
@@ -226,22 +225,24 @@ public interface DomsWSClient {
      * Mark the objects identified by the the PIDs in <code>pidsToPublish</code>
      * as published, and thus viewable from the DOMS.
      *
+     * @param comment       The message to store in Fedora
      * @param pidsToPublish <code>List</code> of PIDs for the objects to publish.
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if any errors are encountered while publishing the objects.
      */
-    void publishObjects(String... pidsToPublish)
+    void publishObjects(String comment, String... pidsToPublish)
             throws ServerOperationFailed;
 
     /**
      * Mark the objects identified by the the PIDs in <code>pidsToPublish</code>
      * as unpublished, and thus not viewable from the DOMS.
      *
+     * @param comment         The message to store in Fedora
      * @param pidsToUnpublish <code>List</code> of PIDs for the objects to unpublish.
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if any errors are encountered while publishing the objects.
      */
-    void unpublishObjects(String... pidsToUnpublish)
+    void unpublishObjects(String comment, String... pidsToUnpublish)
             throws ServerOperationFailed;
 
 
@@ -249,11 +250,12 @@ public interface DomsWSClient {
      * Mark the objects identified by the the PIDs in <code>pidsToDelete</code>
      * as deleted, and thus invisible from the DOMS.
      *
+     * @param comment      The message to store in Fedora
      * @param pidsToDelete <code>List</code> of PIDs for the objects to delete.
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if any errors are encountered while deleting the objects.
      */
-    void deleteObjects(String... pidsToDelete)
+    void deleteObjects(String comment, String... pidsToDelete)
             throws ServerOperationFailed;
 
     /**
@@ -340,9 +342,10 @@ public interface DomsWSClient {
      *
      * @param objectPID   The PID identifying the object to set the label on.
      * @param objectLabel The label to set on the object.
+     * @param comment     The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the label could not be set on the object.
      */
-    void setObjectLabel(String objectPID, String objectLabel)
+    void setObjectLabel(String objectPID, String objectLabel, String comment)
             throws ServerOperationFailed;
 }

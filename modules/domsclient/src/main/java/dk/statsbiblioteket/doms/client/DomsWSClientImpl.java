@@ -77,10 +77,10 @@ public class DomsWSClientImpl implements DomsWSClient {
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
     }
 
-    public String createObjectFromTemplate(String templatePID)
+    public String createObjectFromTemplate(String templatePID, String comment)
             throws ServerOperationFailed {
         try {
-            return domsAPI.newObject(templatePID, new ArrayList<String>());
+            return domsAPI.newObject(templatePID, new ArrayList<String>(), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed creating a new object from template: "
@@ -88,10 +88,10 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers)
+    public String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers, String comment)
             throws ServerOperationFailed {
         try {
-            return domsAPI.newObject(templatePID, oldIdentifiers);
+            return domsAPI.newObject(templatePID, oldIdentifiers, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed creating a new object from template: "
@@ -104,8 +104,8 @@ public class DomsWSClientImpl implements DomsWSClient {
             throws ServerOperationFailed {
 
         try {
-            final String fileObjectPID = createObjectFromTemplate(templatePID);
-            addFileToFileObject(fileObjectPID, fileInfo);
+            final String fileObjectPID = createObjectFromTemplate(templatePID, null);
+            addFileToFileObject(fileObjectPID, fileInfo, null);
             return fileObjectPID;
 
         } catch (Exception e) {
@@ -116,14 +116,14 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public void addFileToFileObject(String fileObjectPID, FileInfo fileInfo)
+    public void addFileToFileObject(String fileObjectPID, FileInfo fileInfo, String comment)
             throws ServerOperationFailed {
 
         try {
             domsAPI.addFileFromPermanentURL(fileObjectPID, fileInfo
                     .getFileName(), fileInfo.getMd5Sum(), fileInfo
                     .getFileLocation().toString(), fileInfo.getFileFormatURI()
-                    .toString());
+                    .toString(), comment);
         } catch (Exception e) {
             throw new ServerOperationFailed(
                     "Failed adding a file to a file object (file object PID: "
@@ -194,10 +194,10 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     public void updateDataStream(String objectPID, String dataStreamID,
-                                 Document newDataStreamContents) throws ServerOperationFailed {
+                                 Document newDataStreamContents, String comment) throws ServerOperationFailed {
         try {
             domsAPI.modifyDatastream(objectPID, dataStreamID, DOM
-                    .domToString(newDataStreamContents));
+                    .domToString(newDataStreamContents), comment);
 
         } catch (Exception exception) {
             throw new ServerOperationFailed("Failed updating datastream (ID: "
@@ -207,31 +207,39 @@ public class DomsWSClientImpl implements DomsWSClient {
 
     }
 
-    public void addObjectRelation(String sourcePID, String relationType,
-                                  String targetPID) throws ServerOperationFailed {
+    @Override
+    public void addObjectRelation(Relation relation, String comment) throws ServerOperationFailed {
         try {
-            domsAPI.addRelation(sourcePID, "info:fedora/" + sourcePID,
-                                relationType, "info:fedora/" + targetPID);
+            dk.statsbiblioteket.doms.central.Relation domsrel = new dk.statsbiblioteket.doms.central.Relation();
+            domsrel.setSubject(relation.getSubject());
+            domsrel.setPredicate(relation.getPredicate());
+            domsrel.setObject(relation.getObject());
+            domsAPI.addRelation(relation.getSubject(), domsrel, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed creating object relation (type: " + relationType
-                    + ") from the source object (PID: " + sourcePID
-                    + ") to the target object (PID: " + targetPID + ")",
+                    "Failed creating object relation (type: " + relation.getPredicate()
+                    + ") from the source object (PID: " + relation.getSubject()
+                    + ") to the target object (PID: " + relation.getObject() + ")",
                     exception);
         }
     }
 
     @Override
-    public void removeObjectRelation(String sourcePID, String relationType, String targetPID)
+    public void removeObjectRelation(Relation relation, String comment)
             throws ServerOperationFailed {
         try {
-            domsAPI.deleteRelation(sourcePID, "info:fedora/" + sourcePID,
-                                   relationType, "info:fedora/" + targetPID);
+            dk.statsbiblioteket.doms.central.Relation domsrel = new dk.statsbiblioteket.doms.central.Relation();
+            domsrel.setSubject(relation.getSubject());
+            domsrel.setPredicate(relation.getPredicate());
+            domsrel.setObject(relation.getObject());
+
+            domsAPI.deleteRelation(relation.getSubject(),
+                                   domsrel, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed removing object relation (type: " + relationType
-                    + ") from the source object (PID: " + sourcePID
-                    + ") to the target object (PID: " + targetPID + ")",
+                    "Failed removing object relation (type: " + relation.getPredicate()
+                    + ") from the source object (PID: " + relation.getSubject()
+                    + ") to the target object (PID: " + relation.getObject() + ")",
                     exception);
         }
 
@@ -261,10 +269,10 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public void publishObjects(String... pidsToPublish)
+    public void publishObjects(String comment, String... pidsToPublish)
             throws ServerOperationFailed {
         try {
-            domsAPI.markPublishedObject(Arrays.asList(pidsToPublish));
+            domsAPI.markPublishedObject(Arrays.asList(pidsToPublish), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed marking objects as published. PIDs: "
@@ -273,9 +281,9 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     @Override
-    public void unpublishObjects(String... pidsToUnpublish) throws ServerOperationFailed {
+    public void unpublishObjects(String comment, String... pidsToUnpublish) throws ServerOperationFailed {
         try {
-            domsAPI.markInProgressObject(Arrays.asList(pidsToUnpublish));
+            domsAPI.markInProgressObject(Arrays.asList(pidsToUnpublish), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed marking objects as unpublished. PIDs: "
@@ -284,10 +292,10 @@ public class DomsWSClientImpl implements DomsWSClient {
 
     }
 
-    public void deleteObjects(String... pidsToDelete)
+    public void deleteObjects(String comment, String... pidsToDelete)
             throws ServerOperationFailed {
         try {
-            domsAPI.deleteObject(Arrays.asList(pidsToDelete));
+            domsAPI.deleteObject(Arrays.asList(pidsToDelete), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed marking objects as deleted. PIDs: "
@@ -349,10 +357,10 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public void setObjectLabel(String objectPID, String objectLabel)
+    public void setObjectLabel(String objectPID, String objectLabel, String comment)
             throws ServerOperationFailed {
         try {
-            domsAPI.setObjectLabel(objectPID, objectLabel);
+            domsAPI.setObjectLabel(objectPID, objectLabel, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed("Failed setting label ('"
                                             + objectLabel + "') on DOMS object (PID = " + objectPID
