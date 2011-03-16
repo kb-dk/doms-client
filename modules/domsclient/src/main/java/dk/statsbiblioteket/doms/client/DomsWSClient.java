@@ -86,7 +86,7 @@ public interface DomsWSClient {
      *          if the object creation failed.
      * @see dk.statsbiblioteket.doms.client.FileInfo
      */
-    String createFileObject(String templatePID, FileInfo fileInfo)
+    String createFileObject(String templatePID, FileInfo fileInfo, String comment)
             throws ServerOperationFailed;
 
     /**

@@ -100,12 +100,12 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
 
-    public String createFileObject(String templatePID, FileInfo fileInfo)
+    public String createFileObject(String templatePID, FileInfo fileInfo, String comment)
             throws ServerOperationFailed {
 
         try {
-            final String fileObjectPID = createObjectFromTemplate(templatePID, null);
-            addFileToFileObject(fileObjectPID, fileInfo, null);
+            final String fileObjectPID = createObjectFromTemplate(templatePID, comment);
+            addFileToFileObject(fileObjectPID, fileInfo, comment);
             return fileObjectPID;
 
         } catch (Exception e) {
