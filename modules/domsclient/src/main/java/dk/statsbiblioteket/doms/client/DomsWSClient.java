@@ -32,6 +32,9 @@ public interface DomsWSClient {
     @Deprecated
     void login(URL domsWSAPIEndpoint, String userName, String password);
 
+
+    List<SearchResult> search(String query, int offset, int pageSize);
+
     /**
      * User credentials to the DOMS web service, using the end-point <code>URL</code>
      * specified by <code>domsWSAPIEndpoint</code> and the credentials given by

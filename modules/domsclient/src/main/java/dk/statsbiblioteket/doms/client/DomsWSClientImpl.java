@@ -66,6 +66,11 @@ public class DomsWSClientImpl implements DomsWSClient {
         setCredentials(domsWSAPIEndpoint, userName, password);
     }
 
+    @Override
+    public List<SearchResult> search(String query, int offset, int pageSize) {
+        return new ArrayList<SearchResult>();
+    }
+
     public void setCredentials(URL domsWSAPIEndpoint, String userName,
                                String password) {
         domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
