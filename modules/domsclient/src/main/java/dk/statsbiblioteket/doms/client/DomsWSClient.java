@@ -32,8 +32,26 @@ public interface DomsWSClient {
     @Deprecated
     void login(URL domsWSAPIEndpoint, String userName, String password);
 
+    /**
+     *
+     * @param uuid the list of uuid's for which to get the label
+     * @return the labels of the given uuid's
+     */
+    List<String> getLabel(List<String> uuids);
 
-    List<SearchResult> search(String query, int offset, int pageSize);
+    /**
+     *
+     * @param uuid the uuid for which to get the label
+     * @return the label found for the uuid
+     */
+    String getLabel(String uuid);
+    /**
+     * @param   query       the search string.
+     * @param   offset      the first result of the search
+     * @param   pageLength  the max number of results
+     * @return  A list of SearchResult objects
+     */
+    List<SearchResult> search(String query, int offset, int pageLength);
 
     /**
      * User credentials to the DOMS web service, using the end-point <code>URL</code>

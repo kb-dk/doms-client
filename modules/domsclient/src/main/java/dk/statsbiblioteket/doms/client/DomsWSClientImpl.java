@@ -67,7 +67,21 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     @Override
-    public List<SearchResult> search(String query, int offset, int pageSize) {
+    public List<String> getLabel(List<String> uuids) {
+        // domsAPI.getLabels(uuids);
+        // TODO Implement the get label method on the server side.
+        return uuids;
+    }
+
+    @Override
+    public String getLabel(String uuid) {
+        ArrayList lst = new ArrayList();
+        lst.add(uuid);
+        return getLabel(lst).get(0);
+    }
+
+    @Override
+    public List<SearchResult> search(String query, int offset, int pageLength) {
         return new ArrayList<SearchResult>();
     }
 
