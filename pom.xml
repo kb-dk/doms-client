@@ -30,8 +30,8 @@
         <dependencies>
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
-                <artifactId>centralWebservice-interface</artifactId>
-                <version>0.0.21</version>
+                <artifactId>central-interface</artifactId>
+                <version>0.0.22-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

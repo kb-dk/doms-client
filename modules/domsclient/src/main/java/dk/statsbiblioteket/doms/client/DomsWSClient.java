@@ -51,7 +51,7 @@ public interface DomsWSClient {
      * @param   pageLength  the max number of results
      * @return  A list of SearchResult objects
      */
-    List<SearchResult> search(String query, int offset, int pageLength);
+    List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
     /**
      * User credentials to the DOMS web service, using the end-point <code>URL</code>

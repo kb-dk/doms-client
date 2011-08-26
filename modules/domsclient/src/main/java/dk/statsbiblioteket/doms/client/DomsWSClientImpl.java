@@ -39,10 +39,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.CoderResult;
+import java.util.*;
 
 /**
  * Utility class for making it simple and easy to access the DOMS server main
@@ -81,8 +79,26 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     @Override
-    public List<SearchResult> search(String query, int offset, int pageLength) {
-        return new ArrayList<SearchResult>();
+    public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
+        try {
+            List<dk.statsbiblioteket.doms.central.SearchResult> wresults
+                    =
+                    domsAPI.findObjects(query, offset, pageLength);
+            List<SearchResult> cresults = new ArrayList<SearchResult>();
+            for (dk.statsbiblioteket.doms.central.SearchResult wresult : wresults) {
+                SearchResult cresult = new SearchResult(wresult.getPid(),
+                                                        wresult.getType(),
+                                                        wresult.getTitle(),
+                                                        FedoraState.fromString(wresult.getState()),
+                                                        new Date(wresult.getModifiedDate()),
+                                                        new Date(wresult.getCreatedDate()));
+                cresults.add(cresult);
+            }
+            return cresults;
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Failed searching", exception);
+        }
     }
 
     public void setCredentials(URL domsWSAPIEndpoint, String userName,
