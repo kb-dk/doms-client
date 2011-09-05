@@ -27,7 +27,7 @@ public class GuiClientImpl extends SearchClientImpl implements GuiClient{
 
     @Override
     public Document getDataStream(String objectPID, String datastreamID) throws ServerOperationFailed {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getDomsclient().getDataStream(objectPID,datastreamID);
     }
 
 }

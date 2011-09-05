@@ -31,6 +31,6 @@ public class SearchClientImpl implements SearchClient{
 
     @Override
     public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getDomsclient().search(query,offset,pageLength);
     }
 }
