@@ -1,8 +1,9 @@
 package dk.statsbiblioteket.doms.guiclient;
 
-import dk.statsbiblioteket.doms.client.ServerOperationFailed;
-import dk.statsbiblioteket.doms.searchClient.SearchClient;
+import dk.statsbiblioteket.doms.client.*;
 import org.w3c.dom.Document;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,19 +12,29 @@ import org.w3c.dom.Document;
  * Time: 1:38 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface GuiClient extends SearchClient {
+public interface GuiClient extends DomsClient {
 
-     /**
-     * Get the XML content of the datastream identified by
-     * <code>datastreamID</code> of the DOMS object identified by
-     * <code>objectPID</code>.
-     *
-     * @param objectPID    ID of the DOMS object to retrieve the datastream contents of.
-     * @param datastreamID ID of the datastream to get the contents of.
-     * @return <code>Document</code> containing the datastream XML contents.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
-     *          if the datastream contents cannot be retrieved.
+    /**
+     * @param   query       the search string.
+     * @param   offset      the first result of the search
+     * @param   pageLength  the max number of results
+     * @return  A list of SearchResult objects
      */
-    Document getDataStream(String objectPID, String datastreamID)
-            throws ServerOperationFailed;
+    List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed, InvalidCredentialsException;
+
+    /**
+     * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
+     *
+     * @param pid       The PID identifying the object of intrest.
+     * @return A FedoraState enum indicating the state of the object.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          If the object cannot be found.
+     */
+    FedoraState getState(String pid) throws ServerOperationFailed;
+
+    /**
+     * @param  PID  The object PID
+     * @return Profile The object profile
+     */
+    DigitalObjectProfile getProfile(String PID) throws ServerOperationFailed;
 }

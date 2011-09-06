@@ -26,10 +26,8 @@
  */
 package dk.statsbiblioteket.doms.client;
 
-import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.CentralWebserviceService;
-import dk.statsbiblioteket.doms.central.RecordDescription;
-import dk.statsbiblioteket.doms.central.ViewBundle;
+
+import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.w3c.dom.Document;
 
@@ -38,6 +36,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.String;
 import java.net.URL;
 import java.nio.charset.CoderResult;
 import java.util.*;
@@ -399,7 +399,28 @@ public class DomsWSClientImpl implements DomsWSClient {
         } catch (Exception exception) {
             throw new ServerOperationFailed("Failed setting label ('"
                                             + objectLabel + "') on DOMS object (PID = " + objectPID
-                                            + ").");
+                                            + ").", exception);
         }
     }
+
+    @Override
+    public FedoraState getState(String pid) throws ServerOperationFailed {
+        // TODO: Uncomment when implemented in DOMS Central
+        // return domsAPI.getState(pid);
+        return FedoraState.Active;
+    }
+
+    @Override
+    public InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed{
+
+        try {
+            return new ByteArrayInputStream(domsAPI.getDatastreamContents(pid, ds).getBytes());
+        } catch (Exception exception) {
+            throw new ServerOperationFailed("Failed getting datastream ('"
+                                            + ds + "') on DOMS object (PID = " + pid
+                                            + ")." , exception);
+        }
+    }
+
+
 }

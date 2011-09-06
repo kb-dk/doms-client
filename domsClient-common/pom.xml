@@ -14,5 +14,11 @@
     <artifactId>domsClient-common</artifactId>
     <version>0.0.9-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>dk.statsbiblioteket.doms.central</groupId>
+            <artifactId>central-interface</artifactId>
+        </dependency>
+    </dependencies>
     
 </project>

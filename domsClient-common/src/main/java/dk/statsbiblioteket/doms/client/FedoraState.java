@@ -8,12 +8,16 @@ package dk.statsbiblioteket.doms.client;
  * To change this template use File | Settings | File Templates.
  */
 public enum FedoraState {
-    Active("A"), Inactive("I"), Deleted("D");
+    Active("A", "Published"), Inactive("I", "InProgress"), Deleted("D", "Deleted");
     private String shorthand;
+    private String editorState;
 
-    FedoraState(String shorthand) {
+    FedoraState(String shorthand, String editorState) {
         this.shorthand = shorthand;
+        this.editorState = editorState;
     }
+
+
 
 
 
@@ -27,5 +31,9 @@ public enum FedoraState {
         }
 
         return valueOf(state);
+    }
+
+    public String getEditorState() {
+        return editorState;
     }
 }

@@ -14,17 +14,22 @@
     <artifactId>guiClient</artifactId>
     <version>0.0.9-SNAPSHOT</version>
 
-     <dependencies>
+    <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.searchClient</groupId>
             <artifactId>searchClient</artifactId>
             <version>${project.version}</version>
         </dependency>
-         <dependency>
-             <groupId>dk.statsbiblioteket.doms.client</groupId>
-             <artifactId>domsClient-common</artifactId>
-             <version>${project.version}</version>
-         </dependency>
+        <dependency>
+            <groupId>dk.statsbiblioteket.doms.client</groupId>
+            <artifactId>domsClient-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dk.statsbiblioteket.doms.client</groupId>
+            <artifactId>domsClient-common</artifactId>
+            <version>0.0.9-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

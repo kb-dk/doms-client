@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.doms.client;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +52,19 @@ public class SearchResult {
 
     public Date getCreated() {
         return created;
+    }
+
+    public String getTypeString(){
+        String retString = "";
+        for (String t : type){
+            retString += t;
+        }
+        return retString;
+    }
+
+    public String getLastModifiedString() {
+        DateFormat df = new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss");
+        return df.format(lastModified);
     }
 }
 

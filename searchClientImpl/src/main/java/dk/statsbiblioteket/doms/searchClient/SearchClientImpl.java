@@ -20,7 +20,7 @@ public class SearchClientImpl implements SearchClient{
 
     private DomsWSClient domsclient;
 
-    public SearchClientImpl(URL url, String username, String password){//TODO
+    public SearchClientImpl(URL url, String username, String password){
         domsclient = new DomsWSClientImpl();
         domsclient.setCredentials(url,username,password);
     }
@@ -29,8 +29,4 @@ public class SearchClientImpl implements SearchClient{
         return domsclient;
     }
 
-    @Override
-    public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
-        return getDomsclient().search(query,offset,pageLength);
-    }
 }

@@ -1,9 +1,14 @@
 package dk.statsbiblioteket.doms.client;
 
 
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.central.RecordDescription;
 import org.w3c.dom.Document;
 
+import javax.activation.MimeType;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -34,7 +39,7 @@ public interface DomsWSClient {
 
     /**
      *
-     * @param uuid the list of uuid's for which to get the label
+     * @param uuids the list of uuid's for which to get the label
      * @return the labels of the given uuid's
      */
     List<String> getLabel(List<String> uuids);
@@ -369,4 +374,25 @@ public interface DomsWSClient {
      */
     void setObjectLabel(String objectPID, String objectLabel, String comment)
             throws ServerOperationFailed;
+
+    /**
+     * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
+     *
+     * @param pid       The PID identifying the object of intrest.
+     * @return A FedoraState enum indicating the state of the object.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          If the object cannot be found.
+     */
+    FedoraState getState(String pid) throws ServerOperationFailed;
+
+    /**
+     * Get the datastream <code>ds</code> from the object <code>pid</code>
+     *
+     * @param pid the persistent identifier of the object of intrest.
+     * @param ds identifies the datastream of intrest.
+     * @return MIMETypeStream containing the datastream.
+     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     *          If the object or datastream cannot be found.
+     */
+    InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed, InvalidCredentialsException, MethodFailedException, InvalidResourceException;
 }
