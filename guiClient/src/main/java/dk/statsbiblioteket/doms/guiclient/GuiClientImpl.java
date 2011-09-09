@@ -1,7 +1,6 @@
 package dk.statsbiblioteket.doms.guiclient;
 
 import dk.statsbiblioteket.doms.client.*;
-import org.w3c.dom.Document;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.List;
  * Time: 1:38 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GuiClientImpl extends AbstractDomsClient implements GuiClient{
+public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
 
 
     public GuiClientImpl(URL url, String username, String password){
@@ -23,7 +22,7 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient{
     }
 
 
-    public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed, InvalidCredentialsException {
+    public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
         try {
             List<dk.statsbiblioteket.doms.central.SearchResult> wresults
                     =
@@ -39,8 +38,8 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient{
                 cresults.add(cresult);
             }
             return cresults;
-        } catch (dk.statsbiblioteket.doms.central.InvalidCredentialsException invalidCredentials){
-            throw new InvalidCredentialsException("Authorization Failed", invalidCredentials);
+//        } catch (dk.statsbiblioteket.doms.central.InvalidCredentialsException invalidCredentials){
+//            throw new InvalidCredentialsException("Authorization Failed", invalidCredentials);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed searching", exception);
@@ -48,10 +47,10 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient{
     }
 
     @Override
-    public DigitalObjectProfile getProfile(String PID) throws ServerOperationFailed {
+    public DigitalObject getProfile(String pid) throws ServerOperationFailed {
 
         // TODO: Make an actual implementation.
-        return new DigitalObjectProfile();
+        return new DataObject(pid);
     }
 
 }

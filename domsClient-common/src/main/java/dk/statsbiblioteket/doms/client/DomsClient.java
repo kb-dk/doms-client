@@ -2,11 +2,8 @@ package dk.statsbiblioteket.doms.client;
 
 import dk.statsbiblioteket.doms.central.InvalidResourceException;
 import dk.statsbiblioteket.doms.central.MethodFailedException;
-import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
-import org.w3c.dom.Document;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -17,6 +14,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface DomsClient {
+
+
+
     /**
      * Get the datastream <code>ds</code> from the object <code>pid</code> the stream can be parsed by <code>
      *     documentBuilder.parse(ds)</code> when <code>XML</code> is expected.
@@ -28,7 +28,7 @@ public interface DomsClient {
      *          If the object or datastream cannot be found.
      */
     InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed,
-                InvalidCredentialsException, MethodFailedException, InvalidResourceException;
+                MethodFailedException, InvalidResourceException;
 
     /**
      *
@@ -62,7 +62,7 @@ public interface DomsClient {
      * the content model for the object.
      *
      * @param objectPID    ID of the object housing the relation.
-     * @param relationType Relation type ID which is valid according the the content
+     * @param relationType AbstractRelation type ID which is valid according the the content
      *                     model for the source object.
      * @return a List of Relations matching the restrictions
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed

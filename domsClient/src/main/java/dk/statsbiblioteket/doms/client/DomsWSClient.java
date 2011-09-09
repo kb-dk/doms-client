@@ -1,14 +1,11 @@
 package dk.statsbiblioteket.doms.client;
 
 
-import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
-import dk.statsbiblioteket.doms.central.InvalidResourceException;
-import dk.statsbiblioteket.doms.central.MethodFailedException;
-import dk.statsbiblioteket.doms.central.RecordDescription;
+import dk.statsbiblioteket.doms.central.*;
 import org.w3c.dom.Document;
 
-import javax.activation.MimeType;
 import java.io.InputStream;
+import java.lang.String;
 import java.net.URL;
 import java.util.List;
 
@@ -21,6 +18,7 @@ import java.util.List;
  *
  * @author Thomas Skou Hansen &lt;tsh@statsbiblioteket.dk&gt;
  * @author Esben Agerbæk Black &lt;eab@statsbiblioteket.dk&gt;
+ * @deprecated A new implementation should be made around the domsClient - common
  */
 public interface DomsWSClient {
     /**
@@ -51,6 +49,7 @@ public interface DomsWSClient {
      */
     String getLabel(String uuid);
     /**
+     *
      * @param   query       the search string.
      * @param   offset      the first result of the search
      * @param   pageLength  the max number of results
@@ -139,6 +138,7 @@ public interface DomsWSClient {
      * Get the PID of an existing file object in the DOMS which is associated
      * with the physical file specified by <code>fileURL</code>.
      *
+     *
      * @param fileURL location of the physical file to find the corresponding DOMS
      *                file object for.
      * @return PID of the DOMS file object.
@@ -208,12 +208,12 @@ public interface DomsWSClient {
      * type specified by <code>relationType</code> must be valid according to
      * the content model for the object.
      *
-     * @param relation the Relation to add
+     * @param relation the AbstractRelation to add
      * @param comment  The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the relation cannot be added.
      */
-    public void addObjectRelation(Relation relation, String comment) throws ServerOperationFailed;
+    public void addObjectRelation(LiteralRelation relation, String comment) throws ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -222,12 +222,12 @@ public interface DomsWSClient {
      * type specified by <code>relationType</code> must be valid according to
      * the content model for the object.
      *
-     * @param relation the Relation to remove
+     * @param relation the AbstractRelation to remove
      * @param comment  The message to store in Fedora
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
      *          if the relation cannot be added.
      */
-    void removeObjectRelation(Relation relation, String comment) throws ServerOperationFailed;
+    void removeObjectRelation(LiteralRelation relation, String comment) throws ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -237,7 +237,7 @@ public interface DomsWSClient {
      * the content model for the object.
      *
      * @param objectPID    ID of the object housing the relation.
-     * @param relationType Relation type ID which is valid according the the content
+     * @param relationType AbstractRelation type ID which is valid according the the content
      *                     model for the source object.
      * @return a List of Relations matching the restrictions
      * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed

@@ -26,12 +26,9 @@
         <module>domsClient-common</module>
         <module>summaClient</module>
         <module>summaClientImpl</module>
-        <module>searchClient</module>
-        <module>searchClientImpl</module>
-        <module>ingestClient</module>
+       <module>ingestClient</module>
         <module>ingestClientImpl</module>
         <module>guiClient</module>
-        <module>guiClientImpl</module>
     </modules>
 
     <dependencyManagement>

@@ -1,4 +1,6 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.guiclient;
+
+import dk.statsbiblioteket.doms.client.FedoraState;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

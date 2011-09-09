@@ -2,11 +2,8 @@ package dk.statsbiblioteket.doms.client;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
-import org.w3c.dom.Document;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -48,12 +45,13 @@ public abstract class AbstractDomsClient implements DomsClient {
         try {
             List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
                     domsAPI.getNamedRelations(objectPID, relationType);
-
+            DigitalObjectFactory dof = new DigitalObjectFactory();
             ArrayList<Relation> clientRelations = new ArrayList<Relation>();
             for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) {
-                clientRelations.add(new Relation(domsRelation.getSubject(),
+                clientRelations.add(new LiteralRelation(
                                                  domsRelation.getPredicate(),
-                                                 domsRelation.getObject()));
+                                                 dof.getDigitalObject(domsRelation.getObject()),
+                                                 domsRelation.getSubject()));
             }
             return clientRelations;
 

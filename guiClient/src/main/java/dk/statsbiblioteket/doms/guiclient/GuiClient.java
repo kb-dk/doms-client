@@ -1,7 +1,9 @@
 package dk.statsbiblioteket.doms.guiclient;
 
-import dk.statsbiblioteket.doms.client.*;
-import org.w3c.dom.Document;
+import dk.statsbiblioteket.doms.client.DigitalObject;
+import dk.statsbiblioteket.doms.client.DomsClient;
+import dk.statsbiblioteket.doms.client.FedoraState;
+import dk.statsbiblioteket.doms.client.ServerOperationFailed;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public interface GuiClient extends DomsClient {
      * @param   pageLength  the max number of results
      * @return  A list of SearchResult objects
      */
-    List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed, InvalidCredentialsException;
+    List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
     /**
      * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
@@ -36,5 +38,5 @@ public interface GuiClient extends DomsClient {
      * @param  PID  The object PID
      * @return Profile The object profile
      */
-    DigitalObjectProfile getProfile(String PID) throws ServerOperationFailed;
+    DigitalObject getProfile(String PID) throws ServerOperationFailed;
 }

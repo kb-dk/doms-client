@@ -39,7 +39,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.String;
 import java.net.URL;
-import java.nio.charset.CoderResult;
 import java.util.*;
 
 /**
@@ -48,6 +47,7 @@ import java.util.*;
  *
  * @author Thomas Skou Hansen &lt;tsh@statsbiblioteket.dk&gt;
  * @author Esben Agerbæk Black &lt;eab@statsbiblioteket.dk&gt;
+ * @deprecated A new implementation should be made around the domsClient - common
  */
 public class DomsWSClientImpl implements DomsWSClient {
 
@@ -58,6 +58,8 @@ public class DomsWSClientImpl implements DomsWSClient {
      * Reference to the active DOMS webservice client instance.
      */
     private CentralWebservice domsAPI;
+
+    private DigitalObjectFactory dof = new DigitalObjectFactory();
 
     @Deprecated
     public void login(URL domsWSAPIEndpoint, String userName, String password) {
@@ -80,11 +82,10 @@ public class DomsWSClientImpl implements DomsWSClient {
 
     @Override
     public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
+        List<dk.statsbiblioteket.doms.central.SearchResult> wresults;
         try {
-            List<dk.statsbiblioteket.doms.central.SearchResult> wresults
-                    =
-                    domsAPI.findObjects(query, offset, pageLength);
-            List<SearchResult> cresults = new ArrayList<SearchResult>();
+            wresults = domsAPI.findObjects(query, offset, pageLength);
+            /*List<SearchResult> cresults = new ArrayList<SearchResult>();
             for (dk.statsbiblioteket.doms.central.SearchResult wresult : wresults) {
                 SearchResult cresult = new SearchResult(wresult.getPid(),
                                                         wresult.getType(),
@@ -93,8 +94,8 @@ public class DomsWSClientImpl implements DomsWSClient {
                                                         new Date(wresult.getModifiedDate()),
                                                         new Date(wresult.getCreatedDate()));
                 cresults.add(cresult);
-            }
-            return cresults;
+        } */
+        return wresults;
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed searching", exception);
@@ -185,7 +186,6 @@ public class DomsWSClientImpl implements DomsWSClient {
         return pid;
     }
 
-    @Override
     public List<String> getPidFromOldIdentifier(String oldIdentifier) throws NoObjectFound, ServerOperationFailed {
 
         List<String> pids;
@@ -243,12 +243,12 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     @Override
-    public void addObjectRelation(Relation relation, String comment) throws ServerOperationFailed {
+    public void addObjectRelation(LiteralRelation  relation, String comment) throws ServerOperationFailed {
         try {
             dk.statsbiblioteket.doms.central.Relation domsrel = new dk.statsbiblioteket.doms.central.Relation();
             domsrel.setSubject(relation.getSubject());
             domsrel.setPredicate(relation.getPredicate());
-            domsrel.setObject(relation.getObject());
+            domsrel.setObject(relation.getObject().getPid().toString()); //TODO: Correct doms Central to new relation objects
             domsAPI.addRelation(relation.getSubject(), domsrel, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
@@ -260,13 +260,13 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     @Override
-    public void removeObjectRelation(Relation relation, String comment)
+    public void removeObjectRelation(LiteralRelation relation, String comment)
             throws ServerOperationFailed {
         try {
             dk.statsbiblioteket.doms.central.Relation domsrel = new dk.statsbiblioteket.doms.central.Relation();
             domsrel.setSubject(relation.getSubject());
             domsrel.setPredicate(relation.getPredicate());
-            domsrel.setObject(relation.getObject());
+            domsrel.setObject(relation.getObject().getPid().toString()); //TODO: Correct doms Central to new relation objects
 
             domsAPI.deleteRelation(relation.getSubject(),
                                    domsrel, comment);
@@ -285,13 +285,13 @@ public class DomsWSClientImpl implements DomsWSClient {
             throws ServerOperationFailed {
         try {
             List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
-                    domsAPI.getNamedRelations(objectPID, relationType);
+                    domsAPI.getNamedRelations(objectPID, relationType); //TODO: Correct doms Central to new relation objects
 
             ArrayList<Relation> clientRelations = new ArrayList<Relation>();
-            for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) {
-                clientRelations.add(new Relation(domsRelation.getSubject(),
-                                                 domsRelation.getPredicate(),
-                                                 domsRelation.getObject()));
+            for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) { //TODO: Correct doms Central to new relation objects
+                clientRelations.add(new LiteralRelation(domsRelation.getPredicate(),
+                                                 dof.getDigitalObject(domsRelation.getObject()),
+                                                 domsRelation.getSubject()));
             }
             return clientRelations;
 
@@ -315,7 +315,6 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    @Override
     public void unpublishObjects(String comment, String... pidsToUnpublish) throws ServerOperationFailed {
         try {
             domsAPI.markInProgressObject(Arrays.asList(pidsToUnpublish), comment);
@@ -403,14 +402,12 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    @Override
     public FedoraState getState(String pid) throws ServerOperationFailed {
         // TODO: Uncomment when implemented in DOMS Central
         // return domsAPI.getState(pid);
         return FedoraState.Active;
     }
 
-    @Override
     public InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed{
 
         try {
