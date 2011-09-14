@@ -1,9 +1,6 @@
 package dk.statsbiblioteket.doms.guiclient;
 
-import dk.statsbiblioteket.doms.client.DigitalObject;
-import dk.statsbiblioteket.doms.client.DomsClient;
-import dk.statsbiblioteket.doms.client.FedoraState;
-import dk.statsbiblioteket.doms.client.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.*;
 
 import java.util.List;
 
@@ -25,18 +22,7 @@ public interface GuiClient extends DomsClient {
     List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
     /**
-     * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
-     *
-     * @param pid       The PID identifying the object of intrest.
-     * @return A FedoraState enum indicating the state of the object.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
-     *          If the object cannot be found.
+     * @return Profile The object factory
      */
-    FedoraState getState(String pid) throws ServerOperationFailed;
-
-    /**
-     * @param  PID  The object PID
-     * @return Profile The object profile
-     */
-    DigitalObject getProfile(String PID) throws ServerOperationFailed;
+    DigitalObjectFactory getFactory() throws ServerOperationFailed;
 }

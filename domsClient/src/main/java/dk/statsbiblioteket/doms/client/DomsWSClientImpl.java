@@ -59,7 +59,7 @@ public class DomsWSClientImpl implements DomsWSClient {
      */
     private CentralWebservice domsAPI;
 
-    private DigitalObjectFactory dof = new DigitalObjectFactory();
+    private DigitalObjectFactory dof = new DigitalObjectFactory(domsAPI);
 
     @Deprecated
     public void login(URL domsWSAPIEndpoint, String userName, String password) {

@@ -28,6 +28,7 @@ public abstract class AbstractDomsClient implements DomsClient {
      * Reference to the active DOMS webservice client instance.
      */
     protected CentralWebservice domsAPI;
+    private DigitalObjectFactory factory;
 
     public AbstractDomsClient(URL domsWSAPIEndpoint, String userName,
                                String password) {
@@ -38,6 +39,7 @@ public abstract class AbstractDomsClient implements DomsClient {
                 .getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
+        factory = new DigitalObjectFactory(domsAPI);
     }
 
     public List<Relation> listObjectRelations(String objectPID, String relationType)
@@ -45,7 +47,7 @@ public abstract class AbstractDomsClient implements DomsClient {
         try {
             List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
                     domsAPI.getNamedRelations(objectPID, relationType);
-            DigitalObjectFactory dof = new DigitalObjectFactory();
+            DigitalObjectFactory dof = new DigitalObjectFactory(domsAPI);
             ArrayList<Relation> clientRelations = new ArrayList<Relation>();
             for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) {
                 clientRelations.add(new LiteralRelation(
@@ -91,5 +93,9 @@ public abstract class AbstractDomsClient implements DomsClient {
                                             + ds + "') on DOMS object (PID = " + pid
                                             + ")." , exception);
         }
+    }
+
+    public DigitalObjectFactory getFactory() {
+        return factory;
     }
 }

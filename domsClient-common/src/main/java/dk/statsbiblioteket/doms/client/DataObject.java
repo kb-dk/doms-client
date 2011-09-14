@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.doms.client;
 
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
+
 /**
  * Created by IntelliJ IDEA.
  * User: eab
@@ -10,7 +13,7 @@ package dk.statsbiblioteket.doms.client;
 public class DataObject extends AbstractDigitalObject {
 
 
-    public DataObject(String pid) {
-        super(pid);
+    public DataObject(ObjectProfile profile, CentralWebservice api, DigitalObjectFactory factory) {
+        super(profile, api, factory);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

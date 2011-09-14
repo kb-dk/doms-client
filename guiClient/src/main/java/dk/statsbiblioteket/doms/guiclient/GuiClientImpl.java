@@ -19,6 +19,7 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
 
     public GuiClientImpl(URL url, String username, String password){
         super(url, username, password);
+
     }
 
 
@@ -44,13 +45,6 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
             throw new ServerOperationFailed(
                     "Failed searching", exception);
         }
-    }
-
-    @Override
-    public DigitalObject getProfile(String pid) throws ServerOperationFailed {
-
-        // TODO: Make an actual implementation.
-        return new DataObject(pid);
     }
 
 }

@@ -1,5 +1,9 @@
 package dk.statsbiblioteket.doms.client;
 
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -11,40 +15,40 @@ import java.util.List;
  * Time: 9:52 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface DigitalObject extends java.io.Serializable {
-        String getPid();
+public interface DigitalObject {
+    String getPid();
 
-        void setPid(String pid);
 
-        List<ContentModelObject> getType();
+    List<ContentModelObject> getType();
 
-        void setType(List<ContentModelObject> type);
 
-        String getTitle();
+    String getTitle();
 
-        void setTitle(String title);
+    void setTitle(String title);
 
-        FedoraState getState();
+    FedoraState getState();
 
-        void setState(FedoraState state);
+    void setState(FedoraState state);
 
-        Date getLastModified();
+    Date getLastModified();
 
-        void setLastModified(Date lastModified);
 
-        Date getCreated();
+    Date getCreated();
 
-        void setCreated(Date created);
 
-        List<String> getDatastreamTitles();
 
-        void setDatastreamTitles(List<String> datastreamTitles);
+    List<Datastream> getDatastreams();
 
-        List<Relation> getInRelations();
+    void addDatastream(Datastream addition);
 
-        void setInRelations(List<Relation> inRelations);
+    void removeDatastream(Datastream deleted);
 
-        List<Relation> getOutRelations();
+    List<Relation> getRelations();
 
-        void setOutRelations(List<Relation> outRelations);
-    }
+
+    List<ObjectRelation> getInverseRelations();
+
+    void load()
+            throws ServerOperationFailed;
+
+}

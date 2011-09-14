@@ -1,5 +1,10 @@
 package dk.statsbiblioteket.doms.client;
 
+import dk.statsbiblioteket.doms.central.*;
+
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -12,18 +17,39 @@ import java.util.List;
  */
 public abstract class AbstractDigitalObject implements DigitalObject {
 
+
+    private ObjectProfile profile;
+    private CentralWebservice api;
+
     private String pid;
-	private List<ContentModelObject> type;
-	private String title;
+    private DigitalObjectFactory factory;
+
+    private List<ContentModelObject> type;
+
+    private String title;
+    private String titleOriginal;
+
 	private FedoraState state;
+    private FedoraState stateOriginal;
+
     private Date lastModified;
     private Date created;
-    private List<String> datastreamTitles;
-    private List<Relation> inRelations;
-    private List<Relation> outRelations;
 
-    public AbstractDigitalObject(String pid){
+    private List<Datastream> datastreams;
 
+
+    private List<Relation> relations;
+    private List<Relation> removedRelations;
+    private List<Relation> addedRelations;
+
+    private List<ObjectRelation> inverseRelations;
+
+    public AbstractDigitalObject(ObjectProfile profile,
+                                 CentralWebservice api,
+                                 DigitalObjectFactory factory){
+        this.profile = profile;
+        this.api = api;
+        this.factory = factory;
     }
 
     @Override
@@ -32,18 +58,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public void setPid(String pid) {
-        this.pid = pid;
-    }
-
-    @Override
     public List<ContentModelObject> getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(List<ContentModelObject> type) {
-        this.type = type;
+        return Collections.unmodifiableList(type);
     }
 
     @Override
@@ -72,47 +88,80 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    @Override
     public Date getCreated() {
         return created;
     }
 
     @Override
-    public void setCreated(Date created) {
-        this.created = created;
+    public List<Datastream> getDatastreams() {
+        return Collections.unmodifiableList(datastreams);
     }
 
     @Override
-    public List<String> getDatastreamTitles() {
-        return datastreamTitles;
+    public void addDatastream(Datastream addition) {
+        datastreams.add(addition);
     }
 
     @Override
-    public void setDatastreamTitles(List<String> datastreamTitles) {
-        this.datastreamTitles = datastreamTitles;
+    public void removeDatastream(Datastream deleted) {
+        datastreams.remove(deleted);
     }
 
     @Override
-    public List<Relation> getInRelations() {
-        return inRelations;
+    public List<Relation> getRelations() {
+        List<Relation> rels = new ArrayList<Relation>();
+        for (Relation inRelation : relations) {
+            rels.add(inRelation);
+        }
+        rels.addAll(addedRelations);
+        rels.removeAll(removedRelations);//TODO what if something was added and removed multiple times?
+        return rels;
     }
 
-    @Override
-    public void setInRelations(List<Relation> inRelations) {
-        this.inRelations = inRelations;
-    }
 
     @Override
-    public List<Relation> getOutRelations() {
-        return outRelations;
+    public List<ObjectRelation> getInverseRelations() {
+        return inverseRelations;
     }
 
-    @Override
-    public void setOutRelations(List<Relation> outRelations) {
-        this.outRelations = outRelations;
+    //TODO hide these exceptions
+    public void load() throws ServerOperationFailed {
+        type = new ArrayList<ContentModelObject>();
+        datastreams = new ArrayList<Datastream>();
+        relations = new ArrayList<Relation>();
+        inverseRelations = new ArrayList<ObjectRelation>();
+
+        pid = profile.getPid();
+        state = FedoraState.fromString(profile.getState());
+        stateOriginal = state;
+        created = new Date(profile.getCreatedDate());
+        lastModified = new Date(profile.getModifiedDate());
+        title = profile.getTitle();
+        titleOriginal = title;
+        List<dk.statsbiblioteket.doms.central.Relation> frelations = profile.getRelations();
+
+        for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
+            if (frelation.isLiteral()){
+                relations.add(new LiteralRelation(frelation.getPredicate(),this,frelation.getSubject()));
+            } else {
+                relations.add(new ObjectRelation(frelation.getPredicate(),this,factory.getDigitalObject(
+                        frelation.getSubject())));
+            }
+        }
+
+        for (String contentModel : profile.getContentmodels()) {
+            DigitalObject cm_object = factory.getDigitalObject(contentModel);
+            if (cm_object instanceof ContentModelObject) {
+                ContentModelObject object = (ContentModelObject) cm_object;
+                type.add(object);
+            } else {
+                throw new ServerOperationFailed("Object '"+pid+"' has the content model '"+contentModel+"' declared, but this is not a content model");
+            }
+        }
+
+        for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
+            datastreams.add(new Datastream(datastreamProfile,this));
+        }
     }
+
 }
