@@ -1,6 +1,8 @@
 package dk.statsbiblioteket.doms.guiclient;
 
 import dk.statsbiblioteket.doms.client.*;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.FedoraState;
 
 import java.net.URL;
 import java.util.ArrayList;

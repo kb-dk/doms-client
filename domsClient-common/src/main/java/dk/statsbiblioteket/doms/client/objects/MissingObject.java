@@ -1,8 +1,8 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
-import dk.statsbiblioteket.doms.central.InvalidResourceException;
-import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.util.Date;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Time: 1:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MissingObject implements DigitalObject{
+public class MissingObject implements DigitalObject {
     @Override
     public String getPid() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.

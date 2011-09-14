@@ -24,7 +24,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.utils;
 
 import java.net.URI;
 import java.net.URL;

@@ -24,45 +24,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.exceptions;
 
 /**
- * Exception indicating that the thrower could not find an object in the DOMS.
+ * Exception to be thrown if any problems were encountered while communicating
+ * with the DOMS server.
  *
  * @author &lt;tsh@statsbiblioteket.dk&gt; Thomas Skou Hansen
  */
-public class NoObjectFound extends Exception {
+public class ServerOperationFailed extends Exception {
 
     /**
      * Version UUID for serialisation.
      */
-    private static final long serialVersionUID = -3639478367508534640L;
+    private static final long serialVersionUID = -5490820003022778643L;
 
     /**
      * @see java.lang.Exception#Exception()
      */
-    public NoObjectFound() {
-        super();
+    public ServerOperationFailed() {
     }
 
     /**
      * @see java.lang.Exception#Exception(String)
      */
-    public NoObjectFound(String message) {
+    public ServerOperationFailed(String message) {
         super(message);
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable)
      */
-    public NoObjectFound(Throwable cause) {
+    public ServerOperationFailed(Throwable cause) {
         super(cause);
     }
 
     /**
      * @see java.lang.Exception#Exception(String, Throwable)
      */
-    public NoObjectFound(String message, Throwable cause) {
+    public ServerOperationFailed(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -28,6 +28,12 @@ package dk.statsbiblioteket.doms.client;
 
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.relations.*;
+import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.w3c.dom.Document;
 
@@ -281,13 +287,13 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     @Override
-    public List<Relation> listObjectRelations(String objectPID, String relationType)
+    public List<dk.statsbiblioteket.doms.client.relations.Relation> listObjectRelations(String objectPID, String relationType)
             throws ServerOperationFailed {
         try {
             List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
                     domsAPI.getNamedRelations(objectPID, relationType); //TODO: Correct doms Central to new relation objects
 
-            ArrayList<Relation> clientRelations = new ArrayList<Relation>();
+            ArrayList<dk.statsbiblioteket.doms.client.relations.Relation> clientRelations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
             for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) { //TODO: Correct doms Central to new relation objects
                 clientRelations.add(new LiteralRelation(domsRelation.getPredicate(),
                                                  dof.getDigitalObject(domsRelation.getObject()),

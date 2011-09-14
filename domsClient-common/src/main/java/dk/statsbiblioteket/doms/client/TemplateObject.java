@@ -2,6 +2,8 @@ package dk.statsbiblioteket.doms.client;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.ObjectProfile;
+import dk.statsbiblioteket.doms.client.objects.AbstractDigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 
 /**
  * Created by IntelliJ IDEA.

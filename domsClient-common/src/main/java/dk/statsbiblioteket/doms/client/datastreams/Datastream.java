@@ -1,13 +1,10 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.datastreams;
 
 import dk.statsbiblioteket.doms.central.DatastreamProfile;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: 9/14/11
- * Time: 1:32 PM
- * To change this template use File | Settings | File Templates.
+ * This class represents a datastream. TODO implement
  */
 public class Datastream {
 

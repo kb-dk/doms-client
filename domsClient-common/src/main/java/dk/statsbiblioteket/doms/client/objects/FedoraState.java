@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.objects;
 
 /**
  * Created by IntelliJ IDEA.

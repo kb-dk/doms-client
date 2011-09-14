@@ -1,4 +1,6 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.relations;
+
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
  * Created by IntelliJ IDEA.

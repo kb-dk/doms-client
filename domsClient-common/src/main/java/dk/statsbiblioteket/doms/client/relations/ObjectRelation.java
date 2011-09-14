@@ -1,4 +1,6 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.relations;
+
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
  * Created by IntelliJ IDEA.
@@ -7,7 +9,7 @@ package dk.statsbiblioteket.doms.client;
  * Time: 10:47 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ObjectRelation extends AbstractRelation{
+public class ObjectRelation extends AbstractRelation {
     private DigitalObject subject;
 
     public DigitalObject getSubject() {

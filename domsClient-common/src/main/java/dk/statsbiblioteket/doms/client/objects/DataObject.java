@@ -1,14 +1,10 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.ObjectProfile;
 
 /**
- * Created by IntelliJ IDEA.
- * User: eab
- * Date: 9/8/11
- * Time: 1:38 PM
- * To change this template use File | Settings | File Templates.
+ * Data objects are the objects that actually holds the data in DOMS. TODO implement
  */
 public class DataObject extends AbstractDigitalObject {
 

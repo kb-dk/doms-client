@@ -2,6 +2,9 @@ package dk.statsbiblioteket.doms.client;
 
 import dk.statsbiblioteket.doms.central.InvalidResourceException;
 import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.io.InputStream;
 import java.util.List;
@@ -24,7 +27,7 @@ public interface DomsClient {
      * @param pid the persistent identifier of the object of intrest.
      * @param ds identifies the datastream of intrest.
      * @return MIMETypeStream containing the datastream.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object or datastream cannot be found.
      */
     InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed,
@@ -49,7 +52,7 @@ public interface DomsClient {
      *
      * @param pid       The PID identifying the object of intrest.
      * @return A FedoraState enum indicating the state of the object.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object cannot be found.
      */
     FedoraState getState(String pid) throws ServerOperationFailed;
@@ -65,7 +68,7 @@ public interface DomsClient {
      * @param relationType AbstractRelation type ID which is valid according the the content
      *                     model for the source object.
      * @return a List of Relations matching the restrictions
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the relation cannot be added.
      */
     List<Relation> listObjectRelations(String objectPID, String relationType

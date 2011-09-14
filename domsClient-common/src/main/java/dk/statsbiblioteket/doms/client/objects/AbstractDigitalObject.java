@@ -1,6 +1,9 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.relations.*;
 
 import java.lang.String;
 import java.util.ArrayList;
@@ -38,9 +41,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private List<Datastream> datastreams;
 
 
-    private List<Relation> relations;
-    private List<Relation> removedRelations;
-    private List<Relation> addedRelations;
+    private List<dk.statsbiblioteket.doms.client.relations.Relation> relations;
+    private List<dk.statsbiblioteket.doms.client.relations.Relation> removedRelations;
+    private List<dk.statsbiblioteket.doms.client.relations.Relation> addedRelations;
 
     private List<ObjectRelation> inverseRelations;
 
@@ -108,9 +111,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public List<Relation> getRelations() {
-        List<Relation> rels = new ArrayList<Relation>();
-        for (Relation inRelation : relations) {
+    public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() {
+        List<dk.statsbiblioteket.doms.client.relations.Relation> rels = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
+        for (dk.statsbiblioteket.doms.client.relations.Relation inRelation : relations) {
             rels.add(inRelation);
         }
         rels.addAll(addedRelations);
@@ -128,7 +131,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     public void load() throws ServerOperationFailed {
         type = new ArrayList<ContentModelObject>();
         datastreams = new ArrayList<Datastream>();
-        relations = new ArrayList<Relation>();
+        relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         inverseRelations = new ArrayList<ObjectRelation>();
 
         pid = profile.getPid();

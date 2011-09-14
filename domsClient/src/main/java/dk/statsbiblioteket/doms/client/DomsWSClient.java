@@ -2,6 +2,11 @@ package dk.statsbiblioteket.doms.client;
 
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.relations.*;
+import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import org.w3c.dom.Document;
 
 import java.io.InputStream;
@@ -75,7 +80,7 @@ public interface DomsWSClient {
      * @param templatePID PID identifying the template object to use.
      * @param comment     The message to store in Fedora
      * @return PID of the created object.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the object creation failed.
      */
     String createObjectFromTemplate(String templatePID, String comment)
@@ -90,7 +95,7 @@ public interface DomsWSClient {
      * @param oldIdentifiers the old identifiers of the object
      * @param comment        The message to store in Fedora
      * @return PID of the created object.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the object creation failed.
      * @see #createObjectFromTemplate(String, String)
      */
@@ -107,9 +112,9 @@ public interface DomsWSClient {
      * @param fileInfo    File location, checksum and so on for the physical file
      *                    associated with the object.
      * @return PID of the created file object in the DOMS.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the object creation failed.
-     * @see dk.statsbiblioteket.doms.client.FileInfo
+     * @see dk.statsbiblioteket.doms.client.utils.FileInfo
      */
     String createFileObject(String templatePID, FileInfo fileInfo, String comment)
             throws ServerOperationFailed;
@@ -127,9 +132,9 @@ public interface DomsWSClient {
      * @param fileInfo      File location, checksum and so on for the physical file
      *                      associated with the file object.
      * @param comment       The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the operation fails.
-     * @see dk.statsbiblioteket.doms.client.FileInfo
+     * @see dk.statsbiblioteket.doms.client.utils.FileInfo
      */
     void addFileToFileObject(String fileObjectPID, FileInfo fileInfo, String comment)
             throws ServerOperationFailed;
@@ -142,10 +147,10 @@ public interface DomsWSClient {
      * @param fileURL location of the physical file to find the corresponding DOMS
      *                file object for.
      * @return PID of the DOMS file object.
-     * @throws dk.statsbiblioteket.doms.client.NoObjectFound
+     * @throws dk.statsbiblioteket.doms.client.exceptions.NoObjectFound
      *          if there does not exist DOMS file object associated with
      *          <code>fileURL</code>.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if any errors are encountered while looking up the file
      *          object.
      */
@@ -158,10 +163,10 @@ public interface DomsWSClient {
      *
      * @param oldIdentifier the old identifier of the object
      * @return PID of the DOMS file object.
-     * @throws dk.statsbiblioteket.doms.client.NoObjectFound
+     * @throws dk.statsbiblioteket.doms.client.exceptions.NoObjectFound
      *          if there does not exist DOMS file object associated with
      *          <code>fileURL</code>.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if any errors are encountered while looking up the file
      *          object.
      */
@@ -177,7 +182,7 @@ public interface DomsWSClient {
      * @param objectPID    ID of the DOMS object to retrieve the datastream contents of.
      * @param datastreamID ID of the datastream to get the contents of.
      * @return <code>Document</code> containing the datastream XML contents.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the datastream contents cannot be retrieved.
      */
     Document getDataStream(String objectPID, String datastreamID)
@@ -195,7 +200,7 @@ public interface DomsWSClient {
      * @param newDataStreamContents <code>Document</code> containing the new datastream XML
      *                              contents.
      * @param comment               The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the datastream contents cannot be updated.
      */
     void updateDataStream(String objectPID, String dataStreamID,
@@ -210,7 +215,7 @@ public interface DomsWSClient {
      *
      * @param relation the AbstractRelation to add
      * @param comment  The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the relation cannot be added.
      */
     public void addObjectRelation(LiteralRelation relation, String comment) throws ServerOperationFailed;
@@ -224,7 +229,7 @@ public interface DomsWSClient {
      *
      * @param relation the AbstractRelation to remove
      * @param comment  The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the relation cannot be added.
      */
     void removeObjectRelation(LiteralRelation relation, String comment) throws ServerOperationFailed;
@@ -240,10 +245,10 @@ public interface DomsWSClient {
      * @param relationType AbstractRelation type ID which is valid according the the content
      *                     model for the source object.
      * @return a List of Relations matching the restrictions
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the relation cannot be added.
      */
-    List<Relation> listObjectRelations(String objectPID, String relationType
+    List<dk.statsbiblioteket.doms.client.relations.Relation> listObjectRelations(String objectPID, String relationType
     ) throws ServerOperationFailed;
 
 
@@ -253,7 +258,7 @@ public interface DomsWSClient {
      *
      * @param comment       The message to store in Fedora
      * @param pidsToPublish <code>List</code> of PIDs for the objects to publish.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if any errors are encountered while publishing the objects.
      */
     void publishObjects(String comment, String... pidsToPublish)
@@ -265,7 +270,7 @@ public interface DomsWSClient {
      *
      * @param comment         The message to store in Fedora
      * @param pidsToUnpublish <code>List</code> of PIDs for the objects to unpublish.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if any errors are encountered while publishing the objects.
      */
     void unpublishObjects(String comment, String... pidsToUnpublish)
@@ -278,7 +283,7 @@ public interface DomsWSClient {
      *
      * @param comment      The message to store in Fedora
      * @param pidsToDelete <code>List</code> of PIDs for the objects to delete.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if any errors are encountered while deleting the objects.
      */
     void deleteObjects(String comment, String... pidsToDelete)
@@ -297,7 +302,7 @@ public interface DomsWSClient {
      * @param state         The state the objects must have in order to have its
      *                      modification time inspected.
      * @return the time-stamp in milliseconds for the latest modification.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the time-stamp cannot be retrieved.
      */
     long getModificationTime(String collectionPID, String viewID,
@@ -335,7 +340,7 @@ public interface DomsWSClient {
      * @param maxRecordCount The maximum number of records to retrieve.
      * @return A list of <code>RecordDescription</code> instances, containing
      *         information about all entry objects matching the query.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the operation fails.
      */
     List<RecordDescription> getModifiedEntryObjects(
@@ -356,7 +361,7 @@ public interface DomsWSClient {
      * @return A <code>String</code> containing an XML document with all the
      *         information from the object and its associated objects which is
      *         relevant to the specified view.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the view bundle cannot be retrieved from the DOMS.
      */
     String getViewBundle(String entryObjectPID, String viewID)
@@ -369,7 +374,7 @@ public interface DomsWSClient {
      * @param objectPID   The PID identifying the object to set the label on.
      * @param objectLabel The label to set on the object.
      * @param comment     The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the label could not be set on the object.
      */
     void setObjectLabel(String objectPID, String objectLabel, String comment)
@@ -380,7 +385,7 @@ public interface DomsWSClient {
      *
      * @param pid       The PID identifying the object of intrest.
      * @return A FedoraState enum indicating the state of the object.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object cannot be found.
      */
     FedoraState getState(String pid) throws ServerOperationFailed;
@@ -391,7 +396,7 @@ public interface DomsWSClient {
      * @param pid the persistent identifier of the object of intrest.
      * @param ds identifies the datastream of intrest.
      * @return MIMETypeStream containing the datastream.
-     * @throws dk.statsbiblioteket.doms.client.ServerOperationFailed
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object or datastream cannot be found.
      */
     InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed, InvalidCredentialsException, MethodFailedException, InvalidResourceException;
