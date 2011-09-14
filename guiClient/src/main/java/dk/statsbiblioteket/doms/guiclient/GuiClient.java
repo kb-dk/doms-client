@@ -23,8 +23,4 @@ public interface GuiClient extends DomsClient {
      */
     List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
-    /**
-     * @return Profile The object factory
-     */
-    DigitalObjectFactory getFactory() throws ServerOperationFailed;
 }

@@ -12,11 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: eab
- * Date: 9/8/11
- * Time: 1:33 PM
- * To change this template use File | Settings | File Templates.
+ * The common functionality of a digital object is implemented here.
  */
 public abstract class AbstractDigitalObject implements DigitalObject {
 
@@ -32,7 +28,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private String title;
     private String titleOriginal;
 
-	private FedoraState state;
+    private FedoraState state;
     private FedoraState stateOriginal;
 
     private Date lastModified;
@@ -46,6 +42,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private List<dk.statsbiblioteket.doms.client.relations.Relation> addedRelations;
 
     private List<ObjectRelation> inverseRelations;
+
+    private boolean loaded = false;
 
     public AbstractDigitalObject(ObjectProfile profile,
                                  CentralWebservice api,
@@ -127,8 +125,14 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         return inverseRelations;
     }
 
-    //TODO hide these exceptions
-    public void load() throws ServerOperationFailed {
+    /**
+     * Do not call this.
+     * @throws ServerOperationFailed
+     */
+    public synchronized void load() throws ServerOperationFailed {
+        if (loaded) return;
+        loaded = true;
+
         type = new ArrayList<ContentModelObject>();
         datastreams = new ArrayList<Datastream>();
         relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
@@ -165,6 +169,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
             datastreams.add(new Datastream(datastreamProfile,this));
         }
+        profile = null;
     }
 
 }

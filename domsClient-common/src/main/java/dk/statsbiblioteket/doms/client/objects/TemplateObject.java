@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.ObjectProfile;
@@ -6,11 +6,7 @@ import dk.statsbiblioteket.doms.client.objects.AbstractDigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: 9/14/11
- * Time: 12:22 PM
- * To change this template use File | Settings | File Templates.
+ * Template objects are objects that can be cloned to make new objects.
  */
 public class TemplateObject extends AbstractDigitalObject {
 

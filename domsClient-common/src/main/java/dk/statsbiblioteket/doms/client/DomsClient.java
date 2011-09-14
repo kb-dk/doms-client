@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client;
 import dk.statsbiblioteket.doms.central.InvalidResourceException;
 import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
@@ -29,14 +30,16 @@ public interface DomsClient {
      * @return MIMETypeStream containing the datastream.
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object or datastream cannot be found.
+     * @deprecated use the objects instead TODO implement it
      */
     InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed,
-                MethodFailedException, InvalidResourceException;
+                                                                   MethodFailedException, InvalidResourceException;
 
     /**
      *
      * @param uuids the list of uuid's for which to get the label
      * @return the labels of the given uuid's
+     * @deprecated use the objects instead
      */
     List<String> getLabels(List<String> uuids);
 
@@ -44,8 +47,9 @@ public interface DomsClient {
      *
      * @param uuid the uuid for which to get the label
      * @return the label found for the uuid
+     * @deprecated use the objects instead
      */
-    String getLabel(String uuid);
+    String getLabel(String uuid) throws ServerOperationFailed;
 
     /**
      * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
@@ -54,6 +58,7 @@ public interface DomsClient {
      * @return A FedoraState enum indicating the state of the object.
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object cannot be found.
+     * @deprecated use the objects instead
      */
     FedoraState getState(String pid) throws ServerOperationFailed;
 
@@ -70,10 +75,16 @@ public interface DomsClient {
      * @return a List of Relations matching the restrictions
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the relation cannot be added.
+     * @deprecated use the objects instead
      */
     List<Relation> listObjectRelations(String objectPID, String relationType
     ) throws ServerOperationFailed;
 
+
+    /**
+     * @return Profile The object factory
+     */
+    DigitalObjectFactory getFactory() throws ServerOperationFailed;
 
 
 }

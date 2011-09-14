@@ -1,12 +1,7 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.*;
-import dk.statsbiblioteket.doms.client.TemplateObject;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
-import dk.statsbiblioteket.doms.client.objects.DataObject;
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-import dk.statsbiblioteket.doms.client.objects.MissingObject;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 
 
@@ -36,9 +31,9 @@ public class DigitalObjectFactory {
      * @param pid the pid of the object to retrieve
      * @return an instance of the DigitalObject interface
      * @throws ServerOperationFailed in something failed in retrieving the object
-     * @see DataObject returned if the Object is a data object
-     * @see ContentModelObject If the object denote a content model
-     * @see MissingObject Returned if the object does not exist. Sorry
+     * @see DataObject
+     * @see ContentModelObject
+     * @see MissingObject
      */
     public synchronized DigitalObject getDigitalObject(String pid) throws ServerOperationFailed {
 

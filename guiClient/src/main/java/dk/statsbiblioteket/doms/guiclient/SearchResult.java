@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.doms.guiclient;
 
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
 
 import java.text.DateFormat;
@@ -8,11 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: eab
- * Date: 8/15/11
- * Time: 1:50 PM
- * To change this template use File | Settings | File Templates.
+ * A search result, with links to the digital object system.
  */
 public class SearchResult {
 
@@ -22,14 +21,18 @@ public class SearchResult {
 	private FedoraState state;
     private Date lastModified;
     private Date created;
+    private DigitalObjectFactory factory;
 
-    public SearchResult(String pid, List<String> type, String title, FedoraState state, Date lastModified, Date created) {
+
+    public SearchResult(String pid, List<String> type, String title, FedoraState state, Date lastModified, Date created,
+                        DigitalObjectFactory factory) {
         this.pid = pid;
         this.type = type;
         this.title = title;
         this.state = state;
         this.lastModified = lastModified;
         this.created = created;
+        this.factory = factory;
     }
 
     public String getPid() {
@@ -67,6 +70,15 @@ public class SearchResult {
     public String getLastModifiedString() {
         DateFormat df = new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss");
         return df.format(lastModified);
+    }
+
+    /**
+     * Retrieve the object and inflate it in the object system
+     * @return a proper digital object.
+     * @throws ServerOperationFailed
+     */
+    public DigitalObject getObject() throws ServerOperationFailed {
+        return factory.getDigitalObject(pid);
     }
 }
 

@@ -3,11 +3,7 @@ package dk.statsbiblioteket.doms.client.relations;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
- * Created by IntelliJ IDEA.
- * User: eab
- * Date: 9/8/11
- * Time: 10:47 AM
- * To change this template use File | Settings | File Templates.
+ * This is a relation between two objects.
  */
 public class ObjectRelation extends AbstractRelation {
     private DigitalObject subject;

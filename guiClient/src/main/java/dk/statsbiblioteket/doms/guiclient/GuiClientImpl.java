@@ -37,7 +37,8 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
                                                         wresult.getTitle(),
                                                         FedoraState.fromString(wresult.getState()),
                                                         new Date(wresult.getModifiedDate()),
-                                                        new Date(wresult.getCreatedDate()));
+                                                        new Date(wresult.getCreatedDate()),
+                                                        getFactory());
                 cresults.add(cresult);
             }
             return cresults;

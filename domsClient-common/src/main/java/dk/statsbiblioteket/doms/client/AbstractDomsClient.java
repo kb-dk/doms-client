@@ -3,8 +3,10 @@ package dk.statsbiblioteket.doms.client;
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.objects.MissingObject;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
@@ -36,7 +38,7 @@ public abstract class AbstractDomsClient implements DomsClient {
     private DigitalObjectFactory factory;
 
     public AbstractDomsClient(URL domsWSAPIEndpoint, String userName,
-                               String password) {
+                              String password) {
         domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
                                                CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
@@ -47,48 +49,83 @@ public abstract class AbstractDomsClient implements DomsClient {
         factory = new DigitalObjectFactory(domsAPI);
     }
 
-    public List<Relation> listObjectRelations(String objectPID, String relationType)
+    /**
+     *
+     * @param pid    ID of the object housing the relation.
+     * @param relationType AbstractRelation type ID which is valid according the the content
+     *                     model for the source object.
+     * @return
+     * @throws ServerOperationFailed
+     * @deprecated use the objects instead
+     */
+    public List<Relation> listObjectRelations(String pid, String relationType)
             throws ServerOperationFailed {
-        try {
-            List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
-                    domsAPI.getNamedRelations(objectPID, relationType);
-            DigitalObjectFactory dof = new DigitalObjectFactory(domsAPI);
-            ArrayList<Relation> clientRelations = new ArrayList<Relation>();
-            for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) {
-                clientRelations.add(new LiteralRelation(
-                                                 domsRelation.getPredicate(),
-                                                 dof.getDigitalObject(domsRelation.getObject()),
-                                                 domsRelation.getSubject()));
+        DigitalObject object = getFactory().getDigitalObject(pid);
+        if (object instanceof MissingObject){
+            return null;
+        } else {
+            List<Relation> relations = object.getRelations();
+            List<Relation> result = new ArrayList<Relation>();
+            for (Relation relation : relations) {
+                if (relation.getPredicate().equals(relationType)){
+                    result.add(relation);
+                }
             }
-            return clientRelations;
-
-        } catch (Exception exception) {
-            throw new ServerOperationFailed(
-                    "Failed listing object relations (type: " + relationType
-                    + ") from the source object (PID: " + objectPID
-                    + ")",
-                    exception);
+            return result;
         }
     }
 
+    /**
+     *
+     * @param pid       The PID identifying the object of intrest.
+     * @return
+     * @throws ServerOperationFailed
+     * @deprecated Use the objects instead
+     */
     public FedoraState getState(String pid) throws ServerOperationFailed {
-        // TODO: Uncomment when implemented in DOMS Central
-        // return domsAPI.getState(pid);
-        return FedoraState.Active;
+        DigitalObject object = getFactory().getDigitalObject(pid);
+        if (object instanceof MissingObject){
+            return null;
+        } else {
+            return object.getState();
+        }
     }
 
-    public String getLabel(String uuid) {
-        ArrayList lst = new ArrayList();
-        lst.add(uuid);
-        return getLabels(lst).get(0);
+    /**
+     *
+     * @param pid the uuid for which to get the label
+     * @return
+     * @deprecated Use the objects instead
+     */
+    public String getLabel(String pid) throws ServerOperationFailed {
+        DigitalObject object = getFactory().getDigitalObject(pid);
+        if (object instanceof MissingObject){
+            return null;
+        } else {
+            return object.getTitle();
+        }
     }
 
+    /**
+     *
+     * @param uuids the list of uuid's for which to get the label
+     * @return
+     * @deprecated Do not use
+     */
     public List<String> getLabels(List<String> uuids) {
         // domsAPI.getLabels(uuids);
         // TODO Implement the get label method on the server side.
         return uuids;
     }
 
+    /**
+     *
+     * @param pid the persistent identifier of the object of intrest.
+     * @param ds identifies the datastream of intrest.
+     * @return
+     * @throws ServerOperationFailed
+     * @deprecated TODO implement the datastream methods instead
+     */
     public InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed{
 
         try {
@@ -100,6 +137,10 @@ public abstract class AbstractDomsClient implements DomsClient {
         }
     }
 
+    /**
+     * Get the factory to read the objects
+     * @return
+     */
     public DigitalObjectFactory getFactory() {
         return factory;
     }

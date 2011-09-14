@@ -8,80 +8,76 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: 9/14/11
- * Time: 1:49 PM
- * To change this template use File | Settings | File Templates.
+ * For some purposes it is easier to return this, rather than throwing an exception, if an object cannot be found.
  */
 public class MissingObject implements DigitalObject {
     @Override
     public String getPid() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public List<ContentModelObject> getType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public String getTitle() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public void setTitle(String title) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public FedoraState getState() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public void setState(FedoraState state) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public Date getLastModified() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public Date getCreated() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public List<Datastream> getDatastreams() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public void addDatastream(Datastream addition) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public void removeDatastream(Datastream deleted) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public List<Relation> getRelations() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public List<ObjectRelation> getInverseRelations() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public void load()  {
-        //To change body of implemented methods use File | Settings | File Templates.
+        return;
     }
 }

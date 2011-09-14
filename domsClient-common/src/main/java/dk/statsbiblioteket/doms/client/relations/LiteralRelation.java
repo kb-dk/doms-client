@@ -3,11 +3,7 @@ package dk.statsbiblioteket.doms.client.relations;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
- * Created by IntelliJ IDEA.
- * User: eab
- * Date: 9/8/11
- * Time: 10:44 AM
- * To change this template use File | Settings | File Templates.
+ * This is a relation to a literal, ie, not another object.
  */
 public class LiteralRelation extends AbstractRelation {
     private String subject;
