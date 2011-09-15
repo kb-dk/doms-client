@@ -44,11 +44,13 @@ public class DigitalObjectFactory {
         if (object == null){
             try {
                 try {
-                    object = retrieveObject(pid);
+                    AbstractDigitalObject newobj = retrieveObject(pid);
+                    cache.put(pid,newobj);
+                    newobj.loadContentModels();
                 } catch (InvalidResourceException e){
                     object = new MissingObject();
+                    cache.put(pid,object);
                 }
-                cache.put(pid,object);
             } catch (InvalidCredentialsException e) {
                 throw new ServerOperationFailed("Invalid Credentials",e);
             } catch (MethodFailedException e) {
@@ -61,10 +63,10 @@ public class DigitalObjectFactory {
 
 
 
-    private synchronized DigitalObject retrieveObject(String pid)
+    private synchronized AbstractDigitalObject retrieveObject(String pid)
             throws InvalidCredentialsException, MethodFailedException, InvalidResourceException, ServerOperationFailed {
         ObjectProfile profile = api.getObjectProfile(pid);
-        DigitalObject object;
+        AbstractDigitalObject object;
         if ("ContentModel".equals(profile.getType())){
             object = new ContentModelObject(profile, api, this);
         } else if ("TemplateObject".equals(profile.getType())){

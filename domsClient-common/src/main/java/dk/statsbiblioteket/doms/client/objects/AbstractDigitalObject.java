@@ -43,7 +43,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     private List<ObjectRelation> inverseRelations;
 
-    private boolean loaded = false;
+    private boolean cmloaded = false;
+    private boolean relsloaded = false;
+
 
     public AbstractDigitalObject(ObjectProfile profile,
                                  CentralWebservice api,
@@ -70,15 +72,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             datastreams.add(new Datastream(datastreamProfile,this));
         }
 
-        for (String contentModel : profile.getContentmodels()) {
-            DigitalObject cm_object = factory.getDigitalObject(contentModel);
-            if (cm_object instanceof ContentModelObject) {
-                ContentModelObject object = (ContentModelObject) cm_object;
-                type.add(object);
-            } else {
-                throw new ServerOperationFailed("Object '"+pid+"' has the content model '"+contentModel+"' declared, but this is not a content model");
-            }
-        }
 
 
     }
@@ -160,9 +153,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
      * Do not call this.
      * @throws ServerOperationFailed
      */
-    public synchronized void load() throws ServerOperationFailed {
-        if (loaded) return;
-        loaded = true;
+    public synchronized void loadRelations() throws ServerOperationFailed {
+        if (relsloaded) return;
+        relsloaded = true;
 
         List<dk.statsbiblioteket.doms.central.Relation> frelations = profile.getRelations();
 
@@ -172,6 +165,26 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             } else {
                 relations.add(new ObjectRelation(frelation.getPredicate(),this,factory.getDigitalObject(
                         frelation.getSubject())));
+            }
+        }
+    }
+
+    /**
+     * Do not call this.
+     * @throws ServerOperationFailed
+     */
+    public synchronized void loadContentModels() throws ServerOperationFailed {
+        if (cmloaded) return;
+
+        cmloaded = true;
+
+        for (String contentModel : profile.getContentmodels()) {
+            DigitalObject cm_object = factory.getDigitalObject(contentModel);
+            if (cm_object instanceof ContentModelObject) {
+                ContentModelObject object = (ContentModelObject) cm_object;
+                type.add(object);
+            } else {
+                throw new ServerOperationFailed("Object '"+pid+"' has the content model '"+contentModel+"' declared, but this is not a content model");
             }
         }
     }
