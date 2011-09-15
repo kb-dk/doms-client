@@ -1,82 +1,31 @@
 package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
-
-
-import java.lang.String;
+import dk.statsbiblioteket.doms.client.impl.objects.AbstractDigitalObject;
+import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 
 /**
- * This class retrieves and loads objects from the server. Use this class as the basis for requesting information from the server
+ * Created by IntelliJ IDEA.
+ * User: abr
+ * Date: 9/15/11
+ * Time: 3:18 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class DigitalObjectFactory {
+public abstract class DigitalObjectFactory {
 
-    private CentralWebservice api;
+    private static DigitalObjectFactory instance;
 
-    private TimeSensitiveCache<String, DigitalObject> cache;
+    public abstract DigitalObject getDigitalObject(String pid) throws ServerOperationFailed;
 
-
-    /**
-     * Constructor. Feed this a api, to talk to the Doms system.
-     * @param api the api for DOMs.
-     */
-    public DigitalObjectFactory(CentralWebservice api) {
-        this.api = api;
-        cache = new TimeSensitiveCache<String, DigitalObject>(100000,true);//TODO
-    }
-
-    /**
-     * Retrieve an object from the server.
-     * @param pid the pid of the object to retrieve
-     * @return an instance of the DigitalObject interface
-     * @throws ServerOperationFailed in something failed in retrieving the object
-     * @see DataObject
-     * @see ContentModelObject
-     * @see MissingObject
-     */
-    public synchronized DigitalObject getDigitalObject(String pid) throws ServerOperationFailed {
-
-        if (pid.startsWith("info:fedora/")){
-            pid = pid.substring("info:fedora/".length());
+    public static synchronized DigitalObjectFactory getInstance(CentralWebservice api){
+        if (instance == null){
+            instance = new DigitalObjectFactoryImpl(api);
         }
-        DigitalObject object = cache.get(pid);
-        if (object == null){
-            try {
-                try {
-                    AbstractDigitalObject newobj = retrieveObject(pid);
-                    cache.put(pid,newobj);
-                    newobj.loadContentModels();
-                    object = newobj;
-                } catch (InvalidResourceException e){
-                    object = new MissingObject();
-                    cache.put(pid,object);
-                }
-            } catch (InvalidCredentialsException e) {
-                throw new ServerOperationFailed("Invalid Credentials",e);
-            } catch (MethodFailedException e) {
-                throw new ServerOperationFailed("Failed to load object",e);
-            }
-
-        }
-        return object;
+        return instance;
     }
-
-
-
-    private synchronized AbstractDigitalObject retrieveObject(String pid)
-            throws InvalidCredentialsException, MethodFailedException, InvalidResourceException, ServerOperationFailed {
-        ObjectProfile profile = api.getObjectProfile(pid);
-        AbstractDigitalObject object;
-        if ("ContentModel".equals(profile.getType())){
-            object = new ContentModelObject(profile, api, this);
-        } else if ("TemplateObject".equals(profile.getType())){
-            object = new TemplateObject(profile, api, this);
-        } else {
-            object = new DataObject(profile,api,this);
-        }
-        return object;
-    }
-
 
 }

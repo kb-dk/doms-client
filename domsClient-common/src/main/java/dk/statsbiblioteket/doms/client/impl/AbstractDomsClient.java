@@ -1,13 +1,14 @@
-package dk.statsbiblioteket.doms.client;
+package dk.statsbiblioteket.doms.client.impl;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
+import dk.statsbiblioteket.doms.client.DomsClient;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
+import dk.statsbiblioteket.doms.client.objects.MissingObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
-import dk.statsbiblioteket.doms.client.objects.MissingObject;
-import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import javax.xml.namespace.QName;
@@ -46,7 +47,7 @@ public abstract class AbstractDomsClient implements DomsClient {
                 .getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
-        factory = new DigitalObjectFactory(domsAPI);
+        factory = new DigitalObjectFactoryImpl(domsAPI);
     }
 
     /**

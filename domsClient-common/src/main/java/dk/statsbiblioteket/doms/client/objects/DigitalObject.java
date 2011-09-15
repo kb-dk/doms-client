@@ -81,7 +81,7 @@ public interface DigitalObject {
      * The list of inverse relations. TODO implement
      * @return
      */
-    List<ObjectRelation> getInverseRelations();
+    List<ObjectRelation> getInverseRelations() throws ServerOperationFailed;
 
 
 }

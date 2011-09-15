@@ -1,9 +1,19 @@
-package dk.statsbiblioteket.doms.client.objects;
+package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.relations.*;
+import dk.statsbiblioteket.doms.client.impl.datastreams.AbstractDatastream;
+import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
+import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.objects.FedoraState;
 
 import java.lang.String;
 import java.util.ArrayList;
@@ -45,6 +55,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     private boolean cmloaded = false;
     private boolean relsloaded = false;
+    private boolean invrelsloaded = false;
 
 
     public AbstractDigitalObject(ObjectProfile profile,
@@ -55,10 +66,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         this.factory = factory;
 
         //Load directly from
-        type = new ArrayList<ContentModelObject>();
-        datastreams = new ArrayList<Datastream>();
+        type = new ArrayList<ContentModelObjectImpl>();
+        datastreams = new ArrayList<AbstractDatastream>();
         relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
-        inverseRelations = new ArrayList<ObjectRelation>();
+        inverseRelations = new ArrayList<ObjectRelationImpl>();
 
         pid = profile.getPid();
         state = FedoraState.fromString(profile.getState());
@@ -69,9 +80,12 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         titleOriginal = title;
 
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
-            datastreams.add(new Datastream(datastreamProfile,this));
+            if (datastreamProfile.isInternal()){
+                datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
+            } else {
+                datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
+            }
         }
-
 
 
     }
@@ -134,7 +148,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() throws ServerOperationFailed {
         loadRelations();
-        List<dk.statsbiblioteket.doms.client.relations.Relation> rels = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
+        List<dk.statsbiblioteket.doms.client.relations.Relation> rels =
+                new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         for (dk.statsbiblioteket.doms.client.relations.Relation inRelation : relations) {
             rels.add(inRelation);
         }
@@ -145,50 +160,83 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
 
     @Override
-    public List<ObjectRelation> getInverseRelations() {
+    public List<ObjectRelation> getInverseRelations() throws ServerOperationFailed {
+        loadInverseRelations();
         return inverseRelations;
     }
 
     /**
      * Do not call this.
+     *
      * @throws ServerOperationFailed
      */
-    public synchronized void loadRelations() throws ServerOperationFailed {
-        if (relsloaded) return;
+    protected synchronized void loadRelations() throws ServerOperationFailed {
+        if (relsloaded) {
+            return;
+        }
         relsloaded = true;
 
         List<dk.statsbiblioteket.doms.central.Relation> frelations = profile.getRelations();
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
-            if (frelation.isLiteral()){
-                relations.add(new LiteralRelation(frelation.getPredicate(),this,frelation.getSubject()));
+            if (frelation.isLiteral()) {
+                relations.add(new LiteralRelationImpl(frelation.getPredicate(), this, frelation.getSubject()));
             } else {
-                relations.add(new ObjectRelation(frelation.getPredicate(),this,factory.getDigitalObject(
+                relations.add(new ObjectRelationImpl(frelation.getPredicate(), this, factory.getDigitalObject(
                         frelation.getSubject())));
             }
         }
     }
 
+
     /**
      * Do not call this.
+     *
      * @throws ServerOperationFailed
      */
-    public synchronized void loadContentModels() throws ServerOperationFailed {
-        if (cmloaded) return;
+    protected synchronized void loadInverseRelations() throws ServerOperationFailed {
+        if (invrelsloaded) {
+            return;
+        }
+        invrelsloaded = true;
+
+        List<Relation> frelations;
+        try {
+            frelations = api.getInverseRelations(pid);
+        } catch (Exception e) {
+            throw new ServerOperationFailed("Failed to load inverse relations", e);
+        }
+
+        for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
+            inverseRelations.add(new ObjectRelationImpl(frelation.getPredicate(),
+                                                    factory.getDigitalObject(frelation.getSubject()),
+                                                    this));
+        }
+    }
+
+    /**
+     * Do not call this.
+     *
+     * @throws ServerOperationFailed
+     */
+    protected synchronized void loadContentModels() throws ServerOperationFailed {
+        if (cmloaded) {
+            return;
+        }
 
         cmloaded = true;
 
         for (String contentModel : profile.getContentmodels()) {
             DigitalObject cm_object = factory.getDigitalObject(contentModel);
-            if (cm_object instanceof ContentModelObject) {
+            if (cm_object instanceof ContentModelObjectImpl) {
                 ContentModelObject object = (ContentModelObject) cm_object;
                 type.add(object);
             } else {
-                throw new ServerOperationFailed("Object '"+pid+"' has the content model '"+contentModel+"' declared, but this is not a content model");
+                throw new ServerOperationFailed("Object '" + pid + "' has the content model '" + contentModel +
+                                                "' declared, but this is not a content model");
             }
         }
     }
-
 
 
 }

@@ -2,6 +2,8 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
+import dk.statsbiblioteket.doms.client.impl.objects.ContentModelObjectImpl;
+import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
@@ -10,6 +12,7 @@ import java.net.URL;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -43,14 +46,22 @@ public class DigitalObjectFactoryTest {
                 .getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
-        factory = new DigitalObjectFactory(domsAPI);
+        factory = new DigitalObjectFactoryImpl(domsAPI);
 
     }
 
     @org.junit.Test
-    public void testGetDigitalObject() throws Exception {
+    public void testGetDigitalObject1() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
         assertEquals(cmdoms.getState(),FedoraState.Active);
-        assertTrue(cmdoms instanceof ContentModelObject);
+        assertTrue(cmdoms instanceof ContentModelObjectImpl);
     }
+
+    @org.junit.Test
+    public void testGetDigitalObject2() throws Exception {
+        DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
+        assertEquals(cmdoms.getState(),FedoraState.Active);
+        assertNotNull(cmdoms.getInverseRelations());
+    }
+
 }

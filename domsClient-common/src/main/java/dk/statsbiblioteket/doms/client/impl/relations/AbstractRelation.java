@@ -1,6 +1,7 @@
-package dk.statsbiblioteket.doms.client.relations;
+package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.relations.Relation;
 
 /**
  * Barebones relation, predicate and object. No subject

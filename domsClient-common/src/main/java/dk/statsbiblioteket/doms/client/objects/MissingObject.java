@@ -1,7 +1,10 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.util.Date;

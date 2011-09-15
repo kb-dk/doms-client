@@ -30,9 +30,11 @@ package dk.statsbiblioteket.doms.client;
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
+import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
+import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
-import dk.statsbiblioteket.doms.client.relations.*;
 import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.w3c.dom.Document;
@@ -65,7 +67,7 @@ public class DomsWSClientImpl implements DomsWSClient {
      */
     private CentralWebservice domsAPI;
 
-    private DigitalObjectFactory dof = new DigitalObjectFactory(domsAPI);
+    private DigitalObjectFactory dof = new DigitalObjectFactoryImpl(domsAPI);
 
     @Deprecated
     public void login(URL domsWSAPIEndpoint, String userName, String password) {
@@ -295,7 +297,7 @@ public class DomsWSClientImpl implements DomsWSClient {
 
             ArrayList<dk.statsbiblioteket.doms.client.relations.Relation> clientRelations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
             for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) { //TODO: Correct doms Central to new relation objects
-                clientRelations.add(new LiteralRelation(domsRelation.getPredicate(),
+                clientRelations.add(new LiteralRelationImpl(domsRelation.getPredicate(),
                                                  dof.getDigitalObject(domsRelation.getObject()),
                                                  domsRelation.getSubject()));
             }

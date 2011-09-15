@@ -1,30 +1,16 @@
 package dk.statsbiblioteket.doms.client.relations;
 
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.relations.Relation;
 
 /**
- * This is a relation to a literal, ie, not another object.
+ * Created by IntelliJ IDEA.
+ * User: abr
+ * Date: 9/15/11
+ * Time: 3:15 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class LiteralRelation extends AbstractRelation {
-    private String subject;
+public interface LiteralRelation extends Relation {
+    String getSubject();
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    /**
-     * This constructor must be extended to complete the notion of triples
-     * representing connections in the object graph.
-     *
-     * @param predicate
-     * @param object
-     */
-    public LiteralRelation(String predicate, DigitalObject object, String subject) {
-        super(predicate, object);
-        this.subject = subject;
-    }
+    void setSubject(String subject);
 }

@@ -4,8 +4,8 @@ package dk.statsbiblioteket.doms.client;
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
-import dk.statsbiblioteket.doms.client.relations.*;
 import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import org.w3c.dom.Document;
 
