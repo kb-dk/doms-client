@@ -47,6 +47,7 @@ public class DigitalObjectFactory {
                     AbstractDigitalObject newobj = retrieveObject(pid);
                     cache.put(pid,newobj);
                     newobj.loadContentModels();
+                    object = newobj;
                 } catch (InvalidResourceException e){
                     object = new MissingObject();
                     cache.put(pid,object);
