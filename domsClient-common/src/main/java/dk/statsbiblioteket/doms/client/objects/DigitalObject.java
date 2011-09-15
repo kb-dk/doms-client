@@ -74,7 +74,7 @@ public interface DigitalObject {
      * The list of relations in the object.
      * @return
      */
-    List<Relation> getRelations();
+    List<Relation> getRelations() throws ServerOperationFailed;
 
 
     /**

@@ -47,10 +47,40 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     public AbstractDigitalObject(ObjectProfile profile,
                                  CentralWebservice api,
-                                 DigitalObjectFactory factory){
+                                 DigitalObjectFactory factory) throws ServerOperationFailed {
         this.profile = profile;
         this.api = api;
         this.factory = factory;
+
+        //Load directly from
+        type = new ArrayList<ContentModelObject>();
+        datastreams = new ArrayList<Datastream>();
+        relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
+        inverseRelations = new ArrayList<ObjectRelation>();
+
+        pid = profile.getPid();
+        state = FedoraState.fromString(profile.getState());
+        stateOriginal = state;
+        created = new Date(profile.getCreatedDate());
+        lastModified = new Date(profile.getModifiedDate());
+        title = profile.getTitle();
+        titleOriginal = title;
+
+        for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
+            datastreams.add(new Datastream(datastreamProfile,this));
+        }
+
+        for (String contentModel : profile.getContentmodels()) {
+            DigitalObject cm_object = factory.getDigitalObject(contentModel);
+            if (cm_object instanceof ContentModelObject) {
+                ContentModelObject object = (ContentModelObject) cm_object;
+                type.add(object);
+            } else {
+                throw new ServerOperationFailed("Object '"+pid+"' has the content model '"+contentModel+"' declared, but this is not a content model");
+            }
+        }
+
+
     }
 
     @Override
@@ -109,7 +139,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() {
+    public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() throws ServerOperationFailed {
+        load();
         List<dk.statsbiblioteket.doms.client.relations.Relation> rels = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         for (dk.statsbiblioteket.doms.client.relations.Relation inRelation : relations) {
             rels.add(inRelation);
@@ -133,18 +164,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         if (loaded) return;
         loaded = true;
 
-        type = new ArrayList<ContentModelObject>();
-        datastreams = new ArrayList<Datastream>();
-        relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
-        inverseRelations = new ArrayList<ObjectRelation>();
-
-        pid = profile.getPid();
-        state = FedoraState.fromString(profile.getState());
-        stateOriginal = state;
-        created = new Date(profile.getCreatedDate());
-        lastModified = new Date(profile.getModifiedDate());
-        title = profile.getTitle();
-        titleOriginal = title;
         List<dk.statsbiblioteket.doms.central.Relation> frelations = profile.getRelations();
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
@@ -155,21 +174,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                         frelation.getSubject())));
             }
         }
-
-        for (String contentModel : profile.getContentmodels()) {
-            DigitalObject cm_object = factory.getDigitalObject(contentModel);
-            if (cm_object instanceof ContentModelObject) {
-                ContentModelObject object = (ContentModelObject) cm_object;
-                type.add(object);
-            } else {
-                throw new ServerOperationFailed("Object '"+pid+"' has the content model '"+contentModel+"' declared, but this is not a content model");
-            }
-        }
-
-        for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
-            datastreams.add(new Datastream(datastreamProfile,this));
-        }
-        profile = null;
     }
+
+
 
 }

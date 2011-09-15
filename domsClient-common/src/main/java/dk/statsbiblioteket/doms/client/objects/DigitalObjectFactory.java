@@ -49,7 +49,6 @@ public class DigitalObjectFactory {
                     object = new MissingObject();
                 }
                 cache.put(pid,object);
-                object.load();
             } catch (InvalidCredentialsException e) {
                 throw new ServerOperationFailed("Invalid Credentials",e);
             } catch (MethodFailedException e) {
@@ -58,8 +57,9 @@ public class DigitalObjectFactory {
 
         }
         return object;
-
     }
+
+
 
     private synchronized DigitalObject retrieveObject(String pid)
             throws InvalidCredentialsException, MethodFailedException, InvalidResourceException {
