@@ -21,65 +21,6 @@ public interface DomsClient {
 
 
 
-    /**
-     * Get the datastream <code>ds</code> from the object <code>pid</code> the stream can be parsed by <code>
-     *     documentBuilder.parse(ds)</code> when <code>XML</code> is expected.
-     *
-     * @param pid the persistent identifier of the object of intrest.
-     * @param ds identifies the datastream of intrest.
-     * @return MIMETypeStream containing the datastream.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          If the object or datastream cannot be found.
-     * @deprecated use the objects instead TODO implement it
-     */
-    InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed,
-                                                                   MethodFailedException, InvalidResourceException;
-
-    /**
-     *
-     * @param uuids the list of uuid's for which to get the label
-     * @return the labels of the given uuid's
-     * @deprecated use the objects instead
-     */
-    List<String> getLabels(List<String> uuids);
-
-    /**
-     *
-     * @param uuid the uuid for which to get the label
-     * @return the label found for the uuid
-     * @deprecated use the objects instead
-     */
-    String getLabel(String uuid) throws ServerOperationFailed;
-
-    /**
-     * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
-     *
-     * @param pid       The PID identifying the object of intrest.
-     * @return A FedoraState enum indicating the state of the object.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          If the object cannot be found.
-     * @deprecated use the objects instead
-     */
-    FedoraState getState(String pid) throws ServerOperationFailed;
-
-    /**
-     * Add a relation between the objects identified by <code>sourcePID</code>
-     * and <code>targetPID</code>. The information about the relation will be
-     * stored in the source object identified by <code>sourcePID</code> and the
-     * type specified by <code>relationType</code> must be valid according to
-     * the content model for the object.
-     *
-     * @param objectPID    ID of the object housing the relation.
-     * @param relationType AbstractRelation type ID which is valid according the the content
-     *                     model for the source object.
-     * @return a List of Relations matching the restrictions
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the relation cannot be added.
-     * @deprecated use the objects instead
-     */
-    List<Relation> listObjectRelations(String objectPID, String relationType
-    ) throws ServerOperationFailed;
-
 
     /**
      * @return Profile The object factory

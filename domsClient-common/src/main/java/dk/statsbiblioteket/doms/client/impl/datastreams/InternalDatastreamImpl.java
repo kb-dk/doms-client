@@ -17,4 +17,9 @@ public class InternalDatastreamImpl extends AbstractDatastream implements Intern
                                   CentralWebservice api) {
         super(datastreamProfile, digitalObject, api);
     }
+
+    @Override
+    public void replace(String content) {
+        throw new IllegalAccessError("Not implemented yet");
+    }
 }

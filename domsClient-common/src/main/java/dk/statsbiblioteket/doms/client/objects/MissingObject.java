@@ -79,4 +79,9 @@ public class MissingObject implements DigitalObject {
         throw new IllegalAccessError("Missing object");
     }
 
+    @Override
+    public void removeRelation(Relation relation) {
+        throw new IllegalAccessError("Missing object");
+    }
+
 }

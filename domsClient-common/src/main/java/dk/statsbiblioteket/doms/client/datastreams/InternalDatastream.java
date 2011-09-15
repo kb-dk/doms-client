@@ -10,4 +10,7 @@ import dk.statsbiblioteket.doms.client.datastreams.Datastream;
  * To change this template use File | Settings | File Templates.
  */
 public interface InternalDatastream extends Datastream {
+
+
+     public void replace(String content);
 }

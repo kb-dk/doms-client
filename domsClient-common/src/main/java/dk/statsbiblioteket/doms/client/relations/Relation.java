@@ -9,4 +9,6 @@ public interface Relation {
     DigitalObject getObject();
 
     String getPredicate();
+
+    void remove();
 }

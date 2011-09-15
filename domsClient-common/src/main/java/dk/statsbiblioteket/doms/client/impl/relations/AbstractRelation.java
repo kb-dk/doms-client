@@ -31,5 +31,8 @@ public abstract class AbstractRelation implements Relation {
         return predicate;
     }
 
-
+    @Override
+    public void remove() {
+        object.removeRelation(this);
+    }
 }

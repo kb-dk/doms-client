@@ -11,4 +11,5 @@ import dk.statsbiblioteket.doms.client.datastreams.Datastream;
  */
 public interface ExternalDatastream extends Datastream {
     String getUrl();
+
 }

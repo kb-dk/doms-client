@@ -15,4 +15,7 @@ public class TemplateObjectImpl extends AbstractDigitalObject implements Templat
             throws ServerOperationFailed {
         super(profile, api, factory);
     }
+
+
+
 }

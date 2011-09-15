@@ -56,38 +56,30 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private boolean cmloaded = false;
     private boolean relsloaded = false;
     private boolean invrelsloaded = false;
+    private boolean profileloaded = false;
 
+
+
+    public AbstractDigitalObject(String pid,
+                                 CentralWebservice api,
+                                 DigitalObjectFactory factory) throws ServerOperationFailed{
+
+        this.pid = pid;
+        this.api = api;
+        this.factory = factory;
+        type = new ArrayList<ContentModelObject>();
+        datastreams = new ArrayList<Datastream>();
+        relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
+        inverseRelations = new ArrayList<ObjectRelation>();
+
+    }
 
     public AbstractDigitalObject(ObjectProfile profile,
                                  CentralWebservice api,
                                  DigitalObjectFactory factory) throws ServerOperationFailed {
+        this(profile.getPid(),api,factory);
         this.profile = profile;
-        this.api = api;
-        this.factory = factory;
-
-        //Load directly from
-        type = new ArrayList<ContentModelObjectImpl>();
-        datastreams = new ArrayList<AbstractDatastream>();
-        relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
-        inverseRelations = new ArrayList<ObjectRelationImpl>();
-
-        pid = profile.getPid();
-        state = FedoraState.fromString(profile.getState());
-        stateOriginal = state;
-        created = new Date(profile.getCreatedDate());
-        lastModified = new Date(profile.getModifiedDate());
-        title = profile.getTitle();
-        titleOriginal = title;
-
-        for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
-            if (datastreamProfile.isInternal()){
-                datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
-            } else {
-                datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
-            }
-        }
-
-
+        loadProfile();
     }
 
     @Override
@@ -96,58 +88,70 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public List<ContentModelObject> getType() {
+    public List<ContentModelObject> getType() throws ServerOperationFailed {
+        loadContentModels();
         return Collections.unmodifiableList(type);
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle() throws ServerOperationFailed {
+        loadProfile();
         return title;
     }
 
     @Override
-    public void setTitle(String title) {
+    public void setTitle(String title) throws ServerOperationFailed {
+        loadProfile();
         this.title = title;
     }
 
     @Override
-    public FedoraState getState() {
+    public FedoraState getState() throws ServerOperationFailed {
+        loadProfile();
         return state;
     }
 
     @Override
-    public void setState(FedoraState state) {
+    public void setState(FedoraState state) throws ServerOperationFailed {
+        loadProfile();
         this.state = state;
     }
 
     @Override
-    public Date getLastModified() {
+    public Date getLastModified() throws ServerOperationFailed {
+        loadProfile();
         return lastModified;
     }
 
     @Override
-    public Date getCreated() {
+    public Date getCreated() throws ServerOperationFailed {
+        loadProfile();
         return created;
     }
 
     @Override
-    public List<Datastream> getDatastreams() {
+    public List<Datastream> getDatastreams() throws ServerOperationFailed {
+        loadProfile();
         return Collections.unmodifiableList(datastreams);
     }
 
     @Override
-    public void addDatastream(Datastream addition) {
+    public void addDatastream(Datastream addition) throws ServerOperationFailed {
+        loadProfile();
         datastreams.add(addition);
     }
 
     @Override
-    public void removeDatastream(Datastream deleted) {
+    public void removeDatastream(Datastream deleted) throws ServerOperationFailed {
+        loadProfile();
         datastreams.remove(deleted);
     }
 
     @Override
     public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() throws ServerOperationFailed {
         loadRelations();
+        return Collections.unmodifiableList(relations);
+/*
         List<dk.statsbiblioteket.doms.client.relations.Relation> rels =
                 new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         for (dk.statsbiblioteket.doms.client.relations.Relation inRelation : relations) {
@@ -156,13 +160,18 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         rels.addAll(addedRelations);
         rels.removeAll(removedRelations);//TODO what if something was added and removed multiple times?
         return rels;
+*/
     }
 
+    @Override
+    public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) {
+        throw new IllegalAccessError("Not implemented yet");
+    }
 
     @Override
     public List<ObjectRelation> getInverseRelations() throws ServerOperationFailed {
         loadInverseRelations();
-        return inverseRelations;
+        return Collections.unmodifiableList(inverseRelations);
     }
 
     /**
@@ -180,10 +189,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             if (frelation.isLiteral()) {
-                relations.add(new LiteralRelationImpl(frelation.getPredicate(), this, frelation.getSubject()));
+                relations.add(new LiteralRelationImpl(frelation.getPredicate(), this, frelation.getObject()));
             } else {
                 relations.add(new ObjectRelationImpl(frelation.getPredicate(), this, factory.getDigitalObject(
-                        frelation.getSubject())));
+                        frelation.getObject())));
             }
         }
     }
@@ -209,8 +218,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             inverseRelations.add(new ObjectRelationImpl(frelation.getPredicate(),
-                                                    factory.getDigitalObject(frelation.getSubject()),
-                                                    this));
+                                                        factory.getDigitalObject(frelation.getSubject()),
+                                                        this));
         }
     }
 
@@ -236,6 +245,35 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                                                 "' declared, but this is not a content model");
             }
         }
+    }
+
+    protected synchronized void loadProfile() throws ServerOperationFailed {
+        if (profileloaded) return;
+        profileloaded = true;
+
+        if (profile == null){
+            try {
+                profile = api.getObjectProfile(pid);
+            } catch (Exception e) {
+                throw new ServerOperationFailed("Failed to retrieve Profile",e);
+            }
+        }
+
+        state = FedoraState.fromString(profile.getState());
+        stateOriginal = state;
+        created = new Date(profile.getCreatedDate());
+        lastModified = new Date(profile.getModifiedDate());
+        title = profile.getTitle();
+        titleOriginal = title;
+
+        for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
+            if (datastreamProfile.isInternal()){
+                datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
+            } else {
+                datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
+            }
+        }
+
     }
 
 
