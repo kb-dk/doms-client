@@ -76,8 +76,4 @@ public class MissingObject implements DigitalObject {
         throw new IllegalAccessError("Missing object");
     }
 
-    @Override
-    public void load()  {
-        return;
-    }
 }

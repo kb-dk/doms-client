@@ -83,11 +83,5 @@ public interface DigitalObject {
      */
     List<ObjectRelation> getInverseRelations();
 
-    /**
-     * Do not call. Used internally to load the object
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     */
-    void load()
-            throws ServerOperationFailed;
 
 }

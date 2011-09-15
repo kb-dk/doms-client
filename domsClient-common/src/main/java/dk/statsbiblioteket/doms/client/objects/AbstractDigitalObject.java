@@ -133,7 +133,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() throws ServerOperationFailed {
-        load();
+        loadRelations();
         List<dk.statsbiblioteket.doms.client.relations.Relation> rels = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         for (dk.statsbiblioteket.doms.client.relations.Relation inRelation : relations) {
             rels.add(inRelation);
