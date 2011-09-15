@@ -62,7 +62,7 @@ public class DigitalObjectFactory {
 
 
     private synchronized DigitalObject retrieveObject(String pid)
-            throws InvalidCredentialsException, MethodFailedException, InvalidResourceException {
+            throws InvalidCredentialsException, MethodFailedException, InvalidResourceException, ServerOperationFailed {
         ObjectProfile profile = api.getObjectProfile(pid);
         DigitalObject object;
         if ("ContentModel".equals(profile.getType())){
