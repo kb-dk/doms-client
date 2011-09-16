@@ -24,6 +24,7 @@
     <modules>
         <module>domsClient</module>
         <module>domsClient-common</module>
+<!--        <module>domsClient-parsing</module>-->
         <module>summaClient</module>
         <module>summaClientImpl</module>
        <module>ingestClient</module>
