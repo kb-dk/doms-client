@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.datastreams.AbstractDatastream;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
@@ -133,6 +134,15 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     public List<Datastream> getDatastreams() throws ServerOperationFailed {
         loadProfile();
         return Collections.unmodifiableList(datastreams);
+    }
+
+    @Override
+    public Datastream getDatastream(String id) throws ServerOperationFailed, NotFoundException {
+        loadProfile();
+        for (Datastream datastream : datastreams) {
+            if (datastream.getId().equals(id)) return datastream;
+        }
+        throw new NotFoundException("Datastream not found. Id: "+ id);
     }
 
     @Override

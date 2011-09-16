@@ -1,6 +1,8 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -56,6 +58,11 @@ public class MissingObject implements DigitalObject {
 
     @Override
     public List<Datastream> getDatastreams() {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public Datastream getDatastream(String id) {
         throw new IllegalAccessError("Missing object");
     }
 

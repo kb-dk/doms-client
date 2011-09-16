@@ -1,7 +1,11 @@
 package dk.statsbiblioteket.doms.client;
 
 
-import dk.statsbiblioteket.doms.central.*;
+
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.central.RecordDescription;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
@@ -55,12 +59,14 @@ public interface DomsWSClient {
     String getLabel(String uuid);
     /**
      *
+     *
+     *
      * @param   query       the search string.
      * @param   offset      the first result of the search
      * @param   pageLength  the max number of results
      * @return  A list of SearchResult objects
      */
-    List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
+    List<dk.statsbiblioteket.doms.central.SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
     /**
      * User credentials to the DOMS web service, using the end-point <code>URL</code>
@@ -399,5 +405,7 @@ public interface DomsWSClient {
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object or datastream cannot be found.
      */
-    InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed, InvalidCredentialsException, MethodFailedException, InvalidResourceException;
+    InputStream getDatastreamContent(String pid, String ds)
+            throws ServerOperationFailed, InvalidCredentialsException,
+            MethodFailedException, InvalidResourceException;
 }

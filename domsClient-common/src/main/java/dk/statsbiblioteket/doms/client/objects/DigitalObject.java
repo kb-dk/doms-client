@@ -1,10 +1,12 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.relations.AbstractRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.util.Date;
 import java.util.List;
@@ -58,6 +60,13 @@ public interface DigitalObject {
      */
     List<Datastream> getDatastreams() throws ServerOperationFailed;
 
+    /**
+     *
+     * @param id datastream ID
+     * @return The datastream
+     * @throws ServerOperationFailed
+     */
+    Datastream getDatastream(String id) throws ServerOperationFailed, NotFoundException;
     /**
      * Not implemented
      * @param addition
