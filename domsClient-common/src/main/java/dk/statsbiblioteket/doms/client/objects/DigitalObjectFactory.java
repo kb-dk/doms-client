@@ -7,6 +7,7 @@ import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.objects.AbstractDigitalObject;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
+import sun.security.krb5.PrincipalName;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,14 +19,22 @@ import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 public abstract class DigitalObjectFactory {
 
     private static DigitalObjectFactory instance;
+    private CentralWebservice api;
+
+    protected DigitalObjectFactory(CentralWebservice api) {
+        this.api = api;
+    }
 
     public abstract DigitalObject getDigitalObject(String pid) throws ServerOperationFailed;
 
     public static synchronized DigitalObjectFactory getInstance(CentralWebservice api){
-        if (instance == null){
+        if (instance == null || !instance.getApi().equals(api)){
             instance = new DigitalObjectFactoryImpl(api);
         }
         return instance;
     }
 
+    public CentralWebservice getApi() {
+        return api;
+    }
 }

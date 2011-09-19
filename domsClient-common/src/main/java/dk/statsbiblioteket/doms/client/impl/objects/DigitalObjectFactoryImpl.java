@@ -16,7 +16,6 @@ import java.lang.String;
 public class DigitalObjectFactoryImpl extends DigitalObjectFactory {
 
     private TimeSensitiveCache<String, DigitalObject> cache;
-    private CentralWebservice api;
 
     private final DigitalObject MISSING = new MissingObject();
 
@@ -26,7 +25,7 @@ public class DigitalObjectFactoryImpl extends DigitalObjectFactory {
      * @param api the api for DOMs.
      */
     public DigitalObjectFactoryImpl(CentralWebservice api) {
-        this.api = api;
+        super(api);
         cache = new TimeSensitiveCache<String, DigitalObject>(100000,true);//TODO
     }
 
@@ -70,14 +69,14 @@ public class DigitalObjectFactoryImpl extends DigitalObjectFactory {
 
     private synchronized AbstractDigitalObject retrieveObject(String pid)
             throws InvalidCredentialsException, MethodFailedException, InvalidResourceException, ServerOperationFailed {
-        ObjectProfile profile = api.getObjectProfile(pid);
+        ObjectProfile profile = getApi().getObjectProfile(pid);
         AbstractDigitalObject object;
         if ("ContentModel".equals(profile.getType())){
-            object = new ContentModelObjectImpl(profile, api, this);
+            object = new ContentModelObjectImpl(profile, getApi(), this);
         } else if ("TemplateObject".equals(profile.getType())){
-            object = new TemplateObjectImpl(profile, api, this);
+            object = new TemplateObjectImpl(profile, getApi(), this);
         } else {
-            object = new DataObjectImpl(profile,api,this);
+            object = new DataObjectImpl(profile,getApi(),this);
         }
         return object;
     }
