@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>dk.statsbiblioteket.doms</groupId>
@@ -27,7 +28,7 @@
         <module>domsClient-parsing</module>
         <module>summaClient</module>
         <module>summaClientImpl</module>
-       <module>ingestClient</module>
+        <module>ingestClient</module>
         <module>ingestClientImpl</module>
         <module>guiClient</module>
     </modules>
@@ -37,9 +38,15 @@
         <dependencies>
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
-                <artifactId>central-interface</artifactId>
-                <version>0.0.22-SNAPSHOT</version>
+                <artifactId>centralWebservice-interface</artifactId>
+                <version>0.0.22</version>
             </dependency>
+            <dependency>
+                <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
+                <artifactId>authchecker-authutils</artifactId>
+                <version>0.0.11</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

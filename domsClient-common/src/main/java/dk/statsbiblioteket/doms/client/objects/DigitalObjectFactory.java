@@ -1,13 +1,9 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
-import dk.statsbiblioteket.doms.central.InvalidResourceException;
-import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.objects.AbstractDigitalObject;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
-import sun.security.krb5.PrincipalName;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,8 +23,8 @@ public abstract class DigitalObjectFactory {
 
     public abstract DigitalObject getDigitalObject(String pid) throws ServerOperationFailed;
 
-    public static synchronized DigitalObjectFactory getInstance(CentralWebservice api){
-        if (instance == null || !instance.getApi().equals(api)){
+    public static synchronized DigitalObjectFactory getInstance(CentralWebservice api) {
+        if (instance == null || !instance.getApi().equals(api)) {
             instance = new DigitalObjectFactoryImpl(api);
         }
         return instance;

@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>dk.statsbiblioteket.doms.client</groupId>
-        <artifactId>client</artifactId>
+        <artifactId>domsClient-parent</artifactId>
         <version>0.0.9-SNAPSHOT</version>
     </parent>
 
@@ -20,7 +20,10 @@
             <artifactId>domsClient-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
+            <artifactId>authchecker-authutils</artifactId>
+        </dependency>
 
     </dependencies>
 

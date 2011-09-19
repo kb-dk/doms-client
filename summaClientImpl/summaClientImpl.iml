@@ -15,6 +15,7 @@
     <orderEntry type="module" module-name="domsClient" />
     <orderEntry type="library" name="Maven: dk.statsbiblioteket.doms.central:central-interface:0.0.22-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="domsClient-common" />
+    <orderEntry type="library" name="Maven: dk.statsbiblioteket.doms.central:centralWebservice-interface:0.0.22" level="project" />
   </component>
 </module>
 

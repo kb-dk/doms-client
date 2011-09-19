@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.central</groupId>
-            <artifactId>central-interface</artifactId>
+            <artifactId>centralWebservice-interface</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -26,5 +26,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
 </project>
