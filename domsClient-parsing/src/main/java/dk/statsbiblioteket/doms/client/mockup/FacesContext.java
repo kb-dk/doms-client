@@ -18,8 +18,8 @@ public class FacesContext {
     private EntityDeclaration userPrincipal;
     private Object ELContext;
 
-    public FacesContext getCurrentInstance() {
-        return this;
+    public static FacesContext getCurrentInstance() {
+        return new FacesContext();
     }
 
     public ExpressionFactory getApplication() {
