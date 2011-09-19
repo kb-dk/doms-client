@@ -4,6 +4,7 @@ import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.Sequence;
 import commonj.sdo.helper.HelperContext;
+import dk.statsbiblioteket.doms.client.mockup.FacesContext;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
 import java.math.BigDecimal;

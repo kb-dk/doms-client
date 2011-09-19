@@ -23,7 +23,7 @@ public class DOMSDataStreamUploadable extends DOMSDataStream {
 
         Datastream datastream = repository.getDataStream(dataobjectpid, id);
         if (datastream!=null) {
-            String url = datastream.getLocation();
+            String url = null; // datastream.getLocation();
             if (url!=null)
             {
                 this.url = url;

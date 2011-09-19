@@ -2,9 +2,13 @@ package dk.statsbiblioteket.doms.client.util;
 
 
 
+import dk.statsbiblioteket.doms.client.mockup.*;
+
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 
 public class Util {
 	
@@ -17,9 +21,8 @@ public class Util {
 		return FacesContext.getCurrentInstance().getExternalContext().getInitParameter(paramName);
 	}
 	
-	public static ExternalContext getExternalContext() {
-        return FacesContext.getCurrentInstance()
-                           .getExternalContext();
+	public static FacesContext getExternalContext() {
+        return FacesContext.getCurrentInstance().getExternalContext();
     }
 	
 
@@ -82,7 +85,11 @@ public class Util {
         return facesContext.getApplication().getExpressionFactory().createValueExpression(
             facesContext.getELContext(), valueExpression, valueType);
     }
-    
+
+    private ValueExpression createValueExpression(Object elContext, String valueExpression, Class<?> valueType) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
     /**
      * Create MethodExpression object based on the given action expression string and return type.
      * This is to be used in UICommand#setActionExpression().
@@ -95,13 +102,17 @@ public class Util {
         return facesContext.getApplication().getExpressionFactory().createMethodExpression(
             facesContext.getELContext(), actionExpression, returnType, new Class[0]);
     }
-    
+
+    private MethodExpression createMethodExpression(Object elContext, String actionExpression, Class<?> returnType, Class[] classes) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
     public static MethodExpressionActionListener createActionListnerMethod(String actionExpression)
     {
-    	FacesContext context = FacesContext.getCurrentInstance();   
-    	ELContext elContext = context .getELContext();   
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	ELContext elContext = (ELContext) context .getELContext();
     	MethodExpression actionListenerExpression = context.getApplication().getExpressionFactory().createMethodExpression(   
-    	elContext,actionExpression,null,new Class[] {ActionEvent.class});   
+    	elContext,actionExpression,null,new Class[] {ActionEvent.class});
     	  
     	 MethodExpressionActionListener methodExpressionActionListener = new MethodExpressionActionListener(actionListenerExpression);  
 
