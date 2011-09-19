@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.doms.guiclient;
 
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.central.User;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
@@ -47,6 +50,17 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed searching", exception);
+        }
+    }
+
+    @Override
+    public String getPasswordForUser(String username, List<String> roles) throws ServerOperationFailed {
+        try {
+            User user = domsAPI.createTempAdminUser(username, roles);
+            return user.getPassword();
+        } catch (Exception e) {
+            throw new ServerOperationFailed(
+                    "Failed searching", e);
         }
     }
 

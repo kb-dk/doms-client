@@ -23,4 +23,6 @@ public interface GuiClient extends DomsClient {
      */
     List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
+    String getPasswordForUser(String username, List<String> roles) throws ServerOperationFailed;
+
 }
