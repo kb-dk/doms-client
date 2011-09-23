@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
 /**
@@ -9,6 +10,7 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
 public abstract class AbstractRelation implements Relation {
     private String predicate;   // relation name
     private DigitalObject object;
+    private DigitalObjectFactory factory;
 
     /**
      * This constructor must be extended to complete the notion of triples
@@ -16,9 +18,10 @@ public abstract class AbstractRelation implements Relation {
      * @param predicate
      * @param object
      */
-    public AbstractRelation(String predicate, DigitalObject object) {
+    public AbstractRelation(String predicate, DigitalObject object, DigitalObjectFactory factory) {
         this.predicate = predicate;
         this.object = object;
+        this.factory = factory;
     }
 
     @Override
@@ -34,5 +37,9 @@ public abstract class AbstractRelation implements Relation {
     @Override
     public void remove() {
         object.removeRelation(this);
+    }
+
+    protected DigitalObjectFactory getFactory() {
+        return factory;
     }
 }

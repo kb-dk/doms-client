@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.doms.client.relations;
 
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
@@ -11,7 +12,7 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
  * To change this template use File | Settings | File Templates.
  */
 public interface ObjectRelation extends Relation {
-    DigitalObject getSubject();
+    DigitalObject getSubject() throws ServerOperationFailed;
 
     void setSubject(DigitalObject subject);
 }

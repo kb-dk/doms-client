@@ -202,7 +202,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 relations.add(new LiteralRelationImpl(frelation.getPredicate(), this, frelation.getObject()));
             } else {
                 relations.add(new ObjectRelationImpl(frelation.getPredicate(), this, factory.getDigitalObject(
-                        frelation.getObject())));
+                        frelation.getObject()), factory));
             }
         }
     }
@@ -229,7 +229,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             inverseRelations.add(new ObjectRelationImpl(frelation.getPredicate(),
                                                         factory.getDigitalObject(frelation.getSubject()),
-                                                        this));
+                                                        this, factory));
         }
     }
 
