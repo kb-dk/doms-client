@@ -18,7 +18,6 @@
         <dependency>
             <groupId>dk.statsbiblioteket.doms.client</groupId>
             <artifactId>domsClient-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.authchecker</groupId>

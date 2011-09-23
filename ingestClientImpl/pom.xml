@@ -18,12 +18,10 @@
         <dependency>
             <groupId>dk.statsbiblioteket.doms.ingestClient</groupId>
             <artifactId>ingestClient</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.client</groupId>
             <artifactId>domsClient</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

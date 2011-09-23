@@ -36,6 +36,38 @@
     <dependencyManagement>
 
         <dependencies>
+
+            <dependency>
+                <groupId>dk.statsbiblioteket.doms.client</groupId>
+                <artifactId>domsClient-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dk.statsbiblioteket.doms.ingestClient</groupId>
+                <artifactId>ingestClient</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dk.statsbiblioteket.doms.client</groupId>
+                <artifactId>domsClient</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dk.statsbiblioteket.doms.summaClient</groupId>
+                <artifactId>summaClient</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+
+
+            <dependency>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-tools</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
                 <artifactId>centralWebservice-interface</artifactId>
@@ -45,6 +77,12 @@
                 <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
                 <artifactId>authchecker-authutils</artifactId>
                 <version>0.0.11</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.2</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>
