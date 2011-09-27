@@ -1,6 +1,8 @@
 package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,4 +12,10 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  * To change this template use File | Settings | File Templates.
  */
 public interface ContentModelObject extends DigitalObject {
+
+    public List<String> getRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed;
+
+    public List<String> getInverseRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed;
+
+
 }

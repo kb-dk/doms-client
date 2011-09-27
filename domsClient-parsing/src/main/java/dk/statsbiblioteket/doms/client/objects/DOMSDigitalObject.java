@@ -28,6 +28,7 @@ public abstract class DOMSDigitalObject {
 
 
     private DOMSDataStreamRelsExt relsext;
+    private DigitalObjectFactory factory;
 
     /**
      * Get the repository bean, for talking to the repository.
@@ -36,7 +37,7 @@ public abstract class DOMSDigitalObject {
 	public RepositoryBean repository()
     {
 		if (repository == null)
-    		repository = (RepositoryBean)Component.getInstance(RepositoryBean.class, ScopeType.SESSION);//"repository");
+    		repository = (RepositoryBean)Component.getInstance("repository");
      	return repository;
     }
 	
@@ -68,21 +69,21 @@ public abstract class DOMSDigitalObject {
      * The properties for this object
      */
 	private ObjectProperties objectProperties;
-
-
     /**
      * Constructor. Creates a connection to the repository, and initalises the
      * title. Does not load the object. The object must exist in the repository
      * @see #repository()
      * @param pid The pid of the object.
+     * @param factory
      * @throws RemoteException
      * @throws IOException
      */
-    public DOMSDigitalObject(String pid) throws RemoteException, IOException, ServerOperationFailed {
-		isLoaded = false;
+    public DOMSDigitalObject(String pid, DigitalObjectFactory factory) throws RemoteException, IOException, ServerOperationFailed {
+        this.factory = factory;
+
+        isLoaded = false;
 		this.pid = pid;
-		repository = (RepositoryBean) Component.getInstance("repository");
-		this.title = repository().getDigitalObjectDCTitle(pid);
+		this.title = factory.getDigitalObject(pid).getTitle();
 	}
 	
 	public Boolean getIsLoaded()

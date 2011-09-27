@@ -1,5 +1,8 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.datastreams.contentstreams;
 
+import dk.statsbiblioteket.doms.client.datastreams.DOMSDataStream;
+import dk.statsbiblioteket.doms.client.datastreams.DOMSDataStreamCompositeModelTypeModel;
+import dk.statsbiblioteket.doms.client.datastreams.DOMSDataStreamCompositeModelTypeModelExtensionSchema;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.*;
 import dk.statsbiblioteket.doms.client.sdo.DOMSXmlDocument;
@@ -11,7 +14,7 @@ import java.io.InputStream;
 /**
  * TODO abr forgot to document this class
  */
-public class DOMSDataStreamEditable extends DOMSDataStream{
+public class DOMSDataStreamEditable extends DOMSDataStream {
     private DOMSXmlDocument domsXmlDocument;
     private RepositoryBean repository;
 

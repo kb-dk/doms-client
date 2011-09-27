@@ -1,5 +1,6 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.datastreams.contentstreams;
 
+import dk.statsbiblioteket.doms.client.datastreams.DOMSDataStream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.Component;
 import dk.statsbiblioteket.doms.client.objects.RepositoryBean;
@@ -11,7 +12,7 @@ import java.io.InputStream;
 /**
  * TODO abr forgot to document this class
  */
-public class DOMSDataStreamReadOnly extends DOMSDataStream{
+public class DOMSDataStreamReadOnly extends DOMSDataStream {
 
     private String contents;
 

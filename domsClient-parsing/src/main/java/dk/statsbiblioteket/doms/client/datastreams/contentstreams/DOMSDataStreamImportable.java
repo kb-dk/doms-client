@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.datastreams.contentstreams;
 
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;

@@ -1,7 +1,8 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.datastreams.contentstreams;
 
 
 import dk.statsbiblioteket.doms.client.datastreams.DOMSDataStream;
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.Component;
 import dk.statsbiblioteket.doms.client.objects.RepositoryBean;

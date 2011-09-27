@@ -80,6 +80,7 @@ public class DOMSContentModel extends DOMSDigitalObject {
      * The view datastream
      */
     private DOMSDataStreamView viewDataStream;
+    private DigitalObjectFactory factory;
 
     /**
      * Creates a new java object content model. The pid must exist as a
@@ -88,8 +89,9 @@ public class DOMSContentModel extends DOMSDigitalObject {
      * @throws RemoteException
      * @throws IOException
      */
-    public DOMSContentModel(String pid) throws RemoteException, IOException, ServerOperationFailed {
-        super(pid);
+    public DOMSContentModel(String pid, DigitalObjectFactory factory) throws RemoteException, IOException, ServerOperationFailed {
+        super(pid, factory);
+        this.factory = factory;
         parentCM = null;
         ownerCM = null;
     }

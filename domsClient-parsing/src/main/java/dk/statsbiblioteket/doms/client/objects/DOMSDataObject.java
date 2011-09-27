@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.*;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.datastreams.contentstreams.*;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.owl.OWLObjectProperty;
 import dk.statsbiblioteket.doms.client.owl.Relation;
@@ -97,18 +97,22 @@ public class DOMSDataObject extends DOMSDigitalObject {
     private Map<String, DOMSDataStreamInvisible> invisibleDatastreams = new TreeMap<String, DOMSDataStreamInvisible>();
     private Map<String, DOMSDataStreamImportable> importableDatastreams = new TreeMap<String, DOMSDataStreamImportable>();
     private Map<String, DOMSDataStreamReadOnly> readonlyDatastreams = new TreeMap<String, DOMSDataStreamReadOnly>();
+    private DigitalObjectFactory factory;
 
     // --------------------- CONSTRUCTOR ----------------------------
     /**
      * Create a new Dataobject for the given pid. The object is not loaded from
      * the repository before being called
+     *
      * @param pid
+     * @param factory
      * @throws RemoteException
      * @throws IOException
      * @throws ServiceException
      */
-    public DOMSDataObject(String pid) throws RemoteException, IOException, ServiceException, ServerOperationFailed {
-        super(pid);
+    public DOMSDataObject(String pid, DigitalObjectFactory factory) throws RemoteException, IOException, ServiceException, ServerOperationFailed {
+        super(pid, factory);
+        this.factory = factory;
         ownerDOMSDataObject = null;
         contentModel = null;
 
@@ -247,7 +251,7 @@ public class DOMSDataObject extends DOMSDigitalObject {
                     Relation relation = new Relation(objProp, pid1);
                     childRelations.add(relation);
 
-                    DOMSDataObject myDo = new DOMSDataObject(relation.getPid());
+                    DOMSDataObject myDo = new DOMSDataObject(relation.getPid(), factory);
                     myDo.load(false, true);
                     getChildren().add(myDo);
 
@@ -312,7 +316,7 @@ public class DOMSDataObject extends DOMSDigitalObject {
     private void loadChildren(DOMSDataObject parentDataobject) throws IOException, MyXMLWriteException, ServiceException, DOMSIllegalStateException, MyXMLParseException, ServerOperationFailed {
         for (Relation relation : parentDataobject.getChildRelationships())
         {
-            DOMSDataObject myDo = new DOMSDataObject(relation.getPid()); //cm.createDataObject(relation.getPid());
+            DOMSDataObject myDo = new DOMSDataObject(relation.getPid(), factory); //cm.createDataObject(relation.getPid());
             myDo.load(false, true);
             parentDataobject.getChildren().add(myDo);
 

@@ -4,10 +4,10 @@ import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.objects.ContentModelObjectImpl;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import org.junit.Test;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
@@ -16,9 +16,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -104,7 +102,17 @@ public class DigitalObjectFactoryTest {
     public void testGetDigitalObject1() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
         assertEquals(cmdoms.getState(),FedoraState.Active);
-        assertTrue(cmdoms instanceof ContentModelObjectImpl);
+        assertTrue(cmdoms instanceof ContentModelObject);
+    }
+
+    @Test
+    public void  testRelations() throws Exception {
+        DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_Program");
+        assertTrue(cmdoms instanceof ContentModelObject);
+        if (cmdoms instanceof ContentModelObject) {
+            ContentModelObject cmo = (ContentModelObject) cmdoms;
+            assertNotNull(cmo.getRelationsWithViewAngle("SummaVisible"));
+        }
     }
 
     @org.junit.Test
