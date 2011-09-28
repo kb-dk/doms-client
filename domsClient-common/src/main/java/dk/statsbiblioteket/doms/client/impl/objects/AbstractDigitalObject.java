@@ -1,22 +1,22 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.DatastreamProfile;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.datastreams.AbstractDatastream;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
-import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
-import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -28,7 +28,7 @@ import java.util.List;
 public abstract class AbstractDigitalObject implements DigitalObject {
 
 
-    private ObjectProfile profile;
+    protected ObjectProfile profile;
     private CentralWebservice api;
 
     private String pid;
@@ -45,7 +45,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private Date lastModified;
     private Date created;
 
-    private List<Datastream> datastreams;
+    protected List<Datastream> datastreams;
 
 
     private List<dk.statsbiblioteket.doms.client.relations.Relation> relations;
@@ -276,6 +276,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         title = profile.getTitle();
         titleOriginal = title;
 
+        loadDatastreams();
+
+    }
+
+    protected void loadDatastreams() throws ServerOperationFailed {
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
             if (datastreamProfile.isInternal()){
                 datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
@@ -283,7 +288,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
             }
         }
-
     }
 
 

@@ -18,6 +18,7 @@ public class InternalDatastreamImpl extends AbstractDatastream implements Intern
         super(datastreamProfile, digitalObject, api);
     }
 
+
     @Override
     public void replace(String content) {
         throw new IllegalAccessError("Not implemented yet");

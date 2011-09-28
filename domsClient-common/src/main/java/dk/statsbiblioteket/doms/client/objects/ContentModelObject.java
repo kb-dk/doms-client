@@ -17,5 +17,6 @@ public interface ContentModelObject extends DigitalObject {
 
     public List<String> getInverseRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed;
 
+    public DatastreamModel getDsModel() throws ServerOperationFailed;
 
 }

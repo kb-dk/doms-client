@@ -1,11 +1,15 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
+import dk.statsbiblioteket.doms.client.objects.DatastreamModel;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -21,29 +25,36 @@ import java.util.List;
 /**
  * Content Model objects are the objects that holds the structure of the objects in doms. TODO implement
  */
-public class ContentModelObjectImpl extends AbstractDigitalObject implements ContentModelObject {
+public class ContentModelObjectImpl extends AbstractDigitalObject implements
+        ContentModelObject {
     private boolean parsed = false;
     private HashMap<String, List<String>> relations;
     private HashMap<String, List<String>> inverseRelations;
 
+    private CentralWebservice api;
+    private DigitalObjectFactory factory;
+    private DatastreamModel dsModel;
+    private boolean datastreamsLoaded = false;
 
-    public ContentModelObjectImpl(ObjectProfile profile, CentralWebservice api, DigitalObjectFactory factory)
+
+    public ContentModelObjectImpl(ObjectProfile profile, CentralWebservice api,
+                                  DigitalObjectFactory factory)
             throws ServerOperationFailed {
         super(profile, api, factory);    //To change body of overridden methods use File | Settings | File Templates.
+        this.profile = profile;
+        this.api = api;
+        this.factory = factory;
     }
 
     public List<String> getRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed {
         parseView();
         return relations.get(viewAngle);
-}
+    }
 
     public List<String> getInverseRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed {
         parseView();
         return inverseRelations.get(viewAngle);
     }
-
-    
-
 
     private synchronized void parseView() throws ServerOperationFailed {
         if (parsed){
@@ -101,6 +112,30 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements Con
           </v:viewangle>
         </v:views>
         */
+    }
+
+    public DatastreamModel getDsModel() throws ServerOperationFailed {
+        loadDatastreams();
+        return dsModel;
+    }
+
+    @Override
+    protected synchronized void loadDatastreams() throws ServerOperationFailed {
+        if(datastreamsLoaded){
+            return;
+        }
+        for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
+            if(datastreamProfile.getId().equals("DS-COMPOSITE-MODEL")){
+                dsModel = new DatastreamModelImpl(datastreamProfile, this,
+                        this.api);
+                datastreams.add(dsModel);
+            }else if (datastreamProfile.isInternal()){
+                datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
+            } else {
+                datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
+            }
+        }
+        datastreamsLoaded = true;
     }
 }
 

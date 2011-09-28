@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.objects.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
@@ -112,6 +113,21 @@ public class DigitalObjectFactoryTest {
         if (cmdoms instanceof ContentModelObject) {
             ContentModelObject cmo = (ContentModelObject) cmdoms;
             assertNotNull(cmo.getRelationsWithViewAngle("SummaVisible"));
+        }
+    }
+
+    @Test
+    public void testDatastreamModel() throws Exception {
+        ContentModelObject cmProgram = (ContentModelObject)
+                factory.getDigitalObject("doms:ContentModel_Program");
+        assertTrue(cmProgram instanceof ContentModelObject);
+        if (cmProgram instanceof ContentModelObject){
+            DatastreamModel dsModel = cmProgram.getDsModel();
+            assertTrue(dsModel.getDatastreamDeclarations().size() > 0);
+            assertNotNull(dsModel.getMimeType());
+            assertNotNull(dsModel.getFormatURI());
+            DatastreamDeclaration dsDcl = dsModel.getDatastreamDeclarations().get(0);
+            assertNotNull(dsDcl.getDs());
         }
     }
 
