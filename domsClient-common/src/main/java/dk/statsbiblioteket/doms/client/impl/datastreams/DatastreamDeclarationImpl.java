@@ -1,6 +1,7 @@
-package dk.statsbiblioteket.doms.client.impl.objects;
+package dk.statsbiblioteket.doms.client.impl.datastreams;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.List;
  * Time: 1:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DatastreamDeclaration {
+public class DatastreamDeclarationImpl implements DatastreamDeclaration {
     private String name;
     private Datastream ds;
     private List<String> dsMimeTypes;
@@ -21,7 +22,7 @@ public class DatastreamDeclaration {
     private List<String> presentations;
     private HashMap<String, Datastream> compositeSchemas;
 
-    public DatastreamDeclaration(String name, Datastream ds) {
+    public DatastreamDeclarationImpl(String name, Datastream ds) {
         this.name = name;
         //To change body of created methods use File | Settings | File Templates.
         this.ds = ds;
@@ -45,22 +46,27 @@ public class DatastreamDeclaration {
         this.presentations.addAll(guiViewAngles);
     }
 
+    @Override
     public List<String> getDsMimeTypes() {
         return dsMimeTypes;
     }
 
+    @Override
     public List<String> getDsFormatUris() {
         return dsFormatUris;
     }
 
+    @Override
     public List<String> getPresentations() {
         return presentations;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Datastream getDs() {
         return ds;
     }
@@ -69,6 +75,7 @@ public class DatastreamDeclaration {
         this.compositeSchemas.putAll(compositeSchemas);
     }
 
+    @Override
     public HashMap<String, Datastream> getCompositeSchemas(){
         return this.compositeSchemas;
     }

@@ -2,11 +2,17 @@ package dk.statsbiblioteket.doms.client.impl.datastreams;
 
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 import java.io.InputStream;
 import java.lang.String;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class represents a datastream. TODO implement
@@ -77,5 +83,21 @@ public abstract class AbstractDatastream implements Datastream {
         } catch (Exception e) {
             throw new ServerOperationFailed("Failed to load the datastream contents",e);
         }
+    }
+
+    @Override
+    public Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed {
+        Set<DatastreamDeclaration> datastreamDeclarations = new HashSet<DatastreamDeclaration>();
+        List<ContentModelObject> contentmodels = digitalObject.getType();
+        for (ContentModelObject contentmodel : contentmodels) {
+            DatastreamModel dsmodel = contentmodel.getDsModel();
+            List<DatastreamDeclaration> declerations = dsmodel.getDatastreamDeclarations();
+            for (DatastreamDeclaration decleration : declerations) {
+                if (decleration.getName().equals(this.getId())){
+                    datastreamDeclarations.add(decleration);
+                }
+            }
+        }
+        return datastreamDeclarations;
     }
 }

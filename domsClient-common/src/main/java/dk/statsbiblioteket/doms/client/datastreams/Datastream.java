@@ -3,6 +3,8 @@ package dk.statsbiblioteket.doms.client.datastreams;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
+import java.util.Set;
+
 /**
  * Created by IntelliJ IDEA.
  * User: abr
@@ -26,4 +28,6 @@ public interface Datastream {
     String getLabel();
 
     String getContents() throws ServerOperationFailed;
+
+    Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed;
 }

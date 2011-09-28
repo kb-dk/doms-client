@@ -1,8 +1,8 @@
-package dk.statsbiblioteket.doms.client.objects;
+package dk.statsbiblioteket.doms.client.datastreams;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.objects.DatastreamDeclaration;
 
 import java.util.List;
 

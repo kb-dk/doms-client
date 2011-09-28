@@ -1,12 +1,12 @@
-package dk.statsbiblioteket.doms.client.impl.objects;
+package dk.statsbiblioteket.doms.client.impl.datastreams;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
-import dk.statsbiblioteket.doms.client.objects.DatastreamModel;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.util.xml.DOM;
@@ -113,7 +113,7 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
             }
 
 
-            DatastreamDeclaration dsDecl = new DatastreamDeclaration(name,
+            DatastreamDeclarationImpl dsDecl = new DatastreamDeclarationImpl(name,
                     componentDs);
             dsDecl.addMimeTypes(dsMimeTypes);
             dsDecl.addFormatUris(dsFormatUris);
