@@ -29,10 +29,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
 
     protected ObjectProfile profile;
-    private CentralWebservice api;
+    protected CentralWebservice api;
 
     private String pid;
-    private DigitalObjectFactory factory;
+    protected DigitalObjectFactory factory;
 
     private List<ContentModelObject> type;
 

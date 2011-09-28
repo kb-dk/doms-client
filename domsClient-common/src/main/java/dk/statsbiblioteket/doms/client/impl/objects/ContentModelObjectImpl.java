@@ -27,12 +27,11 @@ import java.util.List;
  * Content Model objects are the objects that holds the structure of the objects in doms. TODO implement
  */
 public class ContentModelObjectImpl extends AbstractDigitalObject implements
-        ContentModelObject {
+                                                                  ContentModelObject {
     private boolean parsed = false;
     private HashMap<String, List<String>> relations;
     private HashMap<String, List<String>> inverseRelations;
 
-    private CentralWebservice api;
     private DigitalObjectFactory factory;
     private DatastreamModel dsModel;
     private boolean datastreamsLoaded = false;
@@ -43,7 +42,6 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
             throws ServerOperationFailed {
         super(profile, api, factory);    //To change body of overridden methods use File | Settings | File Templates.
         this.profile = profile;
-        this.api = api;
         this.factory = factory;
     }
 
@@ -75,16 +73,16 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         String contents = viewStream.getContents();
         viewDoc = DOM.stringToDOM(contents, true);
         XPathSelector xPathSelector = DOM.createXPathSelector("v",
-                "http://ecm.sourceforge.net/types/view/0/2/#");
+                                                              "http://ecm.sourceforge.net/types/view/0/2/#");
         HashMap<String, List<String>> viewNameRelations = new HashMap();
 
         NodeList allViewAngles = xPathSelector.selectNodeList(viewDoc,
-                "/v:views/v:viewangle/@name");
+                                                              "/v:views/v:viewangle/@name");
         for (int i = 0; i < allViewAngles.getLength(); i++){
             String viewAngleName = allViewAngles.item(i).getTextContent();
             NodeList namedViewAngles = xPathSelector.selectNodeList(viewDoc,
-                    "/v:views/v:viewangle[@name = '" + viewAngleName +
-                            "']/v:relations");
+                                                                    "/v:views/v:viewangle[@name = '" + viewAngleName +
+                                                                    "']/v:relations");
             List<String> relList = new ArrayList<String>();
             for (int j = 0; j < namedViewAngles.getLength(); j++){
                 Node item = namedViewAngles.item(j);
@@ -93,8 +91,8 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
             relations.put(viewAngleName, relList);
 
             namedViewAngles = xPathSelector.selectNodeList(viewDoc,
-                    "/v:views/v:viewangle[@name = '" + viewAngleName +
-                            "']/v:inverseRelations");
+                                                           "/v:views/v:viewangle[@name = '" + viewAngleName +
+                                                           "']/v:inverseRelations");
             List<String> iRelList = new ArrayList<String>();
             for (int j = 0; j < namedViewAngles.getLength(); j++){
                 Node item = namedViewAngles.item(j);
@@ -128,7 +126,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
             if(datastreamProfile.getId().equals("DS-COMPOSITE-MODEL")){
                 dsModel = new DatastreamModelImpl(datastreamProfile, this,
-                        this.api);
+                                                  this.api);
                 datastreams.add(dsModel);
             }else if (datastreamProfile.isInternal()){
                 datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
