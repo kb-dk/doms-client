@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
+import dk.statsbiblioteket.doms.client.datastreams.Presentation;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -30,23 +31,13 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
         implements DatastreamModel {
 
     private boolean parsed = false;
-    private HashMap<String, Datastream> compositeSchemas;
     private List<DatastreamDeclaration> datastreamDeclarations;
-    private String pid;
-    private CentralWebservice api;
-    private DigitalObjectFactory factory;
-    private DigitalObject digitalObject;
 
 
     public DatastreamModelImpl(DatastreamProfile datastreamProfile,
                                DigitalObject digitalObject, CentralWebservice api) {
         super(datastreamProfile, digitalObject, api);
-        this.digitalObject = digitalObject;
-
-        this.pid = pid;
-        this.api = api;
-        this.factory = factory;
-
+        datastreamDeclarations = new ArrayList<DatastreamDeclaration>();
 
     }
 
@@ -55,70 +46,72 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
         try {
             parseDs();
         } catch (NotFoundException e) {
-            throw new ServerOperationFailed(
-                    "Failed when trying to locate 'DS-COMPOSITE-MODEL'", e);
+            //ignore this
         }
         return this.datastreamDeclarations;
     }
 
     private synchronized void parseDs() throws  ServerOperationFailed,
-            NotFoundException {
+                                                NotFoundException {
 
         if (parsed){
             return;
         }
-        datastreamDeclarations = new ArrayList<DatastreamDeclaration>();
-        compositeSchemas = new HashMap<String, Datastream>();
+
+
         Document dsDoc = DOM.stringToDOM(getContents(), true);
 
         XPathSelector pathSelector = DOM.createXPathSelector("ds",
-                "info:fedora/fedora-system:def/dsCompositeModel#");
+                                                             "info:fedora/fedora-system:def/dsCompositeModel#");
 
         NodeList allDSReferences = pathSelector.selectNodeList(dsDoc,
-                "//ds:dsTypeModel[@ID]");
+                                                               "//ds:dsTypeModel[@ID]");
 //        NodeList allNamedDatastreams = pathSelector.selectNodeList(dsDoc,
 //                "//*[@name]/*[@type='datastream']/@value");
 
         // For each dsTypeModel
         for(int i = 0; i < allDSReferences.getLength(); i++){
             Node item = allDSReferences.item(i);
-            String name = pathSelector.selectString(item, "//ds:reference/@value");
-            String dsName = pathSelector.selectString(item,
-                    "//ds:extension[@name='SCHEMA']/*/@value");
-            Datastream componentDs = this.digitalObject.getDatastream(dsName);
-            compositeSchemas.put(name, componentDs);
+            String dsName = pathSelector.selectString(item,"@ID");
+            String schemaDSname = pathSelector.selectString(item,
+                                                            "ds:extension[@name='SCHEMA']/ds:reference[@type='datastream']/@value");
+            Datastream compositeSchemas = null;
+            if (schemaDSname != null && !schemaDSname.isEmpty()){
+                compositeSchemas = getDigitalObject().getDatastream(schemaDSname);
+
+            }
 
             // Vilkårligt mange (0..*) form elementer
             List<String> dsMimeTypes = new ArrayList<String>();
-            NodeList dsMimeTypeList = pathSelector.selectNodeList(item, "//*[@MIME]");
+            NodeList dsMimeTypeList = pathSelector.selectNodeList(item, "ds:form/@MIME");
             for(int j = 0; j < dsMimeTypeList.getLength(); j++){
-                dsMimeTypes.add(dsMimeTypeList.item(i).getAttributes()
-                        .getNamedItem("MIME").getNodeValue());
+                dsMimeTypes.add(dsMimeTypeList.item(j).getNodeValue());
             }
 
             List<String> dsFormatUris = new ArrayList<String>();
-            NodeList dsFormatUriList = pathSelector.selectNodeList(item, "//*[@FORMAT_URI]");
+            NodeList dsFormatUriList = pathSelector.selectNodeList(item, "ds:form/@FORMAT_URI");
             for(int j = 0; j < dsFormatUriList.getLength(); j++){
-                dsFormatUris.add(dsFormatUriList.item(i).getAttributes()
-                        .getNamedItem("FORMAT_URI").getNodeValue());
+                dsFormatUris.add(dsFormatUriList.item(j).getNodeValue());
             }
 
             // Her håndteres at der er viewAngles for Gui
-            NodeList guiPresentAs = pathSelector.selectNodeList(item,
-                    "//*[@name='GUI']/presentAs");
-            List<String> guiPresentation = new ArrayList<String>();
-            for(int j = 0; j < guiPresentAs.getLength(); j++){
-                guiPresentation.add(guiPresentAs.item(j).getAttributes().
-                        getNamedItem("type").getNodeValue());
+            Node guiPresentAs = pathSelector.selectNode(item,
+                                                        "ds:extension[@name='GUI']/ds:presentAs/@type");
+            Presentation presentation;
+            try {
+                if (guiPresentAs != null){
+                    presentation = Presentation.valueOf(guiPresentAs.getNodeValue());
+                } else {
+                    presentation = Presentation.undefined;
+                }
+            } catch (IllegalArgumentException e){
+                presentation = Presentation.undefined;
             }
-
-
-            DatastreamDeclarationImpl dsDecl = new DatastreamDeclarationImpl(name,
-                    componentDs);
+            DatastreamDeclarationImpl dsDecl = new DatastreamDeclarationImpl(dsName, this);
             dsDecl.addMimeTypes(dsMimeTypes);
             dsDecl.addFormatUris(dsFormatUris);
-            dsDecl.addCompositeSchemas(compositeSchemas);
-            dsDecl.addPresentation("GUI", guiPresentation);
+            dsDecl.setSchema(compositeSchemas);
+            dsDecl.setPresentation(presentation);
             datastreamDeclarations.add(dsDecl);
         }
     }

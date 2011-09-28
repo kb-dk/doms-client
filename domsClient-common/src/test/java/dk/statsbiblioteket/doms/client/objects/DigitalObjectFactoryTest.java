@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
+import dk.statsbiblioteket.doms.client.datastreams.Presentation;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
@@ -17,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static junit.framework.Assert.*;
 
@@ -128,8 +130,25 @@ public class DigitalObjectFactoryTest {
             assertNotNull(dsModel.getMimeType());
             assertNotNull(dsModel.getFormatURI());
             DatastreamDeclaration dsDcl = dsModel.getDatastreamDeclarations().get(0);
-            assertNotNull(dsDcl.getDs());
         }
+    }
+
+     @Test
+    public void testDatastreamModel2() throws Exception {
+        DigitalObject template =
+                factory.getDigitalObject("doms:Template_Program");
+         Set<DatastreamDeclaration> declarations = template.getDatastream("PBCORE").getDeclarations();
+         assertTrue(declarations.size() > 0);
+         for (DatastreamDeclaration declaration : declarations) {
+             assertEquals(declaration.getName(),"PBCORE");
+             assertTrue(declaration.getPresentation() == Presentation.editable);
+             Datastream pbcoreSchema = declaration.getSchema();
+             if (pbcoreSchema != null){
+                 assertNotNull(pbcoreSchema.getContents());
+             } else {
+                 fail();
+             }
+         }
     }
 
     @org.junit.Test

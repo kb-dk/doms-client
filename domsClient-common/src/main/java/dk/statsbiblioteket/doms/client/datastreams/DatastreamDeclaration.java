@@ -17,11 +17,15 @@ public interface DatastreamDeclaration {
 
     List<String> getDsFormatUris();
 
-    List<String> getPresentations();
+    Presentation getPresentation();
 
     String getName();
 
-    Datastream getDs();
 
-    HashMap<String, Datastream> getCompositeSchemas();
+    Datastream getSchema();
+
+    void setSchema(Datastream schema);
+
+
+
 }

@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +18,7 @@ import java.util.Properties;
  * Time: 10:27 AM
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class DOMSDataObjectTest {
     DOMSDataObject ddo = null;
     DomsClient dc = null;

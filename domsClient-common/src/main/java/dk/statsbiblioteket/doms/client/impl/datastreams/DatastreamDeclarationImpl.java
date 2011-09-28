@@ -2,6 +2,8 @@ package dk.statsbiblioteket.doms.client.impl.datastreams;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
+import dk.statsbiblioteket.doms.client.datastreams.Presentation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,20 +18,20 @@ import java.util.List;
  */
 public class DatastreamDeclarationImpl implements DatastreamDeclaration {
     private String name;
-    private Datastream ds;
+    private DatastreamModel model;
     private List<String> dsMimeTypes;
     private List<String> dsFormatUris;
-    private List<String> presentations;
-    private HashMap<String, Datastream> compositeSchemas;
+    private Presentation presentation;
+    private Datastream schema;
 
-    public DatastreamDeclarationImpl(String name, Datastream ds) {
+    public DatastreamDeclarationImpl(String name, DatastreamModel model) {
         this.name = name;
+        this.model = model;
         //To change body of created methods use File | Settings | File Templates.
-        this.ds = ds;
+
         dsMimeTypes = new ArrayList<String>();
         dsFormatUris = new ArrayList<String>();
-        presentations = new ArrayList<String>();
-        compositeSchemas = new HashMap<String, Datastream>();
+        presentation = Presentation.undefined;
     }
 
     public void addMimeTypes(List<String> dsMimeTypes) {
@@ -41,10 +43,7 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
         this.dsFormatUris.addAll(dsFormatUris);
     }
 
-    public void addPresentation(String gui, List<String> guiViewAngles) {
 
-        this.presentations.addAll(guiViewAngles);
-    }
 
     @Override
     public List<String> getDsMimeTypes() {
@@ -57,8 +56,8 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
     }
 
     @Override
-    public List<String> getPresentations() {
-        return presentations;
+    public Presentation getPresentation() {
+        return presentation;
     }
 
     @Override
@@ -66,17 +65,16 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
         return name;
     }
 
-    @Override
-    public Datastream getDs() {
-        return ds;
+
+    public Datastream getSchema() {
+        return schema;
     }
 
-    public void addCompositeSchemas(HashMap<String, Datastream> compositeSchemas) {
-        this.compositeSchemas.putAll(compositeSchemas);
+    public void setSchema(Datastream schema) {
+        this.schema = schema;
     }
 
-    @Override
-    public HashMap<String, Datastream> getCompositeSchemas(){
-        return this.compositeSchemas;
+    public void setPresentation(Presentation presentation) {
+        this.presentation = presentation;
     }
 }
