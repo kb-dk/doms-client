@@ -10,7 +10,7 @@
 
     <groupId>dk.statsbiblioteket.doms.guiClient</groupId>
     <artifactId>guiClient</artifactId>
-    <version>0.0.10-SNAPSHOT</version>
+
 
     <dependencies>
         <dependency>

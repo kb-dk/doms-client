@@ -9,7 +9,7 @@
 
     <groupId>dk.statsbiblioteket.doms.client</groupId>
     <artifactId>domsClient-parent</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <version>0.0.10-SNAPSHOT</version>
     <name>Doms Admin Client</name>
 
     <packaging>pom</packaging>
@@ -57,17 +57,11 @@
                 <artifactId>summaClient</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
-
-
-
             <dependency>
                 <groupId>org.apache.tuscany.sdo</groupId>
                 <artifactId>tuscany-sdo-tools</artifactId>
                 <version>1.1.1</version>
             </dependency>
-
-
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
                 <artifactId>centralWebservice-interface</artifactId>
@@ -77,6 +71,12 @@
                 <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
                 <artifactId>authchecker-authutils</artifactId>
                 <version>0.0.11</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.9</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>

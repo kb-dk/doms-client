@@ -8,9 +8,9 @@
         <version>0.0.10-SNAPSHOT</version>
     </parent>
 
-    <groupId>dk.statsbiblioteket.doms.client</groupId>
+
     <artifactId>domsClient-parsing</artifactId>
-    <version>0.0.10-SNAPSHOT</version>
+
 
     <dependencies>
         <dependency>
