@@ -8,6 +8,7 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The digital Object
@@ -19,6 +20,13 @@ public interface DigitalObject {
      * @throws ServerOperationFailed
      */
     void save() throws ServerOperationFailed;
+
+    /**
+     * Saves the digital object to the Server.
+     * @throws ServerOperationFailed
+     */
+    void save(String viewAngle) throws ServerOperationFailed;
+
 
     /**
      * @return the object pid
@@ -47,6 +55,8 @@ public interface DigitalObject {
     FedoraState getState() throws ServerOperationFailed;
 
     void setState(FedoraState state) throws ServerOperationFailed;
+
+    public void setState(FedoraState state, String viewAngle) throws ServerOperationFailed;
 
     /**
      * @return the lastModified date for the object
@@ -103,4 +113,7 @@ public interface DigitalObject {
      * @param relation the relation to remove
      */
     void removeRelation(Relation relation);
+
+
+    public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed;
 }

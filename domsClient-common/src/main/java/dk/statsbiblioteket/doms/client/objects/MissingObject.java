@@ -11,11 +11,22 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * For some purposes it is easier to return this, rather than throwing an exception, if an object cannot be found.
  */
 public class MissingObject implements DigitalObject {
+    @Override
+    public void save() throws ServerOperationFailed {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void save(String viewAngle) throws ServerOperationFailed {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     @Override
     public String getPid() {
         throw new IllegalAccessError("Missing object");
@@ -44,6 +55,11 @@ public class MissingObject implements DigitalObject {
     @Override
     public void setState(FedoraState state) {
         throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public void setState(FedoraState state, String viewAngle) throws ServerOperationFailed {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -89,6 +105,11 @@ public class MissingObject implements DigitalObject {
     @Override
     public void removeRelation(Relation relation) {
         throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

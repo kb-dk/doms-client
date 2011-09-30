@@ -161,4 +161,70 @@ public class DigitalObjectFactoryTest {
 
     }
 
+    @org.junit.Test
+    public void testSaveState() throws Exception {
+
+        int i = 0;
+
+
+        //Load the object, and assert that everything is Active
+        DigitalObject object = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        Set<DigitalObject> children = object.getChildObjects("SummaVisible");
+        assertTrue(object.getState() == FedoraState.Active);
+        for (DigitalObject child : children) {
+            assertTrue(child.getState()==FedoraState.Active);
+            i++;
+        }
+        assertTrue(i>0);
+        i = 0;
+
+        //Set the object and all subobjects to Inactive
+        object.setState(FedoraState.Inactive, "SummaVisible");
+        object.save("SummaVisible");
+        for (DigitalObject child : children) {
+            assertTrue(child.getState()==FedoraState.Inactive);
+            i++;
+        }
+        assertTrue(i>0);
+        i = 0;
+
+
+        //To be sure that nothing is in cache, make a new factory
+        setUp();
+
+        //Load the object, and check that everything is now in Inactive
+        DigitalObject object2 = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        assertTrue(object2.getState() == FedoraState.Inactive);
+        Set<DigitalObject> children2 = object2.getChildObjects("SummaVisible");
+        for (DigitalObject child : children2) {
+            assertTrue(child.getState()==FedoraState.Inactive);
+            i++;
+        }
+        assertTrue(i>0);
+        i = 0;
+
+        //Then set everything to Active again
+        object2.setState(FedoraState.Active, "SummaVisible");
+        object2.save("SummaVisible");
+        assertTrue(object2 .getState() == FedoraState.Inactive);
+        for (DigitalObject child : children2) {
+            assertTrue(child.getState()==FedoraState.Active);
+            i++;
+        }
+        assertTrue(i>0);
+        i = 0;
+
+        setUp();
+
+        DigitalObject object3 = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        Set<DigitalObject> children3 = object3.getChildObjects("SummaVisible");
+        for (DigitalObject child : children3) {
+            assertTrue(child.getState()==FedoraState.Active);
+            i++;
+        }
+        assertTrue(i>0);
+        i = 0;
+
+    }
+
 }

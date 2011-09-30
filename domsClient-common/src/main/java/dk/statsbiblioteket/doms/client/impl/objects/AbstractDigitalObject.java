@@ -14,11 +14,9 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 
+import javax.swing.*;
 import java.lang.String;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * The common functionality of a digital object is implemented here.
@@ -56,7 +54,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private boolean relsloaded = false;
     private boolean invrelsloaded = false;
     private boolean profileloaded = false;
-
+    private boolean statePreSaved;
 
 
     public AbstractDigitalObject(String pid,
@@ -115,6 +113,16 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         loadProfile();
         this.state = state;
     }
+
+    @Override
+    public void setState(FedoraState state, String viewAngle) throws ServerOperationFailed {
+        setState(state);
+        Set<DigitalObject> children = getChildObjects(viewAngle);
+        for (DigitalObject child : children) {
+            child.setState(state);
+        }
+    }
+
 
     @Override
     public Date getLastModified() throws ServerOperationFailed {
@@ -226,8 +234,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             inverseRelations.add(new ObjectRelationImpl(frelation.getPredicate(),
-                    factory.getDigitalObject(frelation.getSubject()),
-                    this, factory));
+                                                        factory.getDigitalObject(frelation.getSubject()),
+                                                        this, factory));
         }
     }
 
@@ -250,7 +258,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 type.add(object);
             } else {
                 throw new ServerOperationFailed("Object '" + pid + "' has the content model '" + contentModel +
-                        "' declared, but this is not a content model");
+                                                "' declared, but this is not a content model");
             }
         }
     }
@@ -288,16 +296,73 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
     }
 
-    public void save() throws ServerOperationFailed{
-        if (state != stateOriginal){
-            List<String> pid_list = new ArrayList<String>();
-            pid_list.add(pid);
+    @Override
+    public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed {
+        Set<String> viewRelationNames = new HashSet<String>();
+        Set<DigitalObject> children = new HashSet<DigitalObject>();
+        for (ContentModelObject contentModelObject : getType()) {
             try {
-                switch (state){
+            List<String> theseRels = contentModelObject.getRelationsWithViewAngle(viewAngle);
+            if (theseRels!= null){
+                viewRelationNames.addAll(theseRels);
+            }
+            } catch (ServerOperationFailed e){
+                //pass quietly
+            }
+        }
+        for (dk.statsbiblioteket.doms.client.relations.Relation rel : getRelations()) {
+            if (viewRelationNames.contains(rel.getPredicate())){
+                if (rel instanceof ObjectRelation) {
+                    ObjectRelation objectRelation = (ObjectRelation) rel;
+                    children.add(objectRelation.getSubject());
+                }
+            }
+        }
+        return children;
+    }
+
+
+
+
+
+
+
+
+    private void preSaveState()
+            throws ServerOperationFailed {
+        try {
+            List<String> pid_list = new ArrayList<String>(1);
+            pid_list.add(pid);
+            switch (state){
+                case Active:
+                    api.markPublishedObject(pid_list, "Object '" + pid + "' marked as active");
+                    break;
+                case Deleted:
+                    api.deleteObject(pid_list, "Object '"+pid+"' marked as deleted");
+                    break;
+                case Inactive:
+                    api.markInProgressObject(pid_list, "Object '"+pid+"' marked as inactive");
+            }
+            statePreSaved = true;
+        } catch (Exception e){
+            throw new ServerOperationFailed(e);
+        }
+
+    }
+
+    private void postSaveState(){
+        stateOriginal = state;
+        statePreSaved = false;
+    }
+
+    private void undoSaveState() throws ServerOperationFailed {
+        try {
+            if (statePreSaved){
+                List<String> pid_list = new ArrayList<String>(1);
+                pid_list.add(pid);
+                switch (stateOriginal){
                     case Active:
-
-                        api.markPublishedObject(pid_list, "Object '"+pid+"' marked as active");
-
+                        api.markPublishedObject(pid_list, "Object '" + pid + "' marked as active");
                         break;
                     case Deleted:
                         api.deleteObject(pid_list, "Object '"+pid+"' marked as deleted");
@@ -305,13 +370,74 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                     case Inactive:
                         api.markInProgressObject(pid_list, "Object '"+pid+"' marked as inactive");
                 }
-            } catch (InvalidCredentialsException e) {
-                throw new ServerOperationFailed("Invalid credentials exception raised", e);
-            } catch (InvalidResourceException e) {
-                throw new ServerOperationFailed("Invalid resource exception raised", e);
-            } catch (MethodFailedException e) {
-                throw new ServerOperationFailed("Method failed exception raised", e);
             }
+            state = stateOriginal;
+            statePreSaved = false;
+
+
+        } catch (Exception e){
+            throw new ServerOperationFailed(e);
         }
     }
+
+
+    protected void preSave(String viewAngle) throws ServerOperationFailed{
+
+        List<AbstractDigitalObject> saved = new ArrayList<AbstractDigitalObject>();
+        try {
+            Set<DigitalObject> children = getChildObjects(viewAngle);
+            for (DigitalObject child : children) {
+                if (child instanceof AbstractDigitalObject) {
+                    AbstractDigitalObject abstractChild = (AbstractDigitalObject) child;
+                    abstractChild.preSave(viewAngle);
+                }
+            }
+            preSaveState();
+        } catch (ServerOperationFailed e){
+            for (AbstractDigitalObject digitalObject : saved) {
+                digitalObject.undoSave(viewAngle);
+            }
+            undoSave(viewAngle);
+            throw new ServerOperationFailed(e);
+        }
+
+
+    }
+
+    protected void postSave(String viewAngle) throws ServerOperationFailed{
+        Set<DigitalObject> children = getChildObjects(viewAngle);
+        for (DigitalObject child : children) {
+            if (child instanceof AbstractDigitalObject) {
+                AbstractDigitalObject abstractChild = (AbstractDigitalObject) child;
+                abstractChild.postSave(viewAngle);
+            }
+        }
+        postSaveState();
+    }
+
+    protected void undoSave(String viewAngle)
+            throws ServerOperationFailed {
+        Set<DigitalObject> children = getChildObjects(viewAngle);
+        for (DigitalObject child : children) {
+            if (child instanceof AbstractDigitalObject) {
+                AbstractDigitalObject abstractChild = (AbstractDigitalObject) child;
+                abstractChild.undoSave(viewAngle);
+            }
+        }
+        undoSaveState();
+    }
+
+
+
+    public void save(String viewAngle) throws ServerOperationFailed {
+        this.preSave(viewAngle);
+        this.postSave(viewAngle);
+    }
+
+
+
+    public void save() throws ServerOperationFailed {
+        save("UNUSEDVIEWANGLE");
+    }
+
 }

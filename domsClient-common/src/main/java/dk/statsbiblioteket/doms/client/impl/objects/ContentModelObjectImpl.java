@@ -74,7 +74,6 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         viewDoc = DOM.stringToDOM(contents, true);
         XPathSelector xPathSelector = DOM.createXPathSelector("v",
                                                               "http://ecm.sourceforge.net/types/view/0/2/#");
-        HashMap<String, List<String>> viewNameRelations = new HashMap();
 
         NodeList allViewAngles = xPathSelector.selectNodeList(viewDoc,
                                                               "/v:views/v:viewangle/@name");
@@ -82,7 +81,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
             String viewAngleName = allViewAngles.item(i).getTextContent();
             NodeList namedViewAngles = xPathSelector.selectNodeList(viewDoc,
                                                                     "/v:views/v:viewangle[@name = '" + viewAngleName +
-                                                                    "']/v:relations");
+                                                                    "']/v:relations/*");
             List<String> relList = new ArrayList<String>();
             for (int j = 0; j < namedViewAngles.getLength(); j++){
                 Node item = namedViewAngles.item(j);
@@ -92,7 +91,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
 
             namedViewAngles = xPathSelector.selectNodeList(viewDoc,
                                                            "/v:views/v:viewangle[@name = '" + viewAngleName +
-                                                           "']/v:inverseRelations");
+                                                           "']/v:inverseRelations/*");
             List<String> iRelList = new ArrayList<String>();
             for (int j = 0; j < namedViewAngles.getLength(); j++){
                 Node item = namedViewAngles.item(j);
