@@ -1,9 +1,6 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.DatastreamProfile;
-import dk.statsbiblioteket.doms.central.ObjectProfile;
-import dk.statsbiblioteket.doms.central.Relation;
+import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
@@ -17,6 +14,7 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -228,8 +226,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             inverseRelations.add(new ObjectRelationImpl(frelation.getPredicate(),
-                                                        factory.getDigitalObject(frelation.getSubject()),
-                                                        this, factory));
+                    factory.getDigitalObject(frelation.getSubject()),
+                    this, factory));
         }
     }
 
@@ -252,7 +250,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 type.add(object);
             } else {
                 throw new ServerOperationFailed("Object '" + pid + "' has the content model '" + contentModel +
-                                                "' declared, but this is not a content model");
+                        "' declared, but this is not a content model");
             }
         }
     }
@@ -290,5 +288,30 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
     }
 
+    public void save() throws ServerOperationFailed{
+        if (state != stateOriginal){
+            List<String> pid_list = new ArrayList<String>();
+            pid_list.add(pid);
+            try {
+                switch (state){
+                    case Active:
 
+                        api.markPublishedObject(pid_list, "Object '"+pid+"' marked as active");
+
+                        break;
+                    case Deleted:
+                        api.deleteObject(pid_list, "Object '"+pid+"' marked as deleted");
+                        break;
+                    case Inactive:
+                        api.markInProgressObject(pid_list, "Object '"+pid+"' marked as inactive");
+                }
+            } catch (InvalidCredentialsException e) {
+                throw new ServerOperationFailed("Invalid credentials exception raised", e);
+            } catch (InvalidResourceException e) {
+                throw new ServerOperationFailed("Invalid resource exception raised", e);
+            } catch (MethodFailedException e) {
+                throw new ServerOperationFailed("Method failed exception raised", e);
+            }
+        }
+    }
 }

@@ -3,10 +3,8 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.relations.AbstractRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +13,12 @@ import java.util.List;
  * The digital Object
  */
 public interface DigitalObject {
+
+    /**
+     * Saves the digital object to the Server.
+     * @throws ServerOperationFailed
+     */
+    void save() throws ServerOperationFailed;
 
     /**
      * @return the object pid
