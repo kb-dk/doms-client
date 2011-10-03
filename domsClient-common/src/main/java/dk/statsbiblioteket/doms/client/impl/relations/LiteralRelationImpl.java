@@ -26,8 +26,8 @@ public class LiteralRelationImpl extends AbstractRelation implements LiteralRela
      * @param predicate
      * @param object
      */
-    public LiteralRelationImpl(String predicate, DigitalObject object, String subject) {
-        super(predicate, object, null);
+    public LiteralRelationImpl(String predicate, String objectPid, String subject) {
+        super(predicate, objectPid, null);
         this.subject = subject;
     }
 }

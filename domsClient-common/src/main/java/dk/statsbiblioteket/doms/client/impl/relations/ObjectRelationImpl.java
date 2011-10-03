@@ -11,15 +11,15 @@ import java.lang.ref.SoftReference;
  * This is a relation between two objects.
  */
 public class ObjectRelationImpl extends AbstractRelation implements ObjectRelation {
-    private SoftReference<DigitalObject> subject;
-    private String identifier;
+    private SoftReference<DigitalObject> subject = new SoftReference<DigitalObject>(null);
+    private String pid;
 
 
     @Override
     public synchronized DigitalObject getSubject() throws ServerOperationFailed {
         DigitalObject result = subject.get();
         if (result == null){
-            result = getFactory().getDigitalObject(identifier);
+            result = getFactory().getDigitalObject(pid);
             setSubject(result);
         }
         return result;
@@ -30,18 +30,17 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
         this.subject = new SoftReference<DigitalObject>(subject);
     }
 
-    /**
-     * This constructor must be extended to complete the notion of triples
-     * representing connections in the object graph.
-     *
-     * @param predicate
-     * @param object
-     */
-    public ObjectRelationImpl(String predicate, DigitalObject object,
-                              DigitalObject subject, DigitalObjectFactory factory) {
-        super(predicate, object, factory);
-        identifier = subject.getPid();//TODO if we will work on versions of objects
-        this.subject = new SoftReference<DigitalObject>(subject);
-
+    public String getSubjectPid() {
+        return pid;
     }
+
+    public ObjectRelationImpl(String predicate,
+                              String objectPid,
+                              String subjectPid,
+                              DigitalObjectFactory factory) {
+        super(predicate, objectPid, factory);
+        this.pid = subjectPid;
+    }
+
+
 }

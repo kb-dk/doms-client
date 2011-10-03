@@ -110,7 +110,7 @@ public class DigitalObjectFactoryTest {
     }
 
     @Test
-    public void  testRelations() throws Exception {
+    public void testViewRelations() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_Program");
         assertTrue(cmdoms instanceof ContentModelObject);
         if (cmdoms instanceof ContentModelObject) {
@@ -118,6 +118,18 @@ public class DigitalObjectFactoryTest {
             assertNotNull(cmo.getRelationsWithViewAngle("SummaVisible"));
         }
     }
+
+    @Test
+    public void testInverseRelations() throws Exception {
+        DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_Program");
+        assertTrue(cmdoms instanceof ContentModelObject);
+        List<ObjectRelation> inverseRelations = cmdoms.getInverseRelations();
+        for (ObjectRelation inverseRelation : inverseRelations) {
+            assertEquals(inverseRelation.getObjectPid(),cmdoms.getPid());
+            assertNotNull(inverseRelation.getSubjectPid());
+        }
+    }
+
 
     @Test
     public void testDatastreamModel() throws Exception {
@@ -206,7 +218,7 @@ public class DigitalObjectFactoryTest {
         //Then set everything to Active again
         object2.setState(FedoraState.Active, "SummaVisible");
         object2.save("SummaVisible");
-        assertTrue(object2 .getState() == FedoraState.Inactive);
+        assertTrue(object2.getState() == FedoraState.Active);
         for (DigitalObject child : children2) {
             assertTrue(child.getState()==FedoraState.Active);
             i++;

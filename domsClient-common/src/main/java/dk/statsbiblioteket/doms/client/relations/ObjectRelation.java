@@ -14,5 +14,6 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
 public interface ObjectRelation extends Relation {
     DigitalObject getSubject() throws ServerOperationFailed;
 
+    String getSubjectPid();
     void setSubject(DigitalObject subject);
 }
