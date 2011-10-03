@@ -103,7 +103,7 @@ public class DomsWSClientImpl implements DomsWSClient {
                                                         new Date(wresult.getCreatedDate()));
                 cresults.add(cresult);
         } */
-        return wresults;
+            return wresults;
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed searching", exception);
@@ -298,8 +298,8 @@ public class DomsWSClientImpl implements DomsWSClient {
             ArrayList<dk.statsbiblioteket.doms.client.relations.Relation> clientRelations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
             for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) { //TODO: Correct doms Central to new relation objects
                 clientRelations.add(new LiteralRelationImpl(domsRelation.getPredicate(),
-                                                 dof.getDigitalObject(domsRelation.getObject()),
-                                                 domsRelation.getSubject()));
+                                                            domsRelation.getObject(),
+                                                            domsRelation.getSubject()));
             }
             return clientRelations;
 
@@ -411,9 +411,11 @@ public class DomsWSClientImpl implements DomsWSClient {
     }
 
     public FedoraState getState(String pid) throws ServerOperationFailed {
-        // TODO: Uncomment when implemented in DOMS Central
-        // return domsAPI.getState(pid);
-        return FedoraState.Active;
+        try {
+            return FedoraState.fromString(domsAPI.getObjectProfile(pid).getState());
+        } catch (Exception e) {
+            throw new ServerOperationFailed(e);
+        }
     }
 
     public InputStream getDatastreamContent(String pid, String ds) throws ServerOperationFailed{
