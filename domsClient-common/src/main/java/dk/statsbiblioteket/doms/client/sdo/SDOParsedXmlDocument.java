@@ -36,7 +36,7 @@ public class SDOParsedXmlDocument {
     private HelperContext sdoContext;
     //The SDO types based on the XML Schema. Build in the ContentModel. The DataObjects use these types when parsing an
     //XML document that is an instance of the XML Schema.
-    private List<Type> sdoTypes;
+    private List<Type> sdoTypes = new ArrayList<Type>();
 
     public SDOParsedXmlDocument() {
     }
@@ -116,34 +116,36 @@ public class SDOParsedXmlDocument {
         if (sdoContext == null){
             sdoContext = SDOUtil.createHelperContext(true);
         }
-        String is2 = compositeSchema.getSchema().getContents();
+        if (compositeSchema.getSchema() != null){
+            String is2 = compositeSchema.getSchema().getContents();
 
 
-        //Since we do not have an instance of the XML Schema we do not know the type of the root element.
-        //So we first read the schema manually to find out the targetNamespace.
-        String targetNamespace = null;
-        XmlSchemaWithResolver doc = new XmlSchemaWithResolver();
-        if (doc.load(new ByteArrayInputStream(is2.getBytes()))) {
-            if (doc.getDocNode() != null) {
-                targetNamespace = getSchemaTargetNamespace(doc.getDocNode());
+            //Since we do not have an instance of the XML Schema we do not know the type of the root element.
+            //So we first read the schema manually to find out the targetNamespace.
+            String targetNamespace = null;
+            XmlSchemaWithResolver doc = new XmlSchemaWithResolver();
+            if (doc.load(new ByteArrayInputStream(is2.getBytes()))) {
+                if (doc.getDocNode() != null) {
+                    targetNamespace = getSchemaTargetNamespace(doc.getDocNode());
+                }
             }
-        }
 
-        if (targetNamespace == null) {
-            return;
-        }
+            if (targetNamespace == null) {
+                return;
+            }
 
-        //Define types based on the XML Schema
-        try {
-            setSdoTypes(defineTypes(sdoContext,  doc));
-        } catch (TransformerException e) {
-            throw new MyXMLReadException("Failed to parse the types",e);
-        }
-        if (getSdoTypes() != null) {
-            Property rootProperty = getRootProperty(getSdoTypes(), targetNamespace, sdoContext.getXSDHelper());
-            Type rootType = rootProperty.getType();
-            isAbstract = rootType.isAbstract();
-            isValid = !isAbstract;
+            //Define types based on the XML Schema
+            try {
+                setSdoTypes(defineTypes(sdoContext,  doc));
+            } catch (TransformerException e) {
+                throw new MyXMLReadException("Failed to parse the types",e);
+            }
+            if (getSdoTypes() != null) {
+                Property rootProperty = getRootProperty(getSdoTypes(), targetNamespace, sdoContext.getXSDHelper());
+                Type rootType = rootProperty.getType();
+                isAbstract = rootType.isAbstract();
+                isValid = !isAbstract;
+            }
         }
 
 

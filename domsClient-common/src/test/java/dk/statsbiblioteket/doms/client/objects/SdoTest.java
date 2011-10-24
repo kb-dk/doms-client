@@ -7,6 +7,7 @@ import dk.statsbiblioteket.doms.client.exceptions.*;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.xml.namespace.QName;
@@ -68,9 +69,28 @@ public class SdoTest {
     public void testSdoDC()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+
         SDOParsedXmlElement doc = program.getDatastream("DC").getSDOParsedDocument();
 
         parseTree(doc, "");
+
+
+    }
+
+
+    @Test
+    public void testSdoRelsExt()
+            throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
+        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+
+
+        try {
+            SDOParsedXmlElement doc = program.getDatastream("RELS-EXT").getSDOParsedDocument();
+            Assert.fail();
+        } catch (Exception e){
+
+        }
+
 
     }
 
@@ -83,7 +103,7 @@ public class SdoTest {
                 System.out.print(indryk+"'"+child.getLabel()+"': '"+child.getValue()+"'");
                 if (child.getProperty().isMany()){
                     if (child.getAddable()){
-                    System.out.print(" (+)");
+                        System.out.print(" (+)");
                     }
                     if (child.getRemovable()){
                         System.out.print("(-)");
@@ -96,7 +116,7 @@ public class SdoTest {
                 System.out.print(indryk + "'"+child.getLabel()+"'");
                 if (child.getProperty().isMany()){
                     if (child.getAddable()){
-                    System.out.print(" (+)");
+                        System.out.print(" (+)");
                     }
                     if (child.getRemovable()){
                         System.out.print("(-)");
