@@ -30,4 +30,6 @@ public interface Datastream {
     String getContents() throws ServerOperationFailed;
 
     Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed;
+
+    DOMSXmlElement getSDOParsedDocument();
 }

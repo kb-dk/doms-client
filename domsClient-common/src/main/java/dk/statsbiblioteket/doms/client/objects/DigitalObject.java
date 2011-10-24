@@ -115,5 +115,12 @@ public interface DigitalObject {
     void removeRelation(Relation relation);
 
 
+    /**
+     * Sets a relation between this object and another.
+     * @param newRelation the relation object
+     */
+    void setRelation(Relation newRelation);
+
+
     public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed;
 }

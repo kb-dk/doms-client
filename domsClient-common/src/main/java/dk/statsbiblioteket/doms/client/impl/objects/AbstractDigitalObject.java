@@ -1,6 +1,9 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.DatastreamProfile;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
+import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
@@ -14,8 +17,6 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 
-import javax.swing.*;
-import java.lang.String;
 import java.util.*;
 
 /**
@@ -440,4 +441,12 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         save("UNUSEDVIEWANGLE");
     }
 
+
+     /**
+     * Sets a relation between this object and another.
+     * @param newRelation the relation object
+     */
+     public void setRelation(dk.statsbiblioteket.doms.client.relations.Relation newRelation){
+           relations.add(newRelation);
+    }
 }

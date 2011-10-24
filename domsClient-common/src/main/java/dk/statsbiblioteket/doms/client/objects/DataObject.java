@@ -1,6 +1,8 @@
 package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,4 +12,8 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  * To change this template use File | Settings | File Templates.
  */
 public interface DataObject extends DigitalObject {
+
+    public Set<DigitalObject> getChildren() throws ServerOperationFailed;
+
+    public String getContentmodelTitle() throws ServerOperationFailed;
 }

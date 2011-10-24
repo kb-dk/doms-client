@@ -20,6 +20,10 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-tools</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

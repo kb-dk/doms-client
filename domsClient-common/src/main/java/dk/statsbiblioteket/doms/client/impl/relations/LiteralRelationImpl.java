@@ -1,6 +1,5 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 
 /**
@@ -24,7 +23,7 @@ public class LiteralRelationImpl extends AbstractRelation implements LiteralRela
      * representing connections in the object graph.
      *
      * @param predicate
-     * @param object
+     * @param objectPid
      */
     public LiteralRelationImpl(String predicate, String objectPid, String subject) {
         super(predicate, objectPid, null);

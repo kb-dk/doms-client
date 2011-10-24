@@ -1,12 +1,8 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
-import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.util.Date;
@@ -104,6 +100,11 @@ public class MissingObject implements DigitalObject {
 
     @Override
     public void removeRelation(Relation relation) {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public void setRelation(Relation newRelation) {
         throw new IllegalAccessError("Missing object");
     }
 
