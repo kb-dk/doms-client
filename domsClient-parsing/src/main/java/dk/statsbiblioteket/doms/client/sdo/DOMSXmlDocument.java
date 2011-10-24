@@ -165,7 +165,7 @@ public class DOMSXmlDocument {
             try {
                 is.close();
             } catch (Exception e) {
-                logger.warn("DOMSXmlDocument.generate. Exception-3. " + e);
+                logger.warn("SDOParsedXmlDocument.generate. Exception-3. " + e);
             }
         }
 
@@ -220,7 +220,7 @@ public class DOMSXmlDocument {
             try {
                 is.close();
             } catch (Exception e) {
-                logger.warn("DOMSXmlDocument.load. Exception-2 in DOMSXmlDocument.generate. " + e);
+                logger.warn("SDOParsedXmlDocument.load. Exception-2 in SDOParsedXmlDocument.generate. " + e);
             }
         }
     }
@@ -274,7 +274,7 @@ public class DOMSXmlDocument {
                 is.close();
             } catch (Exception e) {
 
-                logger.warn("DOMSXmlDocument.defineTypes. Exception-3 in DOMSXmlDocument.generate. " + e);
+                logger.warn("SDOParsedXmlDocument.defineTypes. Exception-3 in SDOParsedXmlDocument.generate. " + e);
             }
         }
 

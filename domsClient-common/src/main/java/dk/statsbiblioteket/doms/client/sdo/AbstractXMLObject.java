@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.sdo;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
@@ -10,9 +10,9 @@ import org.xml.sax.SAXParseException;
  * <P>
  */
 
-public class DOMSXMLData implements ErrorHandler {
+public abstract class AbstractXMLObject implements ErrorHandler {
 
-    public DOMSXMLData(){}
+    public AbstractXMLObject(){}
 
 
     private String errorHandlerMsg;

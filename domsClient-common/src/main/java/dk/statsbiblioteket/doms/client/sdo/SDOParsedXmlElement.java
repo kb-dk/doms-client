@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.sdo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
@@ -9,7 +9,7 @@ import org.apache.tuscany.sdo.api.SDOUtil;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class DOMSXmlElement {
+public class SDOParsedXmlElement {
 
 
 	
@@ -17,17 +17,17 @@ public class DOMSXmlElement {
 		inputfield, textarea, uneditable, NA, enumeration, invisible
 	}
 
-	private DOMSXmlDocument myDocument;
+	private SDOParsedXmlDocument myDocument;
 	private Property property;
 	private DataObject dataobject;
-	private DOMSXmlElement parent;
+	private SDOParsedXmlElement parent;
 
 	private String label;
 	private Object value;
 	private int maxOccurence = -1;
 	private int minOccurence = -1;
 	private int index = -1; // If the dataobject is sequenced this is the sequence index. If the property is multivalued this is the index in the list.
-	protected ArrayList<DOMSXmlElement> children = new ArrayList<DOMSXmlElement>();
+	protected ArrayList<SDOParsedXmlElement> children = new ArrayList<SDOParsedXmlElement>();
 
 	private String id = "_" + UUID.randomUUID().toString();
 	
@@ -35,12 +35,12 @@ public class DOMSXmlElement {
 	
 	private List<String> valueEnum; 
 	
-	public DOMSXmlElement() {
+	public SDOParsedXmlElement() {
 
 	}
 
-	public DOMSXmlElement(DOMSXmlDocument myDocument, DOMSXmlElement parent, DataObject dataobject,
-                          Property property) {
+	public SDOParsedXmlElement(SDOParsedXmlDocument myDocument, SDOParsedXmlElement parent, DataObject dataobject,
+                               Property property) {
 		this.setDataobject(dataobject);
 		this.setProperty(property);
 		this.setParent(parent);
@@ -48,8 +48,8 @@ public class DOMSXmlElement {
 		this.myDocument = myDocument;
 	}
 
-	public DOMSXmlElement(DOMSXmlDocument myDocument, DOMSXmlElement parent, DataObject dataobject,
-                          Property property, int parentIndex) {
+	public SDOParsedXmlElement(SDOParsedXmlDocument myDocument, SDOParsedXmlElement parent, DataObject dataobject,
+                               Property property, int parentIndex) {
 		this.setDataobject(dataobject);
 		this.setProperty(property);
 		this.setParent(parent);
@@ -68,7 +68,7 @@ public class DOMSXmlElement {
 	public HelperContext getHelperContext() {
 		return myDocument.getSdoContext();
 	}
-	
+
 	public boolean isEnum() {
 		return valueEnum != null;
 	}
@@ -109,8 +109,8 @@ public class DOMSXmlElement {
 			return 1;
 		}
 		int counter = 0;
-		List<DOMSXmlElement> elems = parent.getChildren();		
-		for(DOMSXmlElement ele : elems) {
+		List<SDOParsedXmlElement> elems = parent.getChildren();
+		for(SDOParsedXmlElement ele : elems) {
 			if(ele.getProperty().equals(this.property)) {
 				counter++;
 			}
@@ -153,8 +153,8 @@ public class DOMSXmlElement {
 		if(parent == null) {
 			return true;
 		}			
-		List<DOMSXmlElement> elems = parent.getChildren();		
-		for(DOMSXmlElement ele : elems) {
+		List<SDOParsedXmlElement> elems = parent.getChildren();
+		for(SDOParsedXmlElement ele : elems) {
 			if(ele.getProperty().equals(this.property)) {
 				return (ele.getId() == this.id);
 				
@@ -199,17 +199,17 @@ public class DOMSXmlElement {
 			String source = "http://doms.statsbiblioteket.dk/gui"; // FacesContext.getCurrentInstance().getExternalContext().getInitParameter("appInfoSource");
 			String appinfo = getAppInfo(property, source);
 			if (appinfo!=null) {
-				if (appinfo.equals(DOMSXmlElement.GuiType.inputfield.toString())) {
-					guiType = DOMSXmlElement.GuiType.inputfield;
+				if (appinfo.equals(SDOParsedXmlElement.GuiType.inputfield.toString())) {
+					guiType = SDOParsedXmlElement.GuiType.inputfield;
 				}
-				else if (appinfo.equals(DOMSXmlElement.GuiType.textarea.toString())) {
-					guiType = DOMSXmlElement.GuiType.textarea;
+				else if (appinfo.equals(SDOParsedXmlElement.GuiType.textarea.toString())) {
+					guiType = SDOParsedXmlElement.GuiType.textarea;
 				}
-				else if (appinfo.equals(DOMSXmlElement.GuiType.uneditable.toString())) {
-					guiType = DOMSXmlElement.GuiType.uneditable;
+				else if (appinfo.equals(SDOParsedXmlElement.GuiType.uneditable.toString())) {
+					guiType = SDOParsedXmlElement.GuiType.uneditable;
 				}
-                else if (appinfo.equals(DOMSXmlElement.GuiType.invisible.toString())) {
-                    guiType = DOMSXmlElement.GuiType.invisible;
+                else if (appinfo.equals(SDOParsedXmlElement.GuiType.invisible.toString())) {
+                    guiType = SDOParsedXmlElement.GuiType.invisible;
                 }
 
 			}
@@ -286,23 +286,23 @@ public class DOMSXmlElement {
 	 * @param parent
 	 *            the parent to set
 	 */
-	public void setParent(DOMSXmlElement parent) {
+	public void setParent(SDOParsedXmlElement parent) {
 		this.parent = parent;
 	}
 
 	/**
 	 * @return the parent
 	 */
-	public DOMSXmlElement getParent() {
+	public SDOParsedXmlElement getParent() {
 		return parent;
 	}
 
-	public DOMSXmlElement create() {
-		DOMSXmlElement myElem;
+	public SDOParsedXmlElement create() {
+		SDOParsedXmlElement myElem;
 		if ((this.property.isMany()) && this.property.getType().isDataType())
 		{
 			List values = this.getDataobject().getList(this.getProperty());
-			myElem = new DOMSXmlElement(this.myDocument, this.parent, this.getDataobject(),
+			myElem = new SDOParsedXmlElement(this.myDocument, this.parent, this.getDataobject(),
 					this.property, parent.getChildren().indexOf(this) + 1);
 			myElem.setIndex(values.size());
 			values.add(null);
@@ -310,7 +310,7 @@ public class DOMSXmlElement {
 		else {		
 			DataObject myDo = getDataobject().getContainer().createDataObject(
 					getProperty().getName());
-			myElem = new DOMSXmlElement(this.myDocument, this.parent, myDo,
+			myElem = new SDOParsedXmlElement(this.myDocument, this.parent, myDo,
 					this.property, parent.getChildren().indexOf(this) + 1);
 		
 			if (!isLeaf()) {
@@ -321,7 +321,7 @@ public class DOMSXmlElement {
 		return myElem;
 	}
 
-	private void createChildren(DOMSXmlElement element) {
+	private void createChildren(SDOParsedXmlElement element) {
 		for (Object o : element.getDataobject().getType().getProperties()) {
 			Property p = (Property) o;
 			if (!getHelperContext().getXSDHelper().isAttribute(p)) {
@@ -331,7 +331,7 @@ public class DOMSXmlElement {
 				} else {
 					childDo = element.getDataobject().createDataObject(p);
 				}			
-				DOMSXmlElement childElement = new DOMSXmlElement(this.myDocument, element, childDo, p);			
+				SDOParsedXmlElement childElement = new SDOParsedXmlElement(this.myDocument, element, childDo, p);
 				element.add(childElement);
 				if (!childElement.isLeaf()) {
 					createChildren(childElement);
@@ -347,7 +347,7 @@ public class DOMSXmlElement {
 			List values = this.getDataobject().getList(this.getProperty());
 			values.remove(this.getIndex());
 			parent.getChildren().remove(this);
-			for (DOMSXmlElement element : parent.getChildren())
+			for (SDOParsedXmlElement element : parent.getChildren())
 			{
 				if (element.getIndex()>this.getIndex()) {
 					element.setIndex(element.getIndex()-1);
@@ -423,22 +423,22 @@ public class DOMSXmlElement {
 	 * @param children
 	 *            the children to set
 	 */
-	public void setChildren(ArrayList<DOMSXmlElement> children) {
+	public void setChildren(ArrayList<SDOParsedXmlElement> children) {
 		this.children = children;
 	}
 
 	/**
 	 * @return the children
 	 */
-	public ArrayList<DOMSXmlElement> getChildren() {
+	public ArrayList<SDOParsedXmlElement> getChildren() {
 		return children;
 	}
 
-	public void add(DOMSXmlElement xmlElement) {
+	public void add(SDOParsedXmlElement xmlElement) {
 		children.add(xmlElement);
 	}
 
-	public void remove(DOMSXmlElement xmlElement) {
+	public void remove(SDOParsedXmlElement xmlElement) {
 		children.remove(xmlElement);
 	}
 
@@ -489,7 +489,7 @@ public class DOMSXmlElement {
 				
 			}
 		} else {// end isLeaf
-			for (DOMSXmlElement xmlElement : children) {				
+			for (SDOParsedXmlElement xmlElement : children) {
 					xmlElement.submit(context);
 			}
 		}

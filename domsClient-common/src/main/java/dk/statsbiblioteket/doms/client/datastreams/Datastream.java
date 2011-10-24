@@ -1,8 +1,12 @@
 package dk.statsbiblioteket.doms.client.datastreams;
 
+import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
+import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -31,5 +35,6 @@ public interface Datastream {
 
     Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed;
 
-    DOMSXmlElement getSDOParsedDocument();
+    SDOParsedXmlElement getSDOParsedDocument()
+            throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException;
 }

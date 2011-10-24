@@ -1,6 +1,7 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.sdo;
 
 
+import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -12,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.InputStream;
 
-public class XmlSchemaWithResolver extends DOMSXMLData implements EntityResolver {
+public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityResolver {
 
 	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
@@ -49,7 +50,7 @@ public class XmlSchemaWithResolver extends DOMSXMLData implements EntityResolver
 	 * @return
 
 	 */
-	public boolean Load(InputStream is) throws MyXMLWriteException {
+	public boolean load(InputStream is) throws MyXMLReadException {
 		boolean success = false;
 		docNode = null;
 		String errMsg = "";
@@ -69,7 +70,7 @@ public class XmlSchemaWithResolver extends DOMSXMLData implements EntityResolver
 				document = builder.parse(new InputSource(is));
 				success = true;
 			} catch (Exception e) {
-				throw new MyXMLWriteException("Parse failed in XMLDocument. "
+				throw new MyXMLReadException("Parse failed in XMLDocument. "
 						+ e.getMessage());
 			}
 			docNode = (Node) document.getFirstChild();
@@ -79,7 +80,7 @@ public class XmlSchemaWithResolver extends DOMSXMLData implements EntityResolver
 			spe.printStackTrace();
 			errMsg += "ParserConfigurationException";
 			errMsg += "Exception message: " + spe.toString() ;
-			throw new MyXMLWriteException(errMsg);
+			throw new MyXMLReadException(errMsg);
 		} 
 		return success;
 	}

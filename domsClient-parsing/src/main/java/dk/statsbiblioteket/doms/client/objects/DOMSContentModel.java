@@ -317,10 +317,10 @@ public class DOMSContentModel extends DOMSDigitalObject {
         for (DOMSDataStream ds: viewDataStreams.values()){
             resultHTML.append("<li>");
             resultHTML.append(ds.getId());
-            if (ds.getDomsXmlDocument().getRootDomsXmlElement()!=null)
+            if (ds.getDomsXmlDocument().getRootSDOParsedXmlElement()!=null)
             {
                 resultHTML.append("<ul>");
-                sdoLeafToHtml(ds.getDomsXmlDocument().getRootDomsXmlElement(), resultHTML);
+                sdoLeafToHtml(ds.getDomsXmlDocument().getRootSDOParsedXmlElement(), resultHTML);
                 resultHTML.append("</ul>");
             }
             resultHTML.append("</li>");

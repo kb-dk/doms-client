@@ -32,7 +32,7 @@ public abstract class DOMSDataStream{
 
 
 
-    //private DOMSXmlDocument domsXmlDocument;
+    //private SDOParsedXmlDocument domsXmlDocument;
 
 
     private Constants.DatastreamControlGroup controlGroup;

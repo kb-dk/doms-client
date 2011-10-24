@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.datastreams;
+package dk.statsbiblioteket.doms.client.sdo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
@@ -9,6 +9,8 @@ import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XSDHelper;
 import dk.statsbiblioteket.doms.central.InvalidResourceException;
 import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
+import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.apache.tuscany.sdo.api.SDOUtil;
@@ -16,19 +18,18 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class DOMSXmlDocument {
+public class SDOParsedXmlDocument {
 
 
     private XMLDocument sdoXmlDocument = null;
-    private DOMSXmlElement rootDomsXmlElement = null;
+    private SDOParsedXmlElement rootSDOParsedXmlElement = null;
     private boolean isValid = false;
     private boolean isAbstract = false;
 
@@ -37,7 +38,7 @@ public class DOMSXmlDocument {
     //XML document that is an instance of the XML Schema.
     private List<Type> sdoTypes;
 
-    public DOMSXmlDocument() {
+    public SDOParsedXmlDocument() {
     }
 
     /**
@@ -55,17 +56,17 @@ public class DOMSXmlDocument {
     }
 
     /**
-     * @param rootDomsXmlElement the rootDomsXmlElement to set
+     * @param rootSDOParsedXmlElement the rootSDOParsedXmlElement to set
      */
-    public void setRootDomsXmlElement(DOMSXmlElement rootDomsXmlElement) {
-        this.rootDomsXmlElement = rootDomsXmlElement;
+    public void setRootSDOParsedXmlElement(SDOParsedXmlElement rootSDOParsedXmlElement) {
+        this.rootSDOParsedXmlElement = rootSDOParsedXmlElement;
     }
 
     /**
-     * @return the rootDomsXmlElement
+     * @return the rootSDOParsedXmlElement
      */
-    public DOMSXmlElement getRootDomsXmlElement() {
-        return rootDomsXmlElement;
+    public SDOParsedXmlElement getRootSDOParsedXmlElement() {
+        return rootSDOParsedXmlElement;
     }
 
     /**
@@ -111,52 +112,45 @@ public class DOMSXmlDocument {
     }
 
     public void generate(DatastreamDeclaration compositeSchema)
-            throws IOException, ServerOperationFailed, MyXMLWriteException {
-        sdoContext = SDOUtil.createHelperContext(true);
-        InputStream is = null;
-
-        try {
-
-                String is2 = compositeSchema.getSchema().getContents();
+            throws IOException, ServerOperationFailed, MyXMLReadException {
+        if (sdoContext == null){
+            sdoContext = SDOUtil.createHelperContext(true);
+        }
+        String is2 = compositeSchema.getSchema().getContents();
 
 
-                //Since we do not have an instance of the XML Schema we do not know the type of the root element.
-                //So we first read the schema manually to find out the targetNamespace.
-                String targetNamespace = null;
-                XmlSchemaWithResolver doc = new XmlSchemaWithResolver();
-                if (doc.Load(is)) {
-                    if (doc.getDocNode() != null) {
-                        targetNamespace = getSchemaTargetNamespace(doc.getDocNode());
-                    }
-                }
-
-                if (targetNamespace == null) {
-                    return;
-                }
-
-                //Define types based on the XML Schema
-                setSdoTypes(defineTypes(sdoContext,  doc));
-                if (getSdoTypes() != null) {
-                    Property rootProperty = getRootProperty(getSdoTypes(), targetNamespace, sdoContext.getXSDHelper());
-                    Type rootType = rootProperty.getType();
-                    isAbstract = rootType.isAbstract();
-                    isValid = !isAbstract;
-                }
-
-        } catch (TransformerException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } finally {
-            try {
-                is.close();
-            } catch (Exception e) {
-               // logger.warn("DOMSXmlDocument.generate. Exception-3. " + e);
+        //Since we do not have an instance of the XML Schema we do not know the type of the root element.
+        //So we first read the schema manually to find out the targetNamespace.
+        String targetNamespace = null;
+        XmlSchemaWithResolver doc = new XmlSchemaWithResolver();
+        if (doc.load(new ByteArrayInputStream(is2.getBytes()))) {
+            if (doc.getDocNode() != null) {
+                targetNamespace = getSchemaTargetNamespace(doc.getDocNode());
             }
         }
+
+        if (targetNamespace == null) {
+            return;
+        }
+
+        //Define types based on the XML Schema
+        try {
+            setSdoTypes(defineTypes(sdoContext,  doc));
+        } catch (TransformerException e) {
+            throw new MyXMLReadException("Failed to parse the types",e);
+        }
+        if (getSdoTypes() != null) {
+            Property rootProperty = getRootProperty(getSdoTypes(), targetNamespace, sdoContext.getXSDHelper());
+            Type rootType = rootProperty.getType();
+            isAbstract = rootType.isAbstract();
+            isValid = !isAbstract;
+        }
+
 
     }
 
     public void load(
-                     InputStream is) throws IOException,  ServerOperationFailed {
+            InputStream is) throws IOException,  ServerOperationFailed {
 
 
         try {
@@ -180,8 +174,8 @@ public class DOMSXmlDocument {
             isAbstract = rootType.isAbstract();
 
             Property rootProperty = getRootProperty(sdoTypes,
-                    targetNamespace,
-                    sdoContext.getXSDHelper());
+                                                    targetNamespace,
+                                                    sdoContext.getXSDHelper());
 
             if (rootProperty == null) {
                 throw new ServerOperationFailed("Could not get a valid SDO root DataObject for Input Stream: '" + is + "'.");
@@ -189,14 +183,14 @@ public class DOMSXmlDocument {
 
             setSdoXmlDocument(sdoContext.getXMLHelper().createDocument(rootDataObject, targetNamespace, rootProperty.getName()));
 
-            DOMSXmlElement root = new DOMSXmlElement(this, null, rootDataObject, rootProperty);
+            SDOParsedXmlElement root = new SDOParsedXmlElement(this, null, rootDataObject, rootProperty);
             root.setLabel(rootProperty.getName());
 
-            setRootDomsXmlElement(root);
+            setRootSDOParsedXmlElement(root);
             List<Property> containedProps = rootType.getProperties();
             for (Iterator<Property> i = containedProps.iterator(); i.hasNext(); ) {
                 Property property = (Property) i.next();
-                handleProperty(sdoContext, getRootDomsXmlElement(), rootDataObject, property);
+                handleProperty(sdoContext, getRootSDOParsedXmlElement(), rootDataObject, property);
             }
 
 
@@ -204,16 +198,16 @@ public class DOMSXmlDocument {
             try {
                 is.close();
             } catch (Exception e) {
-                //logger.warn("DOMSXmlDocument.load. Exception-2 in DOMSXmlDocument.generate. " + e);
+                //logger.warn("SDOParsedXmlDocument.load. Exception-2 in SDOParsedXmlDocument.generate. " + e);
             }
         }
     }
 
     public ByteArrayOutputStream save() throws IOException {
-        if ((getRootDomsXmlElement() != null) && (getSdoXmlDocument() != null) && (sdoContext != null)) {
+        if ((getRootSDOParsedXmlElement() != null) && (getSdoXmlDocument() != null) && (sdoContext != null)) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-            getRootDomsXmlElement().submit(sdoContext);
+            getRootSDOParsedXmlElement().submit(sdoContext);
 
             //Before we serialize the xml document we make a copy of the xml documennt and deletes empty data
             //objects from the copy before serializing the copy.
@@ -248,7 +242,7 @@ public class DOMSXmlDocument {
     private List<Type> defineTypes(HelperContext context,
 
                                    XmlSchemaWithResolver compositeSchema) throws ServerOperationFailed, TransformerException {
-        List<Type> types = null;
+        List<Type> types;
 
         types = context.getXSDHelper().define(DOM.domToString(compositeSchema.getDocNode()));
 
@@ -256,7 +250,7 @@ public class DOMSXmlDocument {
     }
 
     private void handleProperty(HelperContext helperContext,
-                                final DOMSXmlElement parent, final DataObject dataObject,
+                                final SDOParsedXmlElement parent, final DataObject dataObject,
                                 final Property property) {
         /*System.out.println("\n\nhandleProperty. property = " + property.getName() + ". dataObject.getType().getName() = "
                   + dataObject.getType().getName() + ". property.isOpenContent() = " + property.isOpenContent()
@@ -296,7 +290,7 @@ public class DOMSXmlDocument {
                     }
                 }
                 if ((containedProps.size() > 0) && (!onlyAttributes)) {
-                    DOMSXmlElement child = new DOMSXmlElement(this, parent, childObject, property);
+                    SDOParsedXmlElement child = new SDOParsedXmlElement(this, parent, childObject, property);
                     child.setLabel(property.getName());
                     parent.add(child);
                     for (Iterator<Property> i = containedProps.iterator(); i.hasNext(); ) {
@@ -307,7 +301,7 @@ public class DOMSXmlDocument {
                     }
                 } else {
                     // Leaf xml element
-                    DOMSXmlElement leafRoot = null;
+                    SDOParsedXmlElement leafRoot = null;
                     Object value = null;
                     int sequenceIndex = -1;
                     if (dataObject.isSet(property)) {
@@ -317,7 +311,7 @@ public class DOMSXmlDocument {
                                 if (seq != null) {
                                     if (seq.size() > 1) {
                                         throw new RuntimeException("We have a sequenced with more than one value. What to do? Container property = "
-                                                + property.getName());
+                                                                   + property.getName());
                                     }
                                     for (int i = 0; i < seq.size(); i++) {
 
@@ -327,7 +321,7 @@ public class DOMSXmlDocument {
                                             sequenceIndex = i;
                                         } else {
                                             throw new RuntimeException("We have a sequenced dataobject with internal properties. What to do? Container property = "
-                                                    + property.getName() + ". Internal property = " + p.getName() + ". Value = " + seq.getValue(i));
+                                                                       + property.getName() + ". Internal property = " + p.getName() + ". Value = " + seq.getValue(i));
 
                                         }
                                     }
@@ -344,7 +338,7 @@ public class DOMSXmlDocument {
         } else {
             if (!helperContext.getXSDHelper().isAttribute(property)) {
                 // Leaf xml element
-                DOMSXmlElement leafRoot = null;
+                SDOParsedXmlElement leafRoot = null;
                 Object value = null;
                 if (property.isMany()) {
                     if (dataObject.isSet(property)) {
@@ -369,10 +363,10 @@ public class DOMSXmlDocument {
         }
     }
 
-    private DOMSXmlElement generateLeaf(
-            final HelperContext helperContext, DOMSXmlElement parent,
+    private SDOParsedXmlElement generateLeaf(
+            final HelperContext helperContext, SDOParsedXmlElement parent,
             final DataObject dataObject, final Property property, Object value, int sequenceIndex) {
-        DOMSXmlElement newLeaf = new DOMSXmlElement(this, parent, dataObject, property);
+        SDOParsedXmlElement newLeaf = new SDOParsedXmlElement(this, parent, dataObject, property);
         newLeaf.setValue(value);
         newLeaf.setLabel(property.getName());
         newLeaf.setIndex(sequenceIndex);
