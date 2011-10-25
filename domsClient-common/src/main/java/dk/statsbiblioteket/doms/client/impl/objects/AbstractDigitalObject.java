@@ -14,8 +14,8 @@ import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.*;
 
@@ -36,13 +36,13 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private String title;
     private String titleOriginal;
 
-    private FedoraState state;
-    private FedoraState stateOriginal;
+    private Constants.FedoraState state;
+    private Constants.FedoraState stateOriginal;
 
     private Date lastModified;
     private Date created;
 
-    protected List<Datastream> datastreams;
+    protected Set<Datastream> datastreams;
 
 
     private List<dk.statsbiblioteket.doms.client.relations.Relation> relations;
@@ -66,7 +66,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         this.api = api;
         this.factory = factory;
         type = new ArrayList<ContentModelObject>();
-        datastreams = new ArrayList<Datastream>();
+        datastreams = new HashSet<Datastream>();
         relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         inverseRelations = new ArrayList<ObjectRelation>();
 
@@ -104,19 +104,19 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public FedoraState getState() throws ServerOperationFailed {
+    public Constants.FedoraState getState() throws ServerOperationFailed {
         loadProfile();
         return state;
     }
 
     @Override
-    public void setState(FedoraState state) throws ServerOperationFailed {
+    public void setState(Constants.FedoraState state) throws ServerOperationFailed {
         loadProfile();
         this.state = state;
     }
 
     @Override
-    public void setState(FedoraState state, String viewAngle) throws ServerOperationFailed {
+    public void setState(Constants.FedoraState state, String viewAngle) throws ServerOperationFailed {
         setState(state);
         Set<DigitalObject> children = getChildObjects(viewAngle);
         for (DigitalObject child : children) {
@@ -140,7 +140,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public List<Datastream> getDatastreams() throws ServerOperationFailed {
         loadProfile();
-        return Collections.unmodifiableList(datastreams);
+        return Collections.unmodifiableList(new ArrayList<Datastream>(datastreams));
     }
 
     @Override
@@ -276,7 +276,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
         }
 
-        state = FedoraState.fromString(profile.getState());
+        state = Constants.FedoraState.fromString(profile.getState());
         stateOriginal = state;
         created = new Date(profile.getCreatedDate());
         lastModified = new Date(profile.getModifiedDate());

@@ -9,7 +9,7 @@ import dk.statsbiblioteket.doms.central.RecordDescription;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import org.w3c.dom.Document;
 
@@ -394,7 +394,7 @@ public interface DomsWSClient {
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          If the object cannot be found.
      */
-    FedoraState getState(String pid) throws ServerOperationFailed;
+    Constants.FedoraState getState(String pid) throws ServerOperationFailed;
 
     /**
      * Get the datastream <code>ds</code> from the object <code>pid</code>

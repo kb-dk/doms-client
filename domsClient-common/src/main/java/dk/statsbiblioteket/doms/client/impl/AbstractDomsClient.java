@@ -3,21 +3,11 @@ package dk.statsbiblioteket.doms.client.impl;
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.DomsClient;
-import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
-import dk.statsbiblioteket.doms.client.objects.MissingObject;
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
-import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**

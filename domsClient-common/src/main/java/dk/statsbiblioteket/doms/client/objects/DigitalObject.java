@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.Date;
 import java.util.List;
@@ -52,11 +53,11 @@ public interface DigitalObject {
     /**
      * @return the Object State
      */
-    FedoraState getState() throws ServerOperationFailed;
+    Constants.FedoraState getState() throws ServerOperationFailed;
 
-    void setState(FedoraState state) throws ServerOperationFailed;
+    void setState(Constants.FedoraState state) throws ServerOperationFailed;
 
-    public void setState(FedoraState state, String viewAngle) throws ServerOperationFailed;
+    public void setState(Constants.FedoraState state, String viewAngle) throws ServerOperationFailed;
 
     /**
      * @return the lastModified date for the object

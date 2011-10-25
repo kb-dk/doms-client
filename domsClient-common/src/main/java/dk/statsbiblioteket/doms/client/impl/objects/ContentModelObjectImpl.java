@@ -12,6 +12,9 @@ import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
+import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntologyImpl;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.w3c.dom.Document;
@@ -35,6 +38,8 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     private DigitalObjectFactory factory;
     private DatastreamModel dsModel;
     private boolean datastreamsLoaded = false;
+    private ParsedOwlOntology ontology;
+    private boolean ontologyLoaded = false;
 
 
     public ContentModelObjectImpl(ObjectProfile profile, CentralWebservice api,
@@ -65,7 +70,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         Datastream viewStream;
         Document viewDoc;
         try {
-            viewStream = this.getDatastream("VIEW");
+            viewStream = this.getDatastream(Constants.VIEW_ID);
         } catch (NotFoundException e) {
             throw new ServerOperationFailed(
                     "'VIEW' datastream not found in object: " + this.getPid(), e);
@@ -73,7 +78,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         String contents = viewStream.getContents();
         viewDoc = DOM.stringToDOM(contents, true);
         XPathSelector xPathSelector = DOM.createXPathSelector("v",
-                                                              "http://ecm.sourceforge.net/types/view/0/2/#");
+                                                              Constants.VIEWS_NAMESPACE);
 
         NodeList allViewAngles = xPathSelector.selectNodeList(viewDoc,
                                                               "/v:views/v:viewangle/@name");
@@ -122,8 +127,9 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         if(datastreamsLoaded){
             return;
         }
+        //System.out.println("loading datastreams for "+this.getPid());
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
-            if(datastreamProfile.getId().equals("DS-COMPOSITE-MODEL")){
+            if(datastreamProfile.getId().equals(Constants.DS_COMPOSITE_MODEL_ID)){
                 dsModel = new DatastreamModelImpl(datastreamProfile, this,
                                                   this.api);
                 datastreams.add(dsModel);
@@ -135,5 +141,27 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         }
         datastreamsLoaded = true;
     }
+
+    public ParsedOwlOntology getOntology() throws ServerOperationFailed {
+        loadOntology();
+        return ontology;
+    }
+
+    private synchronized void loadOntology() throws ServerOperationFailed {
+        if (ontologyLoaded){
+            return;
+        }
+        loadDatastreams();
+        for (Datastream datastream : datastreams) {
+            if (datastream.getId().equals(Constants.ONTOLOGY)){
+                ontology = new ParsedOwlOntologyImpl(datastream);
+            }
+        }
+        if (ontology != null){
+            ontologyLoaded = true;
+        }
+    }
+
+
 }
 

@@ -13,7 +13,5 @@ import java.util.Set;
  */
 public interface DataObject extends DigitalObject {
 
-    public Set<DigitalObject> getChildren() throws ServerOperationFailed;
-
     public String getContentmodelTitle() throws ServerOperationFailed;
 }

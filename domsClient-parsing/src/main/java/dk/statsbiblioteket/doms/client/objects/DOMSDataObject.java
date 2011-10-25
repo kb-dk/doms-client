@@ -53,7 +53,7 @@ import java.util.*;
 public class DOMSDataObject extends DOMSDigitalObject {
 
     /** The state of the data object */
-    private FedoraState fedoraState;
+    private dk.statsbiblioteket.doms.client.utils.Constants.FedoraState fedoraState;
 
     /**The schema for this DOMSDataObject.*/
     private DOMSContentModel contentModel;
@@ -159,18 +159,18 @@ public class DOMSDataObject extends DOMSDigitalObject {
     /**
      * @param fedoraState the fedoraState to set
      */
-    public void setFedoraState(FedoraState fedoraState) {
+    public void setFedoraState(dk.statsbiblioteket.doms.client.utils.Constants.FedoraState fedoraState) {
         this.fedoraState = fedoraState;
     }
 
     /**
      * @return the fedoraState
      */
-    public FedoraState getFedoraState() {
+    public dk.statsbiblioteket.doms.client.utils.Constants.FedoraState getFedoraState() {
         return fedoraState;
     }
 
-    public FedoraState getFedoraStateTrue(){
+    public dk.statsbiblioteket.doms.client.utils.Constants.FedoraState getFedoraStateTrue(){
         return fedoraState;
     }
 

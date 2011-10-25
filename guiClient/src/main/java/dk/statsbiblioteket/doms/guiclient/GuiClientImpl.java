@@ -1,11 +1,9 @@
 package dk.statsbiblioteket.doms.guiclient;
 
-import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
-import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.central.User;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
                 SearchResult cresult = new SearchResult(wresult.getPid(),
                                                         wresult.getType(),
                                                         wresult.getTitle(),
-                                                        FedoraState.fromString(wresult.getState()),
+                                                        Constants.FedoraState.fromString(wresult.getState()),
                                                         new Date(wresult.getModifiedDate()),
                                                         new Date(wresult.getCreatedDate()),
                                                         getFactory());

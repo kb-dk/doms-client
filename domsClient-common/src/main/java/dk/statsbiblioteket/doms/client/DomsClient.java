@@ -1,14 +1,7 @@
 package dk.statsbiblioteket.doms.client;
 
-import dk.statsbiblioteket.doms.central.InvalidResourceException;
-import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
-import dk.statsbiblioteket.doms.client.relations.Relation;
-
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

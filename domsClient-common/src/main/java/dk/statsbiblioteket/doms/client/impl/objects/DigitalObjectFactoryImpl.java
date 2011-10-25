@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.MissingObject;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 
 
@@ -45,17 +46,19 @@ public class DigitalObjectFactoryImpl extends DigitalObjectFactory {
     @Override
     public synchronized DigitalObject getDigitalObject(String pid) throws ServerOperationFailed {
 
-        if (pid.startsWith("info:fedora/")) {
-            pid = pid.substring("info:fedora/".length());
-        }
+        pid = Constants.ensurePID(pid);
+
         SoftReference<DigitalObject> ref = cache.get(pid);
         DigitalObject object = null;
+        //System.out.println("Getting object from cache: "+pid);
         if (ref != null) {
             object = ref.get();
         }
+
         if (object == null) {
             try {
                 try {
+                    //System.out.println("Object "+pid+" not in cache, loading");
                     AbstractDigitalObject newobj = retrieveObject(pid);
                     cache.put(pid, new SoftReference<DigitalObject>(newobj));
                     newobj.loadContentModels();

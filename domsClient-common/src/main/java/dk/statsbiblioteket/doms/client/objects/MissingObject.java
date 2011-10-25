@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.Date;
 import java.util.List;
@@ -44,17 +45,17 @@ public class MissingObject implements DigitalObject {
     }
 
     @Override
-    public FedoraState getState() {
+    public Constants.FedoraState getState() {
         throw new IllegalAccessError("Missing object");
     }
 
     @Override
-    public void setState(FedoraState state) {
+    public void setState(Constants.FedoraState state) {
         throw new IllegalAccessError("Missing object");
     }
 
     @Override
-    public void setState(FedoraState state, String viewAngle) throws ServerOperationFailed {
+    public void setState(Constants.FedoraState state, String viewAngle) throws ServerOperationFailed {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -7,6 +7,7 @@ import dk.statsbiblioteket.doms.client.objects.DataObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.Set;
 
@@ -21,12 +22,6 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
             throws ServerOperationFailed {
         super(profile, api, factory);    //To change body of overridden methods use File | Settings | File Templates.
     }
-
-    @Override
-    public Set<DigitalObject> getChildren() throws ServerOperationFailed {
-        return getChildObjects("GUI");
-    }
-
 
     @Override
     public String getContentmodelTitle() throws ServerOperationFailed {

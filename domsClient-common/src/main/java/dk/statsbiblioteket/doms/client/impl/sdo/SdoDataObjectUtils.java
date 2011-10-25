@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.sdo;
+package dk.statsbiblioteket.doms.client.impl.sdo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;

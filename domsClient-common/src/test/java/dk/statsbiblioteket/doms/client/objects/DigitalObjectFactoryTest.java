@@ -1,23 +1,17 @@
 package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.datastreams.Presentation;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Test;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static junit.framework.Assert.*;
@@ -29,32 +23,11 @@ import static junit.framework.Assert.*;
  * Time: 1:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DigitalObjectFactoryTest {
+public class DigitalObjectFactoryTest extends TestBase{
 
-    private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
-            "http://central.doms.statsbiblioteket.dk/",
-            "CentralWebserviceService");
-    private URL domsWSAPIEndpoint;
-    private String userName = "fedoraAdmin";
-    private String password = "fedoraAdminPass";
-    private DigitalObjectFactory factory;
 
     public DigitalObjectFactoryTest() throws MalformedURLException {
-        domsWSAPIEndpoint = new URL("http://alhena:7880/centralWebservice-service/central/");
-    }
-
-
-    @org.junit.Before
-    public void setUp() throws Exception {
-        CentralWebservice domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
-                                                                 CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
-
-        Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI)
-                .getRequestContext();
-        domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
-        domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
-        factory = new DigitalObjectFactoryImpl(domsAPI);
-
+        super();
     }
 
     @org.junit.Test
@@ -105,7 +78,7 @@ public class DigitalObjectFactoryTest {
     @org.junit.Test
     public void testGetDigitalObject1() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
-        assertEquals(cmdoms.getState(),FedoraState.Active);
+        assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
         assertTrue(cmdoms instanceof ContentModelObject);
     }
 
@@ -166,7 +139,7 @@ public class DigitalObjectFactoryTest {
     @org.junit.Test
     public void testGetDigitalObject2() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:Root_Collection");
-        assertEquals(cmdoms.getState(),FedoraState.Active);
+        assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
         List<ObjectRelation> inverseRels = cmdoms.getInverseRelations();
         assertNotNull(inverseRels);
         assertTrue(inverseRels.size() > 3);
@@ -182,19 +155,19 @@ public class DigitalObjectFactoryTest {
         //Load the object, and assert that everything is Active
         DigitalObject object = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
         Set<DigitalObject> children = object.getChildObjects("SummaVisible");
-        assertTrue(object.getState() == FedoraState.Active);
+        assertTrue(object.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children) {
-            assertTrue(child.getState()==FedoraState.Active);
+            assertTrue(child.getState()== Constants.FedoraState.Active);
             i++;
         }
         assertTrue(i>0);
         i = 0;
 
         //Set the object and all subobjects to Inactive
-        object.setState(FedoraState.Inactive, "SummaVisible");
+        object.setState(Constants.FedoraState.Inactive, "SummaVisible");
         object.save("SummaVisible");
         for (DigitalObject child : children) {
-            assertTrue(child.getState()==FedoraState.Inactive);
+            assertTrue(child.getState()== Constants.FedoraState.Inactive);
             i++;
         }
         assertTrue(i>0);
@@ -206,21 +179,21 @@ public class DigitalObjectFactoryTest {
 
         //Load the object, and check that everything is now in Inactive
         DigitalObject object2 = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
-        assertTrue(object2.getState() == FedoraState.Inactive);
+        assertTrue(object2.getState() == Constants.FedoraState.Inactive);
         Set<DigitalObject> children2 = object2.getChildObjects("SummaVisible");
         for (DigitalObject child : children2) {
-            assertTrue(child.getState()==FedoraState.Inactive);
+            assertTrue(child.getState()== Constants.FedoraState.Inactive);
             i++;
         }
         assertTrue(i>0);
         i = 0;
 
         //Then set everything to Active again
-        object2.setState(FedoraState.Active, "SummaVisible");
+        object2.setState(Constants.FedoraState.Active, "SummaVisible");
         object2.save("SummaVisible");
-        assertTrue(object2.getState() == FedoraState.Active);
+        assertTrue(object2.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children2) {
-            assertTrue(child.getState()==FedoraState.Active);
+            assertTrue(child.getState()== Constants.FedoraState.Active);
             i++;
         }
         assertTrue(i>0);
@@ -231,7 +204,7 @@ public class DigitalObjectFactoryTest {
         DigitalObject object3 = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
         Set<DigitalObject> children3 = object3.getChildObjects("SummaVisible");
         for (DigitalObject child : children3) {
-            assertTrue(child.getState()==FedoraState.Active);
+            assertTrue(child.getState()== Constants.FedoraState.Active);
             i++;
         }
         assertTrue(i>0);

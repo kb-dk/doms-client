@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.sdo;
+package dk.statsbiblioteket.doms.client.impl.sdo;
 
 
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;

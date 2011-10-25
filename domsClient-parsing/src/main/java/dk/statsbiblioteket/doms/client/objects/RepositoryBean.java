@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.io.InputStream;
 
@@ -22,7 +23,7 @@ public class RepositoryBean {
         return null;  //To change body of created methods use File | Settings | File Templates.
     }
 
-    public FedoraState getDataObjectState(String pid) {
+    public Constants.FedoraState getDataObjectState(String pid) {
         return null;  //To change body of created methods use File | Settings | File Templates.
     }
 

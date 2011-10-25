@@ -6,7 +6,7 @@ import dk.statsbiblioteket.doms.client.datastreams.*;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
+import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -107,7 +107,7 @@ public abstract class AbstractDatastream implements Datastream {
 
     public SDOParsedXmlElement getSDOParsedDocument()
             throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException {
-        SDOParsedXmlDocument sdodoc = new SDOParsedXmlDocument();
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl();
         sdodoc.generate(this.getDeclarations().iterator().next());
         sdodoc.load(new ByteArrayInputStream(this.getContents().getBytes()));
         return sdodoc.getRootSDOParsedXmlElement();

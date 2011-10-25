@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.w3c.dom.Document;
@@ -57,12 +58,13 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
         if (parsed){
             return;
         }
+        parsed = true;
 
 
         Document dsDoc = DOM.stringToDOM(getContents(), true);
 
         XPathSelector pathSelector = DOM.createXPathSelector("ds",
-                                                             "info:fedora/fedora-system:def/dsCompositeModel#");
+                                                             Constants.DS_COMPOSITE_NAMESPACE);
 
         NodeList allDSReferences = pathSelector.selectNodeList(dsDoc,
                                                                "//ds:dsTypeModel[@ID]");

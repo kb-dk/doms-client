@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.sdo;
+package dk.statsbiblioteket.doms.client.impl.sdo;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;

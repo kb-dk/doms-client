@@ -3,7 +3,7 @@ package dk.statsbiblioteket.doms.guiclient;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,13 +18,13 @@ public class SearchResult {
 	private String pid;
 	private List<String> type;
 	private String title;
-	private FedoraState state;
+	private Constants.FedoraState state;
     private Date lastModified;
     private Date created;
     private DigitalObjectFactory factory;
 
 
-    public SearchResult(String pid, List<String> type, String title, FedoraState state, Date lastModified, Date created,
+    public SearchResult(String pid, List<String> type, String title, Constants.FedoraState state, Date lastModified, Date created,
                         DigitalObjectFactory factory) {
         this.pid = pid;
         this.type = type;
@@ -47,7 +47,7 @@ public class SearchResult {
         return title;
     }
 
-    public FedoraState getState() {
+    public Constants.FedoraState getState() {
         return state;
     }
 

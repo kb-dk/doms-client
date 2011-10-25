@@ -34,7 +34,7 @@ import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.objects.FedoraState;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.w3c.dom.Document;
@@ -410,9 +410,9 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
-    public FedoraState getState(String pid) throws ServerOperationFailed {
+    public Constants.FedoraState getState(String pid) throws ServerOperationFailed {
         try {
-            return FedoraState.fromString(domsAPI.getObjectProfile(pid).getState());
+            return Constants.FedoraState.fromString(domsAPI.getObjectProfile(pid).getState());
         } catch (Exception e) {
             throw new ServerOperationFailed(e);
         }
