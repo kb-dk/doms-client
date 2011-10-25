@@ -108,6 +108,13 @@ public interface DigitalObject {
      */
     List<ObjectRelation> getInverseRelations() throws ServerOperationFailed;
 
+    /**
+     * The list of inverse relations. TODO implement
+     * @return
+     */
+    List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed;
+
+
 
     /**
      * Remove a relation from this object

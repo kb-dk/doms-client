@@ -191,6 +191,26 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         return Collections.unmodifiableList(inverseRelations);
     }
 
+    @Override
+    public List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed {
+          List<Relation> frelations;
+        try {
+            frelations = api.getInverseRelations(pid);
+        } catch (Exception e) {
+            throw new ServerOperationFailed("Failed to load inverse relations", e);
+        }
+        List<ObjectRelation> result = new ArrayList<ObjectRelation>();
+        for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
+            if (frelation.getPredicate().equals(predicate)){ //TODO do not request unneeded relations from server
+                result.add(new ObjectRelationImpl(frelation.getPredicate(),
+                                                  frelation.getObject(),
+                                                  frelation.getSubject(),
+                                                  factory));
+            }
+        }
+        return result;
+    }
+
     /**
      * Do not call this.
      *
@@ -240,6 +260,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
     }
 
+
+
     /**
      * Do not call this.
      *
@@ -254,7 +276,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (String contentModel : profile.getContentmodels()) {
             DigitalObject cm_object = factory.getDigitalObject(contentModel);
-            if (cm_object instanceof ContentModelObjectImpl) {
+            if (cm_object instanceof ContentModelObject) {
                 ContentModelObject object = (ContentModelObject) cm_object;
                 type.add(object);
             } else {
@@ -303,10 +325,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         Set<DigitalObject> children = new HashSet<DigitalObject>();
         for (ContentModelObject contentModelObject : getType()) {
             try {
-            List<String> theseRels = contentModelObject.getRelationsWithViewAngle(viewAngle);
-            if (theseRels!= null){
-                viewRelationNames.addAll(theseRels);
-            }
+                List<String> theseRels = contentModelObject.getRelationsWithViewAngle(viewAngle);
+                if (theseRels!= null){
+                    viewRelationNames.addAll(theseRels);
+                }
             } catch (ServerOperationFailed e){
                 //pass quietly
             }
@@ -442,11 +464,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-     /**
+    /**
      * Sets a relation between this object and another.
      * @param newRelation the relation object
      */
-     public void setRelation(dk.statsbiblioteket.doms.client.relations.Relation newRelation){
-           relations.add(newRelation);
+    public void setRelation(dk.statsbiblioteket.doms.client.relations.Relation newRelation){
+        relations.add(newRelation);
     }
 }

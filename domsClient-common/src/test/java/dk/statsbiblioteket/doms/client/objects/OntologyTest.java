@@ -8,6 +8,7 @@ import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
 import dk.statsbiblioteket.doms.client.ontology.OWLRestriction;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntologyImpl;
+import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Test;
 
@@ -70,4 +71,38 @@ public class OntologyTest extends TestBase{
         OWLObjectProperty collectionRelProp = parsedOntology.getOWLObjectProperty("http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection");
         assertNotNull(collectionRelProp);
     }
+
+
+    @Test
+    public void testParseOntologyFromDataObject() throws ServerOperationFailed, NotFoundException {
+        DigitalObject programObject = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        assertEquals(programObject.getState(), Constants.FedoraState.Active);
+        assertTrue(programObject instanceof DataObject);
+        List<Relation> relations = programObject.getRelations();
+        Relation collectionRel = null;
+        for (Relation relation : relations) {
+            if (relation.getPredicate().equals("http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection")){
+                collectionRel = relation;
+            }
+        }
+        assertNotNull(collectionRel);
+        List<OWLRestriction> restrictions = collectionRel.getOwlProperties().iterator().next().getOwlRestrictions();
+
+        String allValuesFrom = null;
+        int minCardinality = -2;
+        for (OWLRestriction restriction : restrictions) {
+            if (restriction.getOnProperty().equals(collectionRel.getPredicate())){
+                if (restriction.getAllValuesFrom() != null){
+                    allValuesFrom = restriction.getAllValuesFrom();
+                }
+                if (restriction.getMinCardinality() != -2){
+                    minCardinality = restriction.getMinCardinality();
+                }
+            }
+        }
+        assertEquals("info:fedora/doms:ContentModel_Collection#class",allValuesFrom);
+        assertEquals(1,minCardinality);
+    }
+
+
 }

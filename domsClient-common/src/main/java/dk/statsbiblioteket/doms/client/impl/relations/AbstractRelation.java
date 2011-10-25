@@ -1,11 +1,17 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
+import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.lang.ref.SoftReference;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Barebones relation, predicate and object. No subject
@@ -57,5 +63,20 @@ public abstract class AbstractRelation implements Relation {
 
     protected DigitalObjectFactory getFactory() {
         return factory;
+    }
+
+    @Override
+    public Set<OWLObjectProperty> getOwlProperties() throws ServerOperationFailed {
+        Set<OWLObjectProperty> result = new HashSet<OWLObjectProperty>();
+        DigitalObject house = factory.getDigitalObject(pid);
+        List<ContentModelObject> types = house.getType();
+        for (ContentModelObject type : types) {
+            ParsedOwlOntology ontology = type.getOntology();
+            OWLObjectProperty property = ontology.getOWLObjectProperty(predicate);
+            if (property != null){
+                result.add(property);
+            }
+        }
+        return result;
     }
 }

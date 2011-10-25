@@ -20,6 +20,7 @@ public class Constants {
     static public final String FEDORA_MODEL_NAMESPACE = "info:fedora/fedora-system:def/model#";
     static public final String INFO_FEDORA_URI_SCHEME = "info:fedora/";
     static public final String IS_PART_OF_COLLECTION_RELATION = DOMS_RELATIONS_NAMESPACE+"isPartOfCollection";
+    static public final String EXTENDSMODEL_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#extendsModel";
     static public final String EXTENSIONS_SCHEMA = "SCHEMA";
     static public final String EXTENSIONS_GUI = "GUI";
     static public final String VIEW_GUI = "GUI";
