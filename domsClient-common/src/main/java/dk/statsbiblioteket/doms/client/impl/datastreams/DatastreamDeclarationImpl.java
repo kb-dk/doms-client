@@ -3,7 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.datastreams;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
-import dk.statsbiblioteket.doms.client.datastreams.Presentation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
     private DatastreamModel model;
     private List<String> dsMimeTypes;
     private List<String> dsFormatUris;
-    private Presentation presentation;
+    private Constants.GuiRepresentation presentation;
     private Datastream schema;
 
     public DatastreamDeclarationImpl(String name, DatastreamModel model) {
@@ -31,7 +31,7 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
 
         dsMimeTypes = new ArrayList<String>();
         dsFormatUris = new ArrayList<String>();
-        presentation = Presentation.undefined;
+        presentation = Constants.GuiRepresentation.undefined;
     }
 
     public void addMimeTypes(List<String> dsMimeTypes) {
@@ -56,7 +56,7 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
     }
 
     @Override
-    public Presentation getPresentation() {
+    public Constants.GuiRepresentation getPresentation() {
         return presentation;
     }
 
@@ -74,7 +74,7 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
         this.schema = schema;
     }
 
-    public void setPresentation(Presentation presentation) {
+    public void setPresentation(Constants.GuiRepresentation presentation) {
         this.presentation = presentation;
     }
 }

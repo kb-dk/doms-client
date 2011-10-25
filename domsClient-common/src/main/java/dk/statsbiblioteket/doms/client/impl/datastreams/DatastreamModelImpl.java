@@ -5,7 +5,6 @@ import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
-import dk.statsbiblioteket.doms.client.datastreams.Presentation;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -99,15 +98,15 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
             // Her håndteres at der er viewAngles for Gui
             Node guiPresentAs = pathSelector.selectNode(item,
                                                         "ds:extension[@name='GUI']/ds:presentAs/@type");
-            Presentation presentation;
+            Constants.GuiRepresentation presentation;
             try {
                 if (guiPresentAs != null){
-                    presentation = Presentation.valueOf(guiPresentAs.getNodeValue());
+                    presentation = Constants.GuiRepresentation.valueOf(guiPresentAs.getNodeValue());
                 } else {
-                    presentation = Presentation.undefined;
+                    presentation = Constants.GuiRepresentation.undefined;
                 }
             } catch (IllegalArgumentException e){
-                presentation = Presentation.undefined;
+                presentation = Constants.GuiRepresentation.undefined;
             }
             DatastreamDeclarationImpl dsDecl = new DatastreamDeclarationImpl(dsName, this);
             dsDecl.addMimeTypes(dsMimeTypes);

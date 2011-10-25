@@ -52,7 +52,8 @@ public class Constants {
 
 
     public static enum GuiRepresentation {
-        importable,editable,uploadable,readonly,invisible;
+
+        editable, importable, uploadable, readonly, invisible, undefined;
 
         public static GuiRepresentation fromString(String a){
             return GuiRepresentation.valueOf(a);

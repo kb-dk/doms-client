@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static org.junit.Assert.assertNull;
+
 /**
  * Created by IntelliJ IDEA.
  * User: abr
@@ -63,7 +65,7 @@ public class SdoTest extends TestBase{
 
         try {
             SDOParsedXmlElement doc = program.getDatastream("RELS-EXT").getSDOParsedDocument();
-            Assert.fail();
+            assertNull(doc);
         } catch (Exception e){
 
         }

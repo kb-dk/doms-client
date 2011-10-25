@@ -14,6 +14,7 @@ import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.apache.tuscany.sdo.api.SDOUtil;
 import org.w3c.dom.NamedNodeMap;
@@ -40,7 +41,11 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     //XML document that is an instance of the XML Schema.
     private List<Type> sdoTypes = new ArrayList<Type>();
 
-    public SDOParsedXmlDocumentImpl() {
+    public SDOParsedXmlDocumentImpl(DatastreamDeclaration next, ByteArrayInputStream bytes)
+            throws ServerOperationFailed, IOException, MyXMLReadException {
+            generate(next);
+            load(bytes);
+
     }
 
     /**
@@ -116,11 +121,12 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         return sdoTypes;
     }
 
-    public void generate(DatastreamDeclaration compositeSchema)
+    private void generate(DatastreamDeclaration compositeSchema)
             throws IOException, ServerOperationFailed, MyXMLReadException {
         if (sdoContext == null){
             sdoContext = SDOUtil.createHelperContext(true);
         }
+
         if (compositeSchema.getSchema() != null){
             String is2 = compositeSchema.getSchema().getContents();
 
@@ -156,8 +162,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     }
 
-    public void load(
-            InputStream is) throws IOException,  ServerOperationFailed {
+    private void load(InputStream is) throws IOException,  ServerOperationFailed {
 
 
         try {
@@ -194,10 +199,13 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             root.setLabel(rootProperty.getName());
 
             setRootSDOParsedXmlElement(root);
-            List<Property> containedProps = rootType.getProperties();
-            for (Iterator<Property> i = containedProps.iterator(); i.hasNext(); ) {
-                Property property = (Property) i.next();
-                handleProperty(sdoContext, getRootSDOParsedXmlElement(), rootDataObject, property);
+            List containedProps = rootType.getProperties();
+            for (Iterator i = containedProps.iterator(); i.hasNext(); ) {
+                Object tmp = i.next();
+                if (tmp instanceof Property) {
+                    Property property = (Property) tmp;
+                    handleProperty(sdoContext, getRootSDOParsedXmlElement(), rootDataObject, property);
+                }
             }
 
 

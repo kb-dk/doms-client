@@ -3,7 +3,6 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
-import dk.statsbiblioteket.doms.client.datastreams.Presentation;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
@@ -126,7 +125,7 @@ public class DigitalObjectFactoryTest extends TestBase{
          assertTrue(declarations.size() > 0);
          for (DatastreamDeclaration declaration : declarations) {
              assertEquals(declaration.getName(),"PBCORE");
-             assertTrue(declaration.getPresentation() == Presentation.editable);
+             assertTrue(declaration.getPresentation() == Constants.GuiRepresentation.editable);
              Datastream pbcoreSchema = declaration.getSchema();
              if (pbcoreSchema != null){
                  assertNotNull(pbcoreSchema.getContents());

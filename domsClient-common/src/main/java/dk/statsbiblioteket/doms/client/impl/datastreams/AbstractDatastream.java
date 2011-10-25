@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -103,14 +104,20 @@ public abstract class AbstractDatastream implements Datastream {
         }
         return datastreamDeclarations;
     }
-    
+
 
     public SDOParsedXmlElement getSDOParsedDocument()
             throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException {
-        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl();
-        sdodoc.generate(this.getDeclarations().iterator().next());
-        sdodoc.load(new ByteArrayInputStream(this.getContents().getBytes()));
-        return sdodoc.getRootSDOParsedXmlElement();
+
+        DatastreamDeclaration decl = this.getDeclarations().iterator().next();
+        if (decl.getPresentation()== Constants.GuiRepresentation.editable || decl.getPresentation() == Constants.GuiRepresentation.readonly){
+            SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(decl,new ByteArrayInputStream(this.getContents().getBytes()));
+            return sdodoc.getRootSDOParsedXmlElement();
+        } else {
+            return null;
+        }
+
+
     }
 
 
