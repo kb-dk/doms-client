@@ -108,14 +108,24 @@ public abstract class AbstractDatastream implements Datastream {
 
     public SDOParsedXmlElement getSDOParsedDocument()
             throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException {
-
-        DatastreamDeclaration decl = this.getDeclarations().iterator().next();
-        if (decl.getPresentation()== Constants.GuiRepresentation.editable || decl.getPresentation() == Constants.GuiRepresentation.readonly){
-            SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(decl,new ByteArrayInputStream(this.getContents().getBytes()));
-            return sdodoc.getRootSDOParsedXmlElement();
-        } else {
+        Set<DatastreamDeclaration> declarations = this.getDeclarations();
+        DatastreamDeclaration preferredDecl = null;
+        for (DatastreamDeclaration declaration : declarations) {
+            if (declaration.getPresentation() == Constants.GuiRepresentation.editable ||
+                declaration.getPresentation() == Constants.GuiRepresentation.readonly){
+                preferredDecl = declaration;
+            }
+        }
+        if (preferredDecl == null){
+            preferredDecl = declarations.iterator().next();
+        }
+        if (preferredDecl.getSchema() == null){
             return null;
         }
+        SDOParsedXmlDocumentImpl sdodoc
+                = new SDOParsedXmlDocumentImpl(preferredDecl,
+                                               new ByteArrayInputStream(this.getContents().getBytes()));
+        return sdodoc.getRootSDOParsedXmlElement();
 
 
     }

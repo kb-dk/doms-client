@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,6 +56,36 @@ public class SdoTest extends TestBase{
 
 
     }
+
+    @Test
+    public void testSdoRitzau()
+            throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
+        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        try {
+            SDOParsedXmlElement doc = program.getDatastream("RITZAU_ORIGINAL").getSDOParsedDocument();
+            fail();
+        } catch (Exception e){
+
+        }
+
+
+    }
+
+    @Test
+    public void testSdoGallup()
+            throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
+        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        try {
+            SDOParsedXmlElement doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
+            fail();
+        } catch (Exception e){
+
+        }
+
+
+
+    }
+
 
 
     @Test
