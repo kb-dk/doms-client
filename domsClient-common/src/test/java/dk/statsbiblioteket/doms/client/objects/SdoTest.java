@@ -58,6 +58,19 @@ public class SdoTest extends TestBase{
     }
 
     @Test
+    public void testSdoSHARD()
+            throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
+        DigitalObject program = factory.getDigitalObject("uuid:7421d689-b02c-4456-85dd-2f15ded890f7");
+
+        SDOParsedXmlElement doc = program.getDatastream("SHARD_METADATA").getSDOParsedDocument();
+
+        parseTree(doc, "");
+
+
+    }
+
+
+    @Test
     public void testSdoRitzau()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");

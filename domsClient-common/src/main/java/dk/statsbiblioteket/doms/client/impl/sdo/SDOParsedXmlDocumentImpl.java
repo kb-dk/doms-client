@@ -141,9 +141,11 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 }
             }
 
+/*
             if (targetNamespace == null) {
                 return;
             }
+*/
 
             //Define types based on the XML Schema
             try {
