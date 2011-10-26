@@ -254,6 +254,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         Datastream datastream = object.getDatastream("PBCORE");
         SDOParsedXmlDocument doc = datastream.getSDOParsedDocument();
         object.setState(Constants.FedoraState.Inactive);
+        object.save();
         String originaldoc = doc.dumpToString();
 
         changeField(doc.getRootSDOParsedXmlElement(),"test", "testvalue");

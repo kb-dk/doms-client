@@ -45,6 +45,12 @@ public class InternalDatastreamImpl extends AbstractDatastream implements Intern
 
     @Override
     public void preSave() throws ServerOperationFailed {
+        if (contents == null || originalContents == null){
+            return;
+        }
+        if (contents.equals(originalContents)){
+            return;
+        }
         try {
             api.modifyDatastream(getDigitalObject().getPid(),getId(),contents,"Save from GUI");
         } catch (InvalidCredentialsException e) {

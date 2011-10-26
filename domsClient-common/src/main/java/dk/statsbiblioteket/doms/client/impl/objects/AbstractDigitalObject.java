@@ -2,8 +2,6 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
@@ -14,11 +12,8 @@ import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
-import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.String;
 import java.util.*;
 
