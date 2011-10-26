@@ -3,13 +3,17 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
+import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -117,22 +121,22 @@ public class DigitalObjectFactoryTest extends TestBase{
         }
     }
 
-     @Test
+    @Test
     public void testDatastreamModel2() throws Exception {
         DigitalObject template =
                 factory.getDigitalObject("doms:Template_Program");
-         Set<DatastreamDeclaration> declarations = template.getDatastream("PBCORE").getDeclarations();
-         assertTrue(declarations.size() > 0);
-         for (DatastreamDeclaration declaration : declarations) {
-             assertEquals(declaration.getName(),"PBCORE");
-             assertTrue(declaration.getPresentation() == Constants.GuiRepresentation.editable);
-             Datastream pbcoreSchema = declaration.getSchema();
-             if (pbcoreSchema != null){
-                 assertNotNull(pbcoreSchema.getContents());
-             } else {
-                 fail();
-             }
-         }
+        Set<DatastreamDeclaration> declarations = template.getDatastream("PBCORE").getDeclarations();
+        assertTrue(declarations.size() > 0);
+        for (DatastreamDeclaration declaration : declarations) {
+            assertEquals(declaration.getName(),"PBCORE");
+            assertTrue(declaration.getPresentation() == Constants.GuiRepresentation.editable);
+            Datastream pbcoreSchema = declaration.getSchema();
+            if (pbcoreSchema != null){
+                assertNotNull(pbcoreSchema.getContents());
+            } else {
+                fail();
+            }
+        }
     }
 
     @org.junit.Test
@@ -209,6 +213,73 @@ public class DigitalObjectFactoryTest extends TestBase{
         assertTrue(i>0);
         i = 0;
 
+    }
+
+    @Test
+    public void testMostSpecificCM() throws ServerOperationFailed {
+        DigitalObject object = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        if (object instanceof DataObject) {
+            DataObject dataObject = (DataObject) object;
+            String cmTitle = dataObject.getContentmodelTitle();
+            assertEquals(cmTitle,"Radio/TV Program");
+
+        }   else {
+            fail();
+        }
+
+    }
+
+
+    private void changeField(SDOParsedXmlElement doc, String field, String newvalue){
+        ArrayList<SDOParsedXmlElement> children = doc.getChildren();
+        for (SDOParsedXmlElement child : children) {
+            if (child.isLeaf()){
+                if (child.getLabel().equals(field)){
+                    child.setValue(newvalue);
+                }
+            } else {
+                changeField(child, field, newvalue);
+            }
+        }
+    }
+
+    @org.junit.Test
+    public void testSaveDatastream() throws Exception {
+
+
+
+
+        //Load the object, and assert that everything is Active
+        DigitalObject object = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        Datastream datastream = object.getDatastream("PBCORE");
+        SDOParsedXmlDocument doc = datastream.getSDOParsedDocument();
+        object.setState(Constants.FedoraState.Inactive);
+        String originaldoc = doc.dumpToString();
+
+        changeField(doc.getRootSDOParsedXmlElement(),"test", "testvalue");
+
+        String unchangeddoc = doc.dumpToString();
+
+        assertEquals(originaldoc,unchangeddoc);
+
+        changeField(doc.getRootSDOParsedXmlElement(),"Subject", "test of change: "+Math.random());
+
+        String changeddoc = doc.dumpToString();
+
+        assertNotSame(originaldoc, unchangeddoc);
+
+
+        if (datastream instanceof InternalDatastream) {
+            InternalDatastream internalDatastream = (InternalDatastream) datastream;
+            internalDatastream.replace(doc.dumpToString());
+        }
+        object.save();
+
+        setUp();
+        DigitalObject object2 = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        SDOParsedXmlDocument doc2 = object2.getDatastream("PBCORE").getSDOParsedDocument();
+        String rereaddoc = doc2.dumpToString();
+        assertEquals(changeddoc,rereaddoc);
     }
 
 }

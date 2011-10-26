@@ -19,5 +19,5 @@ public interface SDOParsedXmlDocument {
 
     boolean isAbstract();
 
-    ByteArrayOutputStream save() throws IOException;
+    String dumpToString() throws IOException;
 }

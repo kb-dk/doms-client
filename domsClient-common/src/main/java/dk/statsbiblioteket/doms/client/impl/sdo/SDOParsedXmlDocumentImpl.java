@@ -21,10 +21,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -43,8 +40,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     public SDOParsedXmlDocumentImpl(DatastreamDeclaration next, ByteArrayInputStream bytes)
             throws ServerOperationFailed, IOException, MyXMLReadException {
-            generate(next);
-            load(bytes);
+        generate(next);
+        load(bytes);
 
     }
 
@@ -221,10 +218,9 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     @Override
-    public ByteArrayOutputStream save() throws IOException {
+    public String dumpToString() throws IOException {
         if ((getRootSDOParsedXmlElement() != null) && (getSdoXmlDocument() != null) && (sdoContext != null)) {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-
+            Writer writer = new StringWriter();
             getRootSDOParsedXmlElement().submit(sdoContext);
 
             //Before we serialize the xml document we make a copy of the xml documennt and deletes empty data
@@ -237,9 +233,12 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             SdoDataObjectUtils utils = new SdoDataObjectUtils();
             utils.handleDataObject(sdoContext, null, rootCopy, rootProperty);
             utils.doDelete();
-            sdoContext.getXMLHelper().save(docCopy, os, null);
+            sdoContext.getXMLHelper().save(docCopy, writer, null);
 
-            return os;
+            writer.flush();
+
+            return writer.toString();
+
         }
         return null;
     }

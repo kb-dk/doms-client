@@ -7,7 +7,7 @@ import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
-import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.utils.Constants;
@@ -32,7 +32,6 @@ public abstract class AbstractDatastream implements Datastream {
     private String formatURI;
     private String mimeType;
     private String label;
-
 
     public AbstractDatastream(DatastreamProfile datastreamProfile, DigitalObject digitalObject, CentralWebservice api) {
         this.digitalObject = digitalObject;
@@ -105,8 +104,7 @@ public abstract class AbstractDatastream implements Datastream {
         return datastreamDeclarations;
     }
 
-
-    public SDOParsedXmlElement getSDOParsedDocument()
+    public SDOParsedXmlDocument getSDOParsedDocument()
             throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException {
         Set<DatastreamDeclaration> declarations = this.getDeclarations();
         DatastreamDeclaration preferredDecl = null;
@@ -125,11 +123,12 @@ public abstract class AbstractDatastream implements Datastream {
         SDOParsedXmlDocumentImpl sdodoc
                 = new SDOParsedXmlDocumentImpl(preferredDecl,
                                                new ByteArrayInputStream(this.getContents().getBytes()));
-        return sdodoc.getRootSDOParsedXmlElement();
-
-
+        return sdodoc;
     }
 
 
-
+    @Override
+    public String toString() {
+        return id+"@"+digitalObject.getPid();
+    }
 }

@@ -100,6 +100,11 @@ public class MissingObject implements DigitalObject {
     }
 
     @Override
+    public List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
     public void removeRelation(Relation relation) {
         throw new IllegalAccessError("Missing object");
     }

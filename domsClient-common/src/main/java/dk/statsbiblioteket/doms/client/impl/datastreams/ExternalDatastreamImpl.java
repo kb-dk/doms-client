@@ -15,14 +15,36 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 public class ExternalDatastreamImpl extends AbstractDatastream implements ExternalDatastream {
     private String url;
 
+    private String originalURL;
+
+
     public ExternalDatastreamImpl(DatastreamProfile datastreamProfile, DigitalObject digitalObject,
                                   CentralWebservice api) {
         super(datastreamProfile, digitalObject, api);
         url = datastreamProfile.getUrl();
+        originalURL = url;
     }
 
     @Override
     public String getUrl() {
         return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public void preSave() {
+    }
+
+    @Override
+    public void postSave() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void undoSave() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -2,6 +2,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.doms.client.exceptions.*;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
@@ -39,9 +40,9 @@ public class SdoTest extends TestBase{
     public void testSdoPBCore()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
-        SDOParsedXmlElement doc = program.getDatastream("PBCORE").getSDOParsedDocument();
+        SDOParsedXmlDocument doc = program.getDatastream("PBCORE").getSDOParsedDocument();
 
-        parseTree(doc, "");
+        parseDoc(doc);
 
     }
 
@@ -50,9 +51,9 @@ public class SdoTest extends TestBase{
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
 
-        SDOParsedXmlElement doc = program.getDatastream("DC").getSDOParsedDocument();
+        SDOParsedXmlDocument doc = program.getDatastream("DC").getSDOParsedDocument();
 
-        parseTree(doc, "");
+        parseDoc(doc);
 
 
     }
@@ -62,9 +63,9 @@ public class SdoTest extends TestBase{
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:7421d689-b02c-4456-85dd-2f15ded890f7");
 
-        SDOParsedXmlElement doc = program.getDatastream("SHARD_METADATA").getSDOParsedDocument();
+        SDOParsedXmlDocument doc = program.getDatastream("SHARD_METADATA").getSDOParsedDocument();
 
-        parseTree(doc, "");
+        parseDoc(doc);
 
 
     }
@@ -75,7 +76,7 @@ public class SdoTest extends TestBase{
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
         try {
-            SDOParsedXmlElement doc = program.getDatastream("RITZAU_ORIGINAL").getSDOParsedDocument();
+            SDOParsedXmlDocument doc = program.getDatastream("RITZAU_ORIGINAL").getSDOParsedDocument();
             fail();
         } catch (Exception e){
 
@@ -89,7 +90,7 @@ public class SdoTest extends TestBase{
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
         DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
         try {
-            SDOParsedXmlElement doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
+            SDOParsedXmlDocument doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
             fail();
         } catch (Exception e){
 
@@ -108,7 +109,7 @@ public class SdoTest extends TestBase{
 
 
         try {
-            SDOParsedXmlElement doc = program.getDatastream("RELS-EXT").getSDOParsedDocument();
+            SDOParsedXmlDocument doc = program.getDatastream("RELS-EXT").getSDOParsedDocument();
             assertNull(doc);
         } catch (Exception e){
 
@@ -118,7 +119,12 @@ public class SdoTest extends TestBase{
     }
 
 
+    private void parseDoc(SDOParsedXmlDocument doc){
+        parseTree(doc.getRootSDOParsedXmlElement(),"");
+    }
+
     private void parseTree(SDOParsedXmlElement doc, String indryk) {
+
         ArrayList<SDOParsedXmlElement> children = doc.getChildren();
         for (SDOParsedXmlElement child : children) {
             if (child.isLeaf()){

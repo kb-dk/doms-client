@@ -1,10 +1,9 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.DatastreamProfile;
-import dk.statsbiblioteket.doms.central.ObjectProfile;
-import dk.statsbiblioteket.doms.central.Relation;
+import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
+import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
@@ -15,8 +14,12 @@ import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.String;
 import java.util.*;
 
 /**
@@ -193,7 +196,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed {
-          List<Relation> frelations;
+        List<Relation> frelations;
         try {
             frelations = api.getInverseRelations(pid);
         } catch (Exception e) {
@@ -347,6 +350,12 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
 
 
+    private void preSaveDatastreams()
+            throws ServerOperationFailed {
+        for (Datastream datastream : datastreams) {
+            datastream.preSave();
+        }
+    }
 
 
 
@@ -377,6 +386,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         stateOriginal = state;
         statePreSaved = false;
     }
+
+
 
     private void undoSaveState() throws ServerOperationFailed {
         try {
@@ -415,7 +426,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                     abstractChild.preSave(viewAngle);
                 }
             }
+
+            preSaveDatastreams();
+
             preSaveState();
+
         } catch (ServerOperationFailed e){
             for (AbstractDigitalObject digitalObject : saved) {
                 digitalObject.undoSave(viewAngle);
@@ -427,6 +442,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     }
 
+
     protected void postSave(String viewAngle) throws ServerOperationFailed{
         Set<DigitalObject> children = getChildObjects(viewAngle);
         for (DigitalObject child : children) {
@@ -435,7 +451,15 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 abstractChild.postSave(viewAngle);
             }
         }
+        postSaveDatastreams();
         postSaveState();
+    }
+
+    protected void postSaveDatastreams(){
+        for (Datastream datastream : datastreams) {
+            datastream.postSave();
+        }
+
     }
 
     protected void undoSave(String viewAngle)
@@ -447,9 +471,15 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 abstractChild.undoSave(viewAngle);
             }
         }
+        undoSaveDatastreams();
         undoSaveState();
     }
 
+    private void undoSaveDatastreams() throws ServerOperationFailed {
+        for (Datastream datastream : datastreams) {
+            datastream.undoSave();
+        }
+    }
 
 
     public void save(String viewAngle) throws ServerOperationFailed {
@@ -470,5 +500,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
      */
     public void setRelation(dk.statsbiblioteket.doms.client.relations.Relation newRelation){
         relations.add(newRelation);
+    }
+
+    @Override
+    public String toString() {
+        return pid;
     }
 }
