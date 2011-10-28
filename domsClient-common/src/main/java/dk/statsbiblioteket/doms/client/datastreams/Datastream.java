@@ -39,9 +39,5 @@ public interface Datastream {
     SDOParsedXmlDocument getSDOParsedDocument()
             throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException;
 
-    void preSave() throws ServerOperationFailed;
 
-    void postSave();
-
-    void undoSave() throws ServerOperationFailed;
 }

@@ -246,10 +246,6 @@ public class DigitalObjectFactoryTest extends TestBase{
     @org.junit.Test
     public void testSaveDatastream() throws Exception {
 
-
-
-
-        //Load the object, and assert that everything is Active
         DigitalObject object = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
         Datastream datastream = object.getDatastream("PBCORE");
         SDOParsedXmlDocument doc = datastream.getSDOParsedDocument();
@@ -281,6 +277,9 @@ public class DigitalObjectFactoryTest extends TestBase{
         SDOParsedXmlDocument doc2 = object2.getDatastream("PBCORE").getSDOParsedDocument();
         String rereaddoc = doc2.dumpToString();
         assertEquals(changeddoc,rereaddoc);
+
+        object.setState(Constants.FedoraState.Active);
+
     }
 
 }

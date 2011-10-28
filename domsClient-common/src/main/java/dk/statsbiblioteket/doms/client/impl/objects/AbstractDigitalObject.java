@@ -6,6 +6,7 @@ import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
@@ -40,6 +41,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private Date lastModified;
     private Date created;
 
+    protected Set<SaveableDatastreamImpl> deletedDSs, addedDSs;
     protected Set<Datastream> datastreams;
 
 
@@ -53,7 +55,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private boolean relsloaded = false;
     private boolean invrelsloaded = false;
     private boolean profileloaded = false;
-    private boolean statePreSaved;
+    private boolean statePreSaved = false;
 
 
     public AbstractDigitalObject(String pid,
@@ -65,6 +67,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         this.factory = factory;
         type = new ArrayList<ContentModelObject>();
         datastreams = new HashSet<Datastream>();
+        addedDSs = new HashSet<SaveableDatastreamImpl>();
+        deletedDSs = new HashSet<SaveableDatastreamImpl>();
         relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
         inverseRelations = new ArrayList<ObjectRelation>();
 
@@ -153,12 +157,21 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public void addDatastream(Datastream addition) throws ServerOperationFailed {
         loadProfile();
+        if (addition instanceof SaveableDatastreamImpl) {
+            SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) addition;
+            addedDSs.add(saveableDatastream);
+        }
         datastreams.add(addition);
     }
 
     @Override
     public void removeDatastream(Datastream deleted) throws ServerOperationFailed {
         loadProfile();
+        if (deleted instanceof SaveableDatastreamImpl) {
+            SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) deleted;
+            deletedDSs.add(saveableDatastream);
+        }
+
         datastreams.remove(deleted);
     }
 
@@ -347,6 +360,12 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     private void preSaveDatastreams()
             throws ServerOperationFailed {
+        for (SaveableDatastreamImpl deletedDS : deletedDSs) {
+            deletedDS.markAsDeleted();
+        }
+        for (SaveableDatastreamImpl addedDS : addedDSs) {
+            addedDS.create();
+        }
         for (Datastream datastream : datastreams) {
             datastream.preSave();
         }

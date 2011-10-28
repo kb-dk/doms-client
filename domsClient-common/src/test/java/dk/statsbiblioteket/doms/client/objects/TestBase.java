@@ -2,6 +2,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
+import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import org.junit.Test;
 
@@ -35,6 +36,7 @@ public class TestBase {
 
     @org.junit.Before
     public void setUp() throws Exception {
+
         CentralWebservice domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
                                                                  CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 

@@ -14,7 +14,7 @@ import java.lang.String;
  * Time: 2:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class InternalDatastreamImpl extends AbstractDatastream implements InternalDatastream {
+public class InternalDatastreamImpl extends SaveableDatastreamImpl implements InternalDatastream {
 
     private String contents;
 

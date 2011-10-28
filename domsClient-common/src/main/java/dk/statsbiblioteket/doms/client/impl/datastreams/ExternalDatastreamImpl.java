@@ -12,15 +12,17 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  * Time: 2:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ExternalDatastreamImpl extends AbstractDatastream implements ExternalDatastream {
+public class ExternalDatastreamImpl extends SaveableDatastreamImpl implements ExternalDatastream {
     private String url;
 
     private String originalURL;
+    private CentralWebservice api;
 
 
     public ExternalDatastreamImpl(DatastreamProfile datastreamProfile, DigitalObject digitalObject,
                                   CentralWebservice api) {
         super(datastreamProfile, digitalObject, api);
+        this.api = api;
         url = datastreamProfile.getUrl();
         originalURL = url;
     }
@@ -36,15 +38,16 @@ public class ExternalDatastreamImpl extends AbstractDatastream implements Extern
 
     @Override
     public void preSave() {
+        //TODO
     }
 
     @Override
     public void postSave() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO
     }
 
     @Override
     public void undoSave() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO
     }
 }
