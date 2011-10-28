@@ -75,7 +75,7 @@ public class OntologyTest extends TestBase{
 
     @Test
     public void testParseOntologyFromDataObject() throws ServerOperationFailed, NotFoundException {
-        DigitalObject programObject = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        DigitalObject programObject = factory.getDigitalObject(victimProgram);
         assertEquals(programObject.getState(), Constants.FedoraState.Active);
         assertTrue(programObject instanceof DataObject);
         List<Relation> relations = programObject.getRelations();

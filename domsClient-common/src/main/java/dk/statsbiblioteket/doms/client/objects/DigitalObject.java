@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
@@ -123,12 +124,9 @@ public interface DigitalObject {
     void removeRelation(Relation relation);
 
 
-    /**
-     * Sets a relation between this object and another.
-     * @param newRelation the relation object
-     */
-    void setRelation(Relation newRelation);
+    ObjectRelation addObjectRelation(String predicate,DigitalObject object) throws ServerOperationFailed;
 
+    LiteralRelation addLiteralRelation(String predicate, String value);
 
     public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed;
 }

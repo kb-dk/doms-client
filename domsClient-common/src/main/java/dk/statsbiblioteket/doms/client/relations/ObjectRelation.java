@@ -12,8 +12,8 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
  * To change this template use File | Settings | File Templates.
  */
 public interface ObjectRelation extends Relation {
-    DigitalObject getSubject() throws ServerOperationFailed;
+    DigitalObject getObject() throws ServerOperationFailed;
 
-    String getSubjectPid();
-    void setSubject(DigitalObject subject);
+    String getObjectPid();
+    void setObject(DigitalObject subject);
 }

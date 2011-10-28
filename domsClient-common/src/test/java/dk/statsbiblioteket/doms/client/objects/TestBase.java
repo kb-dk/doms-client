@@ -28,6 +28,10 @@ public class TestBase {
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
     public DigitalObjectFactory factory;
+    public static final String victimProgram = "uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f";
+
+    public String victimShard;
+
 
     public TestBase() throws MalformedURLException {
         domsWSAPIEndpoint = new URL("http://alhena:7880/centralWebservice-service/central/");

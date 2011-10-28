@@ -2,6 +2,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
@@ -16,12 +17,12 @@ import java.util.Set;
 public class MissingObject implements DigitalObject {
     @Override
     public void save() throws ServerOperationFailed {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public void save(String viewAngle) throws ServerOperationFailed {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
@@ -56,7 +57,7 @@ public class MissingObject implements DigitalObject {
 
     @Override
     public void setState(Constants.FedoraState state, String viewAngle) throws ServerOperationFailed {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
     @Override
@@ -110,13 +111,18 @@ public class MissingObject implements DigitalObject {
     }
 
     @Override
-    public void setRelation(Relation newRelation) {
+    public ObjectRelation addObjectRelation(String predicate, DigitalObject object) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public LiteralRelation addLiteralRelation(String predicate, String value) {
         throw new IllegalAccessError("Missing object");
     }
 
     @Override
     public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IllegalAccessError("Missing object");
     }
 
 }

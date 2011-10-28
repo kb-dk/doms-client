@@ -70,7 +70,13 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     @Override
     public void undoSave() throws ServerOperationFailed {
-         try {
+        if (contents == null || originalContents == null){
+            return;
+        }
+        if (contents.equals(originalContents)){
+            return;
+        }
+        try {
             api.modifyDatastream(getDigitalObject().getPid(),getId(),originalContents,"Save from GUI");
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);

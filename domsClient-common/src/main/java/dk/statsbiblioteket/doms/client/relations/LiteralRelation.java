@@ -10,7 +10,7 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
  * To change this template use File | Settings | File Templates.
  */
 public interface LiteralRelation extends Relation {
-    String getSubject();
+    String getObject();
 
-    void setSubject(String subject);
+    void setObject(String subject);
 }

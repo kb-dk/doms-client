@@ -24,6 +24,11 @@ public abstract class SaveableDatastreamImpl extends AbstractDatastream{
     public abstract void undoSave() throws ServerOperationFailed;
 
 
+    public  void markAsDeleted(){
 
+    }
 
+    public void create(){
+
+    }
 }

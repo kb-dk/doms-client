@@ -59,7 +59,7 @@ public class SdoDataObjectUtils {
 	public boolean  handleDataObject(HelperContext helperContext, final DataObject parent, final DataObject dataObject, final Property parentProperty) 
 	{
 		boolean isEmpty = true;
-		boolean temp;
+		boolean temp= false;
 		
 		if (dataObject.getType().isSequenced()) 
 	    {
@@ -97,7 +97,7 @@ public class SdoDataObjectUtils {
 	    		temp = handleValueOfProperty(helperContext, parent, dataObject, p);
 	    		isEmpty = (isEmpty && temp);
 	    		if (temp) {
-	    			dataObject.unset(p);
+	    			//dataObject.unset(p);
 	    		}
 	    	}
 	    }

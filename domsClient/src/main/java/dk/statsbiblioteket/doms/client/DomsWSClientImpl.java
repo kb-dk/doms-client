@@ -254,15 +254,15 @@ public class DomsWSClientImpl implements DomsWSClient {
     public void addObjectRelation(LiteralRelation  relation, String comment) throws ServerOperationFailed {
         try {
             dk.statsbiblioteket.doms.central.Relation domsrel = new dk.statsbiblioteket.doms.central.Relation();
-            domsrel.setSubject(relation.getSubject());
+            domsrel.setSubject(relation.getObject());
             domsrel.setPredicate(relation.getPredicate());
-            domsrel.setObject(relation.getObject().getPid().toString()); //TODO: Correct doms Central to new relation objects
-            domsAPI.addRelation(relation.getSubject(), domsrel, comment);
+            domsrel.setObject(relation.getSubject().getPid().toString()); //TODO: Correct doms Central to new relation objects
+            domsAPI.addRelation(relation.getObject(), domsrel, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed creating object relation (type: " + relation.getPredicate()
-                    + ") from the source object (PID: " + relation.getSubject()
-                    + ") to the target object (PID: " + relation.getObject() + ")",
+                    + ") from the source object (PID: " + relation.getObject()
+                    + ") to the target object (PID: " + relation.getSubject() + ")",
                     exception);
         }
     }
@@ -272,17 +272,17 @@ public class DomsWSClientImpl implements DomsWSClient {
             throws ServerOperationFailed {
         try {
             dk.statsbiblioteket.doms.central.Relation domsrel = new dk.statsbiblioteket.doms.central.Relation();
-            domsrel.setSubject(relation.getSubject());
+            domsrel.setSubject(relation.getObject());
             domsrel.setPredicate(relation.getPredicate());
-            domsrel.setObject(relation.getObject().getPid().toString()); //TODO: Correct doms Central to new relation objects
+            domsrel.setObject(relation.getSubject().getPid().toString()); //TODO: Correct doms Central to new relation objects
 
-            domsAPI.deleteRelation(relation.getSubject(),
+            domsAPI.deleteRelation(relation.getObject(),
                                    domsrel, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed removing object relation (type: " + relation.getPredicate()
-                    + ") from the source object (PID: " + relation.getSubject()
-                    + ") to the target object (PID: " + relation.getObject() + ")",
+                    + ") from the source object (PID: " + relation.getObject()
+                    + ") to the target object (PID: " + relation.getSubject() + ")",
                     exception);
         }
 

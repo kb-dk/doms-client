@@ -8,7 +8,6 @@ import dk.statsbiblioteket.doms.client.objects.DataObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
-import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.*;
@@ -47,9 +46,9 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
         for (ContentModelObject contentModel : contentModels) {
             List<ObjectRelation> childModels = contentModel.getInverseRelations(Constants.EXTENDSMODEL_PREDICATE);
             for (ObjectRelation childModel : childModels) {
-                DigitalObject subject = childModel.getSubject();
-                if (subject instanceof ContentModelObject) {
-                    ContentModelObject child = (ContentModelObject) subject;
+                DigitalObject object = childModel.getObject();
+                if (object instanceof ContentModelObject) {
+                    ContentModelObject child = (ContentModelObject) object;
                     if (contentModels.contains(child)){
                         Integer extendscounter = extendsCount.get(child);
                         extendsCount.put(contentModel,extendscounter+1);

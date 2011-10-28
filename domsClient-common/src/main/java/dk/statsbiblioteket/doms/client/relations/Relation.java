@@ -10,13 +10,15 @@ import java.util.Set;
  * The relation interface definition
  */
 public interface Relation {
-    DigitalObject getObject() throws ServerOperationFailed;
+    DigitalObject getSubject() throws ServerOperationFailed;
 
-    String getObjectPid();
+    String getSubjectPid();
 
     String getPredicate();
 
     void remove() throws ServerOperationFailed;
 
     Set<OWLObjectProperty> getOwlProperties() throws ServerOperationFailed;
+
+
 }

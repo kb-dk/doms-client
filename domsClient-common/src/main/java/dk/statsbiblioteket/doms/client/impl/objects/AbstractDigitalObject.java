@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
@@ -12,7 +13,7 @@ import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.relations.*;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.lang.String;
@@ -45,9 +46,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     protected Set<Datastream> datastreams;
 
 
-    private List<dk.statsbiblioteket.doms.client.relations.Relation> relations;
-    private List<dk.statsbiblioteket.doms.client.relations.Relation> removedRelations;
-    private List<dk.statsbiblioteket.doms.client.relations.Relation> addedRelations;
+    private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> relations;
+    private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> removedRelations;
+    private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> addedRelations;
 
     private List<ObjectRelation> inverseRelations;
 
@@ -69,7 +70,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         datastreams = new HashSet<Datastream>();
         addedDSs = new HashSet<SaveableDatastreamImpl>();
         deletedDSs = new HashSet<SaveableDatastreamImpl>();
-        relations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
+
+        relations = new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>();
+        removedRelations = new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>();
+        addedRelations = new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>();
+
         inverseRelations = new ArrayList<ObjectRelation>();
 
     }
@@ -178,22 +183,18 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() throws ServerOperationFailed {
         loadRelations();
-        return Collections.unmodifiableList(relations);
-/*
-        List<dk.statsbiblioteket.doms.client.relations.Relation> rels =
-                new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
-        for (dk.statsbiblioteket.doms.client.relations.Relation inRelation : relations) {
-            rels.add(inRelation);
-        }
-        rels.addAll(addedRelations);
-        rels.removeAll(removedRelations);//TODO what if something was added and removed multiple times?
-        return rels;
-*/
+        TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> totalSet =
+                new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>(relations);
+        totalSet.addAll(addedRelations);
+        totalSet.removeAll(removedRelations);
+        return Collections.unmodifiableList(new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>(totalSet));
     }
 
     @Override
     public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) {
-        throw new IllegalAccessError("Not implemented yet");
+        if (relation.getSubjectPid().equals(this.getPid())){
+            removedRelations.add(relation);
+        }
     }
 
     @Override
@@ -237,7 +238,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             if (frelation.isLiteral()) {
-                relations.add(new LiteralRelationImpl(frelation.getPredicate(), this.getPid(), frelation.getObject()));
+                relations.add(new LiteralRelationImpl(frelation.getPredicate(), this.getPid(), frelation.getObject(),factory));
             } else {
                 relations.add(new ObjectRelationImpl(frelation.getPredicate(), this.getPid(), frelation.getObject(), factory));
             }
@@ -348,7 +349,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             if (viewRelationNames.contains(rel.getPredicate())){
                 if (rel instanceof ObjectRelation) {
                     ObjectRelation objectRelation = (ObjectRelation) rel;
-                    children.add(objectRelation.getSubject());
+                    children.add(objectRelation.getObject());
                 }
             }
         }
@@ -367,7 +368,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             addedDS.create();
         }
         for (Datastream datastream : datastreams) {
-            datastream.preSave();
+            if (datastream instanceof SaveableDatastreamImpl) {
+                SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) datastream;
+                saveableDatastream.preSave();
+            }
         }
     }
 
@@ -442,17 +446,43 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
 
             preSaveDatastreams();
-
+            preSaveRelations();
             preSaveState();
 
         } catch (ServerOperationFailed e){
             for (AbstractDigitalObject digitalObject : saved) {
                 digitalObject.undoSave(viewAngle);
             }
-            undoSave(viewAngle);
+            try {undoSave(viewAngle);
+            } catch (Exception e2){
+                e2.printStackTrace();
+            }
             throw new ServerOperationFailed(e);
         }
 
+
+    }
+
+    protected  void preSaveRelations() throws ServerOperationFailed {
+        try {
+
+            for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
+                Relation apiRelation = toApiRelation(addedRelation);
+                api.addRelation(this.getPid(),apiRelation,"Added a relation from the Doms Client");
+
+            }
+            for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
+                Relation apiRelation = toApiRelation(removedRelation);
+                api.deleteRelation(this.getPid(), apiRelation, "Added a relation from the Doms Client");
+            }
+
+        } catch (InvalidCredentialsException e) {
+            throw new ServerOperationFailed(e);
+        } catch (InvalidResourceException e) {
+            throw new ServerOperationFailed(e);
+        } catch (MethodFailedException e) {
+            throw new ServerOperationFailed(e);
+        }
 
     }
 
@@ -466,12 +496,25 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
         }
         postSaveDatastreams();
+        postSaveRelations();
         postSaveState();
+    }
+
+    private void postSaveRelations() {
+        for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
+            relations.add(addedRelation);
+        }
+        for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
+            relations.remove(removedRelation);
+        }
     }
 
     protected void postSaveDatastreams(){
         for (Datastream datastream : datastreams) {
-            datastream.postSave();
+            if (datastream instanceof SaveableDatastreamImpl) {
+                SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) datastream;
+                saveableDatastream.postSave();
+            }
         }
 
     }
@@ -486,12 +529,56 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
         }
         undoSaveDatastreams();
+        undoSaveRelations();
         undoSaveState();
+    }
+
+    private void undoSaveRelations() throws ServerOperationFailed {
+        try {
+            for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
+                Relation apiRelation = toApiRelation(removedRelation);
+                api.addRelation(this.getPid(),apiRelation,"Added a relation from the Doms Client");
+            }
+            for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
+                Relation apiRelation = toApiRelation(addedRelation);
+                api.deleteRelation(this.getPid(), apiRelation, "Added a relation from the Doms Client");
+            }
+        } catch (InvalidCredentialsException e) {
+            throw new ServerOperationFailed(e);
+        } catch (InvalidResourceException e) {
+            throw new ServerOperationFailed(e);
+        } catch (MethodFailedException e) {
+            throw new ServerOperationFailed(e);
+        }
+
+
+    }
+
+    private Relation toApiRelation(dk.statsbiblioteket.doms.client.relations.Relation addedRelation) {
+        Relation apiRelation = new Relation();
+
+        if (addedRelation instanceof ObjectRelation) {
+            ObjectRelation relation = (ObjectRelation) addedRelation;
+            apiRelation.setLiteral(false);
+            apiRelation.setObject(Constants.ensurePID(relation.getObjectPid()));
+            apiRelation.setSubject(this.getPid());
+            apiRelation.setPredicate(relation.getPredicate());
+        } else if (addedRelation instanceof LiteralRelation) {
+            LiteralRelation relation = (LiteralRelation) addedRelation;
+            apiRelation.setLiteral(true);
+            apiRelation.setObject(relation.getObject());
+            apiRelation.setPredicate(relation.getPredicate());
+            apiRelation.setSubject(this.getPid());
+        }
+        return apiRelation;
     }
 
     private void undoSaveDatastreams() throws ServerOperationFailed {
         for (Datastream datastream : datastreams) {
-            datastream.undoSave();
+            if (datastream instanceof SaveableDatastreamImpl) {
+                SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) datastream;
+                saveableDatastream.undoSave();
+            }
         }
     }
 
@@ -507,17 +594,23 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         save("UNUSEDVIEWANGLE");
     }
 
-
-    /**
-     * Sets a relation between this object and another.
-     * @param newRelation the relation object
-     */
-    public void setRelation(dk.statsbiblioteket.doms.client.relations.Relation newRelation){
-        relations.add(newRelation);
-    }
-
     @Override
     public String toString() {
         return pid;
+    }
+
+    @Override
+    public ObjectRelation addObjectRelation(String predicate, DigitalObject object) throws ServerOperationFailed {
+        ObjectRelation rel = new ObjectRelationImpl(predicate, this.getPid(), object.getPid(), factory);
+        addedRelations.add(rel);
+        return rel;
+
+    }
+
+    @Override
+    public LiteralRelation addLiteralRelation(String predicate, String value) {
+        LiteralRelation rel = new LiteralRelationImpl(predicate, this.getPid(), value,factory);
+        addedRelations.add(rel);
+        return rel;
     }
 }

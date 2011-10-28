@@ -39,7 +39,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoPBCore()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        DigitalObject program = factory.getDigitalObject(victimProgram);
         SDOParsedXmlDocument doc = program.getDatastream("PBCORE").getSDOParsedDocument();
 
         parseDoc(doc);
@@ -49,7 +49,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoDC()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        DigitalObject program = factory.getDigitalObject(victimProgram);
 
         SDOParsedXmlDocument doc = program.getDatastream("DC").getSDOParsedDocument();
 
@@ -61,7 +61,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoSHARD()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject("uuid:7421d689-b02c-4456-85dd-2f15ded890f7");
+        DigitalObject program = factory.getDigitalObject(victimProgram);
 
         SDOParsedXmlDocument doc = program.getDatastream("SHARD_METADATA").getSDOParsedDocument();
 
@@ -74,7 +74,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoRitzau()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        DigitalObject program = factory.getDigitalObject(victimProgram);
         try {
             SDOParsedXmlDocument doc = program.getDatastream("RITZAU_ORIGINAL").getSDOParsedDocument();
             fail();
@@ -88,7 +88,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoGallup()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        DigitalObject program = factory.getDigitalObject(victimProgram);
         try {
             SDOParsedXmlDocument doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
             fail();
@@ -105,7 +105,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoRelsExt()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject("uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f");
+        DigitalObject program = factory.getDigitalObject(victimProgram);
 
 
         try {

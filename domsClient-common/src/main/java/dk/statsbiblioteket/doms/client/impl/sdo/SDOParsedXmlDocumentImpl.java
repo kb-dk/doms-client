@@ -232,7 +232,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
             SdoDataObjectUtils utils = new SdoDataObjectUtils();
             utils.handleDataObject(sdoContext, null, rootCopy, rootProperty);
-            utils.doDelete();
+            //utils.doDelete();
             sdoContext.getXMLHelper().save(docCopy, writer, null);
 
             writer.flush();
