@@ -28,9 +28,9 @@ public class TestBase {
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
     public DigitalObjectFactory factory;
-    public static final String victimProgram = "uuid:f8f1b607-1394-418a-a90e-e65d1b4bf91f";
+    public static final String victimProgram = "uuid:8ec77383-4390-415a-a535-78126e419a50";
 
-    public String victimShard;
+    public static  final String victimShard = "uuid:a4d10b2d-850e-4562-acea-28a2513b5418";
 
 
     public TestBase() throws MalformedURLException {

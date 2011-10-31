@@ -61,7 +61,7 @@ public class SdoTest extends TestBase{
     @Test
     public void testSdoSHARD()
             throws ServerOperationFailed, NotFoundException, IOException, MyXMLWriteException, MyXMLReadException {
-        DigitalObject program = factory.getDigitalObject(victimProgram);
+        DigitalObject program = factory.getDigitalObject(victimShard);
 
         SDOParsedXmlDocument doc = program.getDatastream("SHARD_METADATA").getSDOParsedDocument();
 

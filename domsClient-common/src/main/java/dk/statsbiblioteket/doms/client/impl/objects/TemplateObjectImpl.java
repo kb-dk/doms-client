@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.TemplateObject;
 
@@ -17,5 +18,8 @@ public class TemplateObjectImpl extends AbstractDigitalObject implements Templat
     }
 
 
-
+    @Override
+    public DigitalObject clone() {
+        throw new IllegalAccessError("Method not implemented");
+    }
 }

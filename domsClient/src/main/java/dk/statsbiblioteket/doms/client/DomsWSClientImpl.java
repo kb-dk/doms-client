@@ -28,10 +28,12 @@ package dk.statsbiblioteket.doms.client;
 
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
-import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.relations.*;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.utils.Constants;
@@ -291,25 +293,17 @@ public class DomsWSClientImpl implements DomsWSClient {
     @Override
     public List<dk.statsbiblioteket.doms.client.relations.Relation> listObjectRelations(String objectPID, String relationType)
             throws ServerOperationFailed {
-        try {
-            List<dk.statsbiblioteket.doms.central.Relation> domsRelations =
-                    domsAPI.getNamedRelations(objectPID, relationType); //TODO: Correct doms Central to new relation objects
+            DigitalObject object = dof.getDigitalObject(objectPID);
+            List<dk.statsbiblioteket.doms.client.relations.Relation> relations = object.getRelations();
+            ArrayList<dk.statsbiblioteket.doms.client.relations.Relation> result =
+                    new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
+            for (dk.statsbiblioteket.doms.client.relations.Relation relation : relations) {
+                if (relation.getPredicate().equals(relationType)){
+                    result.add(relation);
+                }
 
-            ArrayList<dk.statsbiblioteket.doms.client.relations.Relation> clientRelations = new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>();
-            for (dk.statsbiblioteket.doms.central.Relation domsRelation : domsRelations) { //TODO: Correct doms Central to new relation objects
-                clientRelations.add(new LiteralRelationImpl(domsRelation.getPredicate(),
-                                                            domsRelation.getObject(),
-                                                            domsRelation.getSubject()));
             }
-            return clientRelations;
-
-        } catch (Exception exception) {
-            throw new ServerOperationFailed(
-                    "Failed listing object relations (type: " + relationType
-                    + ") from the source object (PID: " + objectPID
-                    + ")",
-                    exception);
-        }
+            return result;
     }
 
     public void publishObjects(String comment, String... pidsToPublish)

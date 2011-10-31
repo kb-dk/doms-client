@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.doms.client.objects;
 
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
@@ -10,4 +11,6 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  * To change this template use File | Settings | File Templates.
  */
 public interface TemplateObject extends DigitalObject {
+
+    public DigitalObject clone() throws ServerOperationFailed;
 }

@@ -1,6 +1,8 @@
 package dk.statsbiblioteket.doms.client.objects;
 
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.utils.Constants;
+import org.junit.Before;
 
 import java.net.MalformedURLException;
 import java.util.Set;
@@ -19,6 +21,15 @@ public class StateTest extends TestBase{
         super();
     }
 
+    @Before
+    public void makeActive() throws Exception {
+        super.setUp();
+        DigitalObject object = factory.getDigitalObject(victimProgram);
+        //Set the object and all subobjects to Inactive
+        object.setState(Constants.FedoraState.Active, "SummaVisible");
+        object.save("SummaVisible");
+    }
+
     @org.junit.Test
     public void testSaveState() throws Exception {
 
@@ -28,6 +39,7 @@ public class StateTest extends TestBase{
         //Load the object, and assert that everything is Active
         DigitalObject object = factory.getDigitalObject(victimProgram);
         Set<DigitalObject> children = object.getChildObjects("SummaVisible");
+
         assertTrue(object.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children) {
             assertTrue(child.getState()== Constants.FedoraState.Active);
