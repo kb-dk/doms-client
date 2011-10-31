@@ -12,8 +12,12 @@ import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.objects.TemplateObject;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntologyImpl;
+import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
+import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
+import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -21,9 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -145,6 +147,34 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     public ParsedOwlOntology getOntology() throws ServerOperationFailed {
         loadOntology();
         return ontology;
+    }
+
+    @Override
+    public Set<TemplateObject> getTemplates() throws ServerOperationFailed {
+        List<ObjectRelation> templateRels = getInverseRelations(Constants.TEMPLATE_PREDICATE);
+        Set<TemplateObject> result = new HashSet<TemplateObject>();
+        for (ObjectRelation templateRel : templateRels) {
+            if (templateRel.getObject() instanceof TemplateObject) {
+                TemplateObject templateObject = (TemplateObject) templateRel.getObject();
+                result.add(templateObject);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<String> getEntryViewAngles() throws ServerOperationFailed {
+        Set<String> result = new HashSet<String>();
+        List<Relation> rels = getRelations();
+        for (Relation rel : rels) {
+            if (rel instanceof LiteralRelation) {
+                LiteralRelation literalRelation = (LiteralRelation) rel;
+                if (literalRelation.getPredicate().equals(Constants.VIEWANGLE_PREDICATE)){
+                    result.add(literalRelation.getObject());
+                }
+            }
+        }
+        return result;
     }
 
     private synchronized void loadOntology() throws ServerOperationFailed {

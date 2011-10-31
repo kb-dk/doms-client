@@ -25,6 +25,7 @@ public class Constants {
     static public final String EXTENSIONS_GUI = "GUI";
     static public final String VIEW_GUI = "GUI";
     public static final String TEMPLATE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isTemplateFor";
+    public static final String VIEWANGLE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isEntryForViewAngle";
 
     /**                         guestplanets
      * If the given string starts with "info:fedora/", remove it.

@@ -17,4 +17,5 @@ public interface TemplateObject extends DigitalObject {
     public DigitalObject clone(String... oldIDs) throws ServerOperationFailed;
 
     public Set<ContentModelObject> getTemplatedClasses() throws ServerOperationFailed;
+
 }

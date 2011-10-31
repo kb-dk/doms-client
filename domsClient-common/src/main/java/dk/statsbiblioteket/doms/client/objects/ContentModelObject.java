@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,5 +23,9 @@ public interface ContentModelObject extends DigitalObject {
     public DatastreamModel getDsModel() throws ServerOperationFailed;
 
     public ParsedOwlOntology getOntology() throws ServerOperationFailed;
+
+    public Set<TemplateObject> getTemplates() throws ServerOperationFailed;
+
+    public Set<String> getEntryViewAngles() throws ServerOperationFailed;
 
 }
