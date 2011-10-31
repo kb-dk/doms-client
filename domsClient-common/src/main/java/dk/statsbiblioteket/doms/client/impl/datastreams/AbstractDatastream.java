@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This class represents a datastream. TODO implement
+ * This class represents a datastream.
  */
 public abstract class AbstractDatastream implements Datastream {
 
@@ -32,6 +32,7 @@ public abstract class AbstractDatastream implements Datastream {
     private String formatURI;
     private String mimeType;
     private String label;
+    private SDOParsedXmlDocument sdodoc;
 
     public AbstractDatastream(DatastreamProfile datastreamProfile, DigitalObject digitalObject, CentralWebservice api) {
         this.digitalObject = digitalObject;
@@ -104,8 +105,15 @@ public abstract class AbstractDatastream implements Datastream {
         return datastreamDeclarations;
     }
 
-    public SDOParsedXmlDocument getSDOParsedDocument()
+    protected boolean hasBeenSDOparsed(){
+        return sdodoc != null;
+    }
+
+    public synchronized SDOParsedXmlDocument getSDOParsedDocument()
             throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException {
+        if (sdodoc != null){
+            return sdodoc;
+        }
         Set<DatastreamDeclaration> declarations = this.getDeclarations();
         DatastreamDeclaration preferredDecl = null;
         for (DatastreamDeclaration declaration : declarations) {
@@ -120,9 +128,9 @@ public abstract class AbstractDatastream implements Datastream {
         if (preferredDecl.getSchema() == null){
             return null;
         }
-        SDOParsedXmlDocumentImpl sdodoc
-                = new SDOParsedXmlDocumentImpl(preferredDecl,
-                                               new ByteArrayInputStream(this.getContents().getBytes()));
+
+        sdodoc = new SDOParsedXmlDocumentImpl(preferredDecl,
+                                       this);
         return sdodoc;
     }
 

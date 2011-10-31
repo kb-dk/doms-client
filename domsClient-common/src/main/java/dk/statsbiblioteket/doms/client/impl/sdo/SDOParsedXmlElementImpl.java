@@ -4,6 +4,7 @@ import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.Sequence;
 import commonj.sdo.helper.HelperContext;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
@@ -67,7 +68,12 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 		return myDocument.getSdoContext();
 	}
 
-	@Override
+    @Override
+    public SDOParsedXmlDocument getDocument() {
+        return myDocument;
+    }
+
+    @Override
     public boolean isEnum() {
 		return valueEnum != null;
 	}

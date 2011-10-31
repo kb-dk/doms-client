@@ -9,7 +9,9 @@ import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XSDHelper;
 import dk.statsbiblioteket.doms.central.InvalidResourceException;
 import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
+import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
 import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
@@ -34,14 +36,18 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     private boolean isAbstract = false;
 
     private HelperContext sdoContext;
+
+    private Datastream datastream;
+
     //The SDO types based on the XML Schema. Build in the ContentModel. The DataObjects use these types when parsing an
     //XML document that is an instance of the XML Schema.
     private List<Type> sdoTypes = new ArrayList<Type>();
 
-    public SDOParsedXmlDocumentImpl(DatastreamDeclaration next, ByteArrayInputStream bytes)
+    public SDOParsedXmlDocumentImpl(DatastreamDeclaration next,Datastream datastream)
             throws ServerOperationFailed, IOException, MyXMLReadException {
         generate(next);
-        load(bytes);
+        load(datastream);
+        this.datastream = datastream;
 
     }
 
@@ -161,60 +167,55 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     }
 
-    private void load(InputStream is) throws IOException,  ServerOperationFailed {
+    private void load(Datastream datastream) throws IOException,  ServerOperationFailed {
 
 
-        try {
-            //For XSD validation. Does not seem to work
-            //Map options = new HashMap();
-            //options.put(SDOHelper.XMLOptions.XML_LOAD_SCHEMA, Boolean.TRUE);
-            //String schemaurl = compositeSchema.getObject() + "/" + compositeSchema.getDatastream();
+
+        //For XSD validation. Does not seem to work
+        //Map options = new HashMap();
+        //options.put(SDOHelper.XMLOptions.XML_LOAD_SCHEMA, Boolean.TRUE);
+        //String schemaurl = compositeSchema.getObject() + "/" + compositeSchema.getDatastream();
 
 
-            //Load the XML document
-
-            setSdoXmlDocument(sdoContext.getXMLHelper().load(is));
-            //if we want to use XSD validation. setSdoXmlDocument(sdoContext.getXMLHelper().load(is, schemaurl, options));
-
-            //Get the root data object
-            DataObject rootDataObject = getSdoXmlDocument().getRootObject();
-
-            Type rootType = rootDataObject.getType();
-            String targetNamespace = rootType.getURI();
-
-            isAbstract = rootType.isAbstract();
-
-            Property rootProperty = getRootProperty(sdoTypes,
-                                                    targetNamespace,
-                                                    sdoContext.getXSDHelper());
-
-            if (rootProperty == null) {
-                throw new ServerOperationFailed("Could not get a valid SDO root DataObject for Input Stream: '" + is + "'.");
-            }
-
-            setSdoXmlDocument(sdoContext.getXMLHelper().createDocument(rootDataObject, targetNamespace, rootProperty.getName()));
-
-            SDOParsedXmlElementImpl root = new SDOParsedXmlElementImpl(this, null, rootDataObject, rootProperty);
-            root.setLabel(rootProperty.getName());
-
-            setRootSDOParsedXmlElement(root);
-            List containedProps = rootType.getProperties();
-            for (Iterator i = containedProps.iterator(); i.hasNext(); ) {
-                Object tmp = i.next();
-                if (tmp instanceof Property) {
-                    Property property = (Property) tmp;
-                    handleProperty(sdoContext, getRootSDOParsedXmlElement(), rootDataObject, property);
-                }
-            }
+        //Load the XML document
 
 
-        } finally {
-            try {
-                is.close();
-            } catch (Exception e) {
-                //logger.warn("SDOParsedXmlDocument.load. Exception-2 in SDOParsedXmlDocument.generate. " + e);
+
+        setSdoXmlDocument(sdoContext.getXMLHelper().load(datastream.getContents()));
+        //if we want to use XSD validation. setSdoXmlDocument(sdoContext.getXMLHelper().load(is, schemaurl, options));
+
+        //Get the root data object
+        DataObject rootDataObject = getSdoXmlDocument().getRootObject();
+
+        Type rootType = rootDataObject.getType();
+        String targetNamespace = rootType.getURI();
+
+        isAbstract = rootType.isAbstract();
+
+        Property rootProperty = getRootProperty(sdoTypes,
+                                                targetNamespace,
+                                                sdoContext.getXSDHelper());
+
+        if (rootProperty == null) {
+            throw new ServerOperationFailed("Could not get a valid SDO root DataObject for Datastream: '" + datastream.getId() + "'.");
+        }
+
+        setSdoXmlDocument(sdoContext.getXMLHelper().createDocument(rootDataObject, targetNamespace, rootProperty.getName()));
+
+        SDOParsedXmlElementImpl root = new SDOParsedXmlElementImpl(this, null, rootDataObject, rootProperty);
+        root.setLabel(rootProperty.getName());
+
+        setRootSDOParsedXmlElement(root);
+        List containedProps = rootType.getProperties();
+        for (Iterator i = containedProps.iterator(); i.hasNext(); ) {
+            Object tmp = i.next();
+            if (tmp instanceof Property) {
+                Property property = (Property) tmp;
+                handleProperty(sdoContext, getRootSDOParsedXmlElement(), rootDataObject, property);
             }
         }
+
+
     }
 
     @Override
@@ -242,6 +243,22 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         }
         return null;
     }
+
+    @Override
+    public void saveToDatastream() throws IOException {
+        if (datastream instanceof InternalDatastream) {
+            InternalDatastream internalDatastream = (InternalDatastream) datastream;
+            internalDatastream.replace(dumpToString());
+        } else {
+            throw new IllegalAccessError("You should not attempt to save SDO to an external datastream");
+        }
+    }
+
+    @Override
+    public Datastream getDatastream() {
+        return datastream;
+    }
+
 
     /**
      * This method parse the given compositeSchema to determine the sdo type list of the

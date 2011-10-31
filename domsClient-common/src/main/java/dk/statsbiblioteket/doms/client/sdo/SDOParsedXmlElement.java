@@ -13,6 +13,9 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public interface SDOParsedXmlElement {
+
+    SDOParsedXmlDocument getDocument();
+
     boolean isEnum();
 
     boolean isLeaf();

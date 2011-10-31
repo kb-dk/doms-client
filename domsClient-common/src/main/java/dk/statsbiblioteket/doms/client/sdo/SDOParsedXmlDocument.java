@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.doms.client.sdo;
 
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlElementImpl;
 
 import java.io.ByteArrayOutputStream;
@@ -20,4 +21,8 @@ public interface SDOParsedXmlDocument {
     boolean isAbstract();
 
     String dumpToString() throws IOException;
+
+    void saveToDatastream() throws IOException;
+
+    Datastream getDatastream();
 }
