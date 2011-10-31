@@ -7,6 +7,8 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
+import dk.statsbiblioteket.doms.client.relations.RelationModel;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.lang.ref.SoftReference;
@@ -67,15 +69,16 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     }
 
     @Override
-    public Set<OWLObjectProperty> getOwlProperties() throws ServerOperationFailed {
-        Set<OWLObjectProperty> result = new HashSet<OWLObjectProperty>();
-        DigitalObject house = factory.getDigitalObject(subjectPid);
+    public Set<RelationDeclaration> getDeclarations() throws ServerOperationFailed {
+        DigitalObject house = getSubject();
         List<ContentModelObject> types = house.getType();
+        Set<RelationDeclaration> result = new HashSet<RelationDeclaration>();
         for (ContentModelObject type : types) {
-            ParsedOwlOntology ontology = type.getOntology();
-            OWLObjectProperty property = ontology.getOWLObjectProperty(predicate);
-            if (property != null){
-                result.add(property);
+            RelationModel relModel = type.getRelationModel();
+            for (RelationDeclaration relationDeclaration : relModel.getRelationDeclarations()) {
+                if (relationDeclaration.getPredicate().equals(this.getPredicate())){
+                    result.add(relationDeclaration);
+                }
             }
         }
         return result;

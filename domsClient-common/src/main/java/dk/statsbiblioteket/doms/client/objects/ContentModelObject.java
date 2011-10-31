@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
+import dk.statsbiblioteket.doms.client.relations.RelationModel;
 
 import java.util.List;
 import java.util.Set;
@@ -20,9 +21,13 @@ public interface ContentModelObject extends DigitalObject {
 
     public List<String> getInverseRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed;
 
+    public Set<String> getDeclaredViewAngles() throws  ServerOperationFailed;
+
+    public RelationModel getRelationModel() throws ServerOperationFailed;
+
     public DatastreamModel getDsModel() throws ServerOperationFailed;
 
-    public ParsedOwlOntology getOntology() throws ServerOperationFailed;
+    //public ParsedOwlOntology getOntology() throws ServerOperationFailed;
 
     public Set<TemplateObject> getTemplates() throws ServerOperationFailed;
 
@@ -30,4 +35,7 @@ public interface ContentModelObject extends DigitalObject {
 
     public Set<DigitalObject> getSubscribingObjects() throws ServerOperationFailed;
 
+    public Set<ContentModelObject> getParents() throws ServerOperationFailed;
+
+    public Set<ContentModelObject> getDescendants() throws ServerOperationFailed;
 }

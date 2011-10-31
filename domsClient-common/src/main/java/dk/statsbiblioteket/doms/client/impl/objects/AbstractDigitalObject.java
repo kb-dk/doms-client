@@ -622,11 +622,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public void addToCollection(CollectionObject collection) throws ServerOperationFailed {
-        throw new IllegalAccessError("Missing object");    }
-
-    @Override
-    public void addToCollection(CollectionObject collection, String viewAngle) throws ServerOperationFailed {
-        throw new IllegalAccessError("Missing object");
+        collection.addObject(this);
     }
 
 }

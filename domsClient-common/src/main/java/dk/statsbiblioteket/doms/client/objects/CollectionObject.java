@@ -13,8 +13,6 @@ import java.util.Set;
  */
 public interface CollectionObject extends DataObject{
 
-    public Set<TemplateObject> getTemplates() throws ServerOperationFailed;
-
     public Set<TemplateObject> getEntryTemplates(String viewangle) throws ServerOperationFailed;
 
     public Set<ContentModelObject> getContentModels() throws ServerOperationFailed;

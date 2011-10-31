@@ -9,12 +9,14 @@ import dk.statsbiblioteket.doms.client.ontology.OWLRestriction;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntologyImpl;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -28,6 +30,8 @@ import static junit.framework.Assert.assertTrue;
  * To change this template use File | Settings | File Templates.
  */
 public class OntologyTest extends TestBase{
+
+
 
 
     public OntologyTest() throws MalformedURLException {
@@ -97,21 +101,23 @@ public class OntologyTest extends TestBase{
             }
         }
         assertNotNull(collectionRel);
-        List<OWLRestriction> restrictions = collectionRel.getOwlProperties().iterator().next().getOwlRestrictions();
+
+        Set<RelationDeclaration> restrictions = collectionRel.getDeclarations();
+
 
         String allValuesFrom = null;
         int minCardinality = -2;
-        for (OWLRestriction restriction : restrictions) {
-            if (restriction.getOnProperty().equals(collectionRel.getPredicate())){
-                if (restriction.getAllValuesFrom() != null){
-                    allValuesFrom = restriction.getAllValuesFrom();
+        for (RelationDeclaration restriction : restrictions) {
+            if (restriction.getPredicate().equals(collectionRel.getPredicate())){
+                if (!restriction.getFirstLevelModels().isEmpty()){
+                    allValuesFrom = restriction.getFirstLevelModels().iterator().next().toString();
                 }
                 if (restriction.getMinCardinality() != -2){
                     minCardinality = restriction.getMinCardinality();
                 }
             }
         }
-        assertEquals("info:fedora/doms:ContentModel_Collection#class",allValuesFrom);
+        assertEquals("doms:ContentModel_Collection",allValuesFrom);
         assertEquals(1,minCardinality);
     }
 

@@ -28,6 +28,7 @@ public class Constants {
     public static final String TEMPLATE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isTemplateFor";
     public static final String VIEWANGLE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isEntryForViewAngle";
     public static final String HASMODEL_PREDICATE = "info:fedora/fedora-system:def/model#hasModel";
+    public static final String CM_CM_PID = "fedora-system:ContentModel-3.0";
 
     /**                         guestplanets
      * If the given string starts with "info:fedora/", remove it.

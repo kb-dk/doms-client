@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.datastreams.DatastreamModelImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.relations.RelationModelImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
@@ -19,6 +20,7 @@ import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntologyImpl;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.relations.RelationModel;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -43,6 +45,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     private boolean datastreamsLoaded = false;
     private ParsedOwlOntology ontology;
     private boolean ontologyLoaded = false;
+    private RelationModel relationModel;
 
 
     public ContentModelObjectImpl(ObjectProfile profile, CentralWebservice api,
@@ -63,6 +66,24 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         return inverseRelations.get(viewAngle);
     }
 
+    @Override
+    public Set<String> getDeclaredViewAngles() throws ServerOperationFailed {
+        parseView();
+        HashSet<String> result = new HashSet<String>(relations.keySet());
+        result.addAll(inverseRelations.keySet());
+        return result;
+    }
+
+    @Override
+    public synchronized RelationModel getRelationModel() throws ServerOperationFailed {
+        if (relationModel != null){
+            return relationModel;
+        }
+        loadOntology();
+        relationModel = new RelationModelImpl(this, ontology, factory);
+        return relationModel;
+    }
+
     private synchronized void parseView() throws ServerOperationFailed {
         if (parsed){
             return;
@@ -75,8 +96,8 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         try {
             viewStream = this.getDatastream(Constants.VIEW_ID);
         } catch (NotFoundException e) {
-            throw new ServerOperationFailed(
-                    "'VIEW' datastream not found in object: " + this.getPid(), e);
+            parsed = true;
+            return;
         }
         String contents = viewStream.getContents();
         viewDoc = DOM.stringToDOM(contents, true);
@@ -184,6 +205,37 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         Set<DigitalObject> result = new HashSet<DigitalObject>();
         for (ObjectRelation objectRel : objectRels) {
             result.add(objectRel.getObject());
+        }
+        return result;
+    }
+
+    @Override
+    public Set<ContentModelObject> getParents() throws ServerOperationFailed {
+        List<Relation> rels = getRelations();
+        Set<ContentModelObject> result = new HashSet<ContentModelObject>();
+        for (Relation rel : rels) {
+            if (rel instanceof ObjectRelation) {
+                ObjectRelation objectRelation = (ObjectRelation) rel;
+                if (objectRelation.getPredicate().equals(Constants.EXTENDSMODEL_PREDICATE)){
+                    if (objectRelation.getObject() instanceof ContentModelObject) {
+                        ContentModelObject contentModelObject = (ContentModelObject) objectRelation.getObject();
+                        result.add(contentModelObject);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<ContentModelObject> getDescendants() throws ServerOperationFailed {
+        List<ObjectRelation> rels = getInverseRelations(Constants.EXTENDSMODEL_PREDICATE);
+        Set<ContentModelObject> result = new HashSet<ContentModelObject>();
+        for (ObjectRelation rel : rels) {
+            if (rel.getObject() instanceof ContentModelObject) {
+                ContentModelObject contentModelObject = (ContentModelObject) rel.getObject();
+                result.add(contentModelObject);
+            }
         }
         return result;
     }

@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.namespace.QName;
@@ -57,6 +58,7 @@ public class TestBase {
         XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
     }
     @Test
+    @Ignore
     public void emptyTest(){
 
     }

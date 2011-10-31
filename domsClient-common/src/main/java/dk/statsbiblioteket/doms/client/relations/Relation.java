@@ -18,7 +18,7 @@ public interface Relation {
 
     void remove() throws ServerOperationFailed;
 
-    Set<OWLObjectProperty> getOwlProperties() throws ServerOperationFailed;
+    Set<RelationDeclaration> getDeclarations() throws ServerOperationFailed;
 
 
 }

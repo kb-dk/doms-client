@@ -41,18 +41,15 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
             extendsCount.put(contentModel,0);
         }
         for (ContentModelObject contentModel : contentModels) {
-            List<ObjectRelation> childModels = contentModel.getInverseRelations(Constants.EXTENDSMODEL_PREDICATE);
-            for (ObjectRelation childModel : childModels) {
-                DigitalObject object = childModel.getObject();
-                if (object instanceof ContentModelObject) {
-                    ContentModelObject child = (ContentModelObject) object;
-                    if (contentModels.contains(child)){
-                        Integer extendscounter = extendsCount.get(child);
-                        extendsCount.put(contentModel,extendscounter+1);
-                    }
+            Set<ContentModelObject> childModels = contentModel.getDescendants();
+            for (ContentModelObject childModel : childModels) {
+                if (contentModels.contains(childModel)){
+                    Integer extendscounter = extendsCount.get(childModel);
+                    extendsCount.put(contentModel,extendscounter+1);
                 }
             }
         }
+
         int bestCount = Integer.MAX_VALUE;
         ContentModelObject bestCM = null;
         for (ContentModelObject contentModelObject : extendsCount.keySet()) {
