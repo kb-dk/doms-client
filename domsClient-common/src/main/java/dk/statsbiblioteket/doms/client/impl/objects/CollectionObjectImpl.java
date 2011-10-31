@@ -29,9 +29,16 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
     }
 
     @Override
+    public Set<TemplateObject> getEntryTemplates(String viewangle) throws ServerOperationFailed {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Set<ContentModelObject> getContentModels() throws ServerOperationFailed {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+
 
     @Override
     public void removeObject(DigitalObject object) throws ServerOperationFailed {
