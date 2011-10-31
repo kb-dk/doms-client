@@ -12,15 +12,15 @@ import java.lang.ref.SoftReference;
  * This is a relation between two objects.
  */
 public class ObjectRelationImpl extends AbstractRelation implements ObjectRelation {
-    private SoftReference<DigitalObject> subject = new SoftReference<DigitalObject>(null);
-    private String pid;
+    private SoftReference<DigitalObject> object = new SoftReference<DigitalObject>(null);
+    private String objectPid;
 
 
     @Override
     public synchronized DigitalObject getObject() throws ServerOperationFailed {
-        DigitalObject result = subject.get();
+        DigitalObject result = object.get();
         if (result == null){
-            result = getFactory().getDigitalObject(pid);
+            result = getFactory().getDigitalObject(objectPid);
             setObject(result);
         }
         return result;
@@ -28,11 +28,11 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
 
     @Override
     public void setObject(DigitalObject subject) {
-        this.subject = new SoftReference<DigitalObject>(subject);
+        this.object = new SoftReference<DigitalObject>(subject);
     }
 
     public String getObjectPid() {
-        return pid;
+        return objectPid;
     }
 
     public ObjectRelationImpl(String predicate,
@@ -40,7 +40,7 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
                               String subjectPid,
                               DigitalObjectFactory factory) {
         super(predicate, objectPid, factory);
-        this.pid = Constants.ensurePID(subjectPid);
+        this.objectPid = Constants.ensurePID(subjectPid);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
 
         ObjectRelationImpl that = (ObjectRelationImpl) o;
 
-        if (!pid.equals(that.pid)) {
+        if (!objectPid.equals(that.objectPid)) {
             return false;
         }
 
@@ -67,7 +67,7 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + pid.hashCode();
+        result = 31 * result + objectPid.hashCode();
         return result;
     }
 }

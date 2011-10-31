@@ -20,7 +20,7 @@ import java.util.Set;
 public abstract class AbstractRelation implements Relation, Comparable<Relation>{
     private String predicate;   // relation name
     private SoftReference<DigitalObject> subject = new SoftReference<DigitalObject>(null);
-    private String pid;
+    private String subjectPid;
     private DigitalObjectFactory factory;
 
 
@@ -33,7 +33,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     public AbstractRelation(String predicate, String subjectPid, DigitalObjectFactory factory) {
         this.predicate = predicate;
         this.factory = factory;
-        this.pid = Constants.ensurePID(subjectPid);
+        this.subjectPid = Constants.ensurePID(subjectPid);
     }
 
 
@@ -41,7 +41,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     public DigitalObject getSubject() throws ServerOperationFailed {
         DigitalObject result = subject.get();
         if (result == null){
-            result = factory.getDigitalObject(pid);
+            result = factory.getDigitalObject(subjectPid);
             subject = new SoftReference<DigitalObject>(result);
         }
         return result;
@@ -49,7 +49,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
 
     @Override
     public String getSubjectPid() {
-        return pid;
+        return subjectPid;
     }
 
     @Override
@@ -69,7 +69,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     @Override
     public Set<OWLObjectProperty> getOwlProperties() throws ServerOperationFailed {
         Set<OWLObjectProperty> result = new HashSet<OWLObjectProperty>();
-        DigitalObject house = factory.getDigitalObject(pid);
+        DigitalObject house = factory.getDigitalObject(subjectPid);
         List<ContentModelObject> types = house.getType();
         for (ContentModelObject type : types) {
             ParsedOwlOntology ontology = type.getOntology();
@@ -92,7 +92,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
 
         AbstractRelation that = (AbstractRelation) o;
 
-        if (!pid.equals(that.pid)) {
+        if (!subjectPid.equals(that.subjectPid)) {
             return false;
         }
         if (!predicate.equals(that.predicate)) {
@@ -105,7 +105,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     @Override
     public int hashCode() {
         int result = predicate.hashCode();
-        result = 31 * result + pid.hashCode();
+        result = 31 * result + subjectPid.hashCode();
         return result;
     }
 
