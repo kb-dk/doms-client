@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 
 import javax.xml.namespace.QName;
@@ -49,6 +50,11 @@ public class TestBase {
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
         factory = new DigitalObjectFactoryImpl(domsAPI);
+
+        XMLUnit.setIgnoreComments(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
     }
     @Test
     public void emptyTest(){

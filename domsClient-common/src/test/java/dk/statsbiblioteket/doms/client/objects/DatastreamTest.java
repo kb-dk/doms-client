@@ -11,6 +11,7 @@ import dk.statsbiblioteket.util.xml.DOM;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -93,7 +94,6 @@ public class DatastreamTest extends TestBase{
     }
 
     @org.junit.Test
-    @Ignore
     public void testSaveDatastream() throws Exception {
 
 
@@ -110,7 +110,7 @@ public class DatastreamTest extends TestBase{
 
         String unchangeddoc = doc.dumpToString();
 
-        assertEquals(originaldoc,unchangeddoc);
+        assertTrue(XMLUnit.compareXML(originaldoc,unchangeddoc).identical());
 
         changeField(doc.getRootSDOParsedXmlElement(),"Subject", "test of change: "+Math.random());
 
@@ -133,9 +133,8 @@ public class DatastreamTest extends TestBase{
 
 
         //TODO make this comparison work, they are xml alike
-        assertEquals(changeddoc, rereaddoc);
+        assertTrue(XMLUnit.compareXML(changeddoc,rereaddoc).identical());
 
-        object.setState(Constants.FedoraState.Active);
 
     }
 
