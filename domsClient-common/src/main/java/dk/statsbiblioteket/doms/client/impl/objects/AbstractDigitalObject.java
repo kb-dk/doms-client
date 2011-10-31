@@ -396,7 +396,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
             statePreSaved = true;
         } catch (Exception e){
-            throw new ServerOperationFailed(e);
+            throw new ServerOperationFailed(e.getMessage(),e);
         }
 
     }
@@ -458,7 +458,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             } catch (Exception e2){
                 e2.printStackTrace();
             }
-            throw new ServerOperationFailed(e);
+            throw new ServerOperationFailed(e.getMessage(),e);
         }
 
 
