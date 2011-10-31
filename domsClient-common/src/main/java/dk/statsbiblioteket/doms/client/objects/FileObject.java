@@ -15,7 +15,7 @@ public interface FileObject extends DataObject{
 
     public URL getFileUrl() throws ServerOperationFailed;
 
-    public void setFileUrl() throws ServerOperationFailed;
+    public void setFileUrl(URL url) throws ServerOperationFailed;
 
-    public void setFileUrl(String checksum, boolean validate) throws ServerOperationFailed;
+    public void setFileUrl(URL url, String checksum, String formatURI) throws ServerOperationFailed;
 }

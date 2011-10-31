@@ -1,10 +1,16 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.ObjectProfile;
+import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
+import dk.statsbiblioteket.doms.client.datastreams.ExternalDatastream;
+import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
 import dk.statsbiblioteket.doms.client.objects.FileObject;
 
+import java.lang.String;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -22,16 +28,47 @@ public class FileObjectImpl extends DataObjectImpl implements FileObject{
 
     @Override
     public URL getFileUrl() throws ServerOperationFailed {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            Datastream contentsStream = getDatastream("CONTENTS");
+            if (contentsStream instanceof ExternalDatastream) {
+                ExternalDatastream stream = (ExternalDatastream) contentsStream;
+                return new URL(stream.getUrl());
+            } else {
+                throw new ServerOperationFailed("CONTENTS stream exist, but is internal...");
+            }
+        } catch (NotFoundException e) {
+            return null;
+        } catch (MalformedURLException e) {
+            throw new ServerOperationFailed("Failed to parse url as url",e);
+        }
     }
 
     @Override
-    public void setFileUrl() throws ServerOperationFailed {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setFileUrl(URL url) throws ServerOperationFailed {
+       setFileUrl(url,"", "application/octet-stream");
     }
 
     @Override
-    public void setFileUrl(String checksum, boolean validate) throws ServerOperationFailed {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setFileUrl(URL url, String checksum, String formatURI) throws ServerOperationFailed {
+        try {
+            api.addFileFromPermanentURL(this.getPid(),url.getFile(),checksum,url.toString(),formatURI,"Uploaded file from client");
+            if (getFileUrl() == null){
+                profile = api.getObjectProfile(this.getPid());
+                DatastreamProfile contentDSprofile = null;
+                for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
+                    if (datastreamProfile.getId().equals("CONTENT")){
+                        contentDSprofile = datastreamProfile;
+                        break;
+                    }
+                }
+                datastreams.add(new ExternalDatastreamImpl(contentDSprofile,this,api));
+            }
+        } catch (InvalidCredentialsException e) {
+            throw new ServerOperationFailed(e);
+        } catch (InvalidResourceException e) {
+            throw new ServerOperationFailed(e);
+        } catch (MethodFailedException e) {
+            throw new ServerOperationFailed(e);
+        }
     }
 }
