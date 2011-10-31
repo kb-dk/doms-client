@@ -12,5 +12,5 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  */
 public interface TemplateObject extends DigitalObject {
 
-    public DigitalObject clone() throws ServerOperationFailed;
+    public DigitalObject clone(String... oldIDs) throws ServerOperationFailed;
 }
