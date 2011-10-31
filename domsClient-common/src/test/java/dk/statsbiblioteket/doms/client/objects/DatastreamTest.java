@@ -79,19 +79,6 @@ public class DatastreamTest extends TestBase{
         }
     }
 
-    private void emptymize(SDOParsedXmlElement doc){
-        ArrayList<SDOParsedXmlElement> children = doc.getChildren();
-        for (SDOParsedXmlElement child : children) {
-            if (child.isLeaf()){
-
-                if (child.getValue() == null){
-                    child.setValue("");
-                }
-            } else {
-                emptymize(child);
-            }
-        }
-    }
 
     @org.junit.Test
     public void testSaveDatastream() throws Exception {
@@ -120,10 +107,12 @@ public class DatastreamTest extends TestBase{
         assertNotSame(originaldoc, unchangeddoc);
 
 
+/*
         if (datastream instanceof InternalDatastream) {
             InternalDatastream internalDatastream = (InternalDatastream) datastream;
             internalDatastream.replace(doc.dumpToString());
         }
+*/
         object.save();
 
         setUp();
