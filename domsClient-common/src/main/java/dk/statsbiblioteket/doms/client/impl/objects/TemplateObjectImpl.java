@@ -2,13 +2,15 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.CollectionObject;
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.objects.TemplateObject;
+import dk.statsbiblioteket.doms.client.objects.*;
+import dk.statsbiblioteket.doms.client.relations.*;
+import dk.statsbiblioteket.doms.client.relations.Relation;
+import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.lang.String;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,6 +37,23 @@ public class TemplateObjectImpl extends AbstractDigitalObject implements Templat
         } catch (MethodFailedException e) {
             throw new ServerOperationFailed(e);
         }
+    }
+
+    @Override
+    public Set<ContentModelObject> getTemplatedClasses() throws ServerOperationFailed {
+        List<Relation> rels = getRelations();
+        Set<ContentModelObject> classes = new HashSet<ContentModelObject>();
+        for (Relation rel : rels) {
+            if (rel.getPredicate().equals(Constants.TEMPLATE_PREDICATE)){
+                if (rel instanceof ObjectRelation) {
+                    ObjectRelation objectRelation = (ObjectRelation) rel;
+                    if (objectRelation.getObject() instanceof ContentModelObject) {
+                        classes.add((ContentModelObject) objectRelation.getObject());
+                    }
+                }
+            }
+        }
+        return classes;
     }
 
 }

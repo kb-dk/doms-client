@@ -47,7 +47,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     protected Set<Datastream> datastreams;
 
 
-    private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> relations;
+    protected TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> relations;
     private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> removedRelations;
     private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> addedRelations;
 

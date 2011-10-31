@@ -24,6 +24,7 @@ public class Constants {
     static public final String EXTENSIONS_SCHEMA = "SCHEMA";
     static public final String EXTENSIONS_GUI = "GUI";
     static public final String VIEW_GUI = "GUI";
+    public static final String TEMPLATE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isTemplateFor";
 
     /**                         guestplanets
      * If the given string starts with "info:fedora/", remove it.
