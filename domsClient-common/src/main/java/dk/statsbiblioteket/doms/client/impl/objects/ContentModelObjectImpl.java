@@ -11,6 +11,7 @@ import dk.statsbiblioteket.doms.client.impl.datastreams.DatastreamModelImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.TemplateObject;
 import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
@@ -173,6 +174,16 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
                     result.add(literalRelation.getObject());
                 }
             }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<DigitalObject> getSubscribingObjects() throws ServerOperationFailed {
+        List<ObjectRelation> objectRels = getInverseRelations(Constants.HASMODEL_PREDICATE);
+        Set<DigitalObject> result = new HashSet<DigitalObject>();
+        for (ObjectRelation objectRel : objectRels) {
+            result.add(objectRel.getObject());
         }
         return result;
     }

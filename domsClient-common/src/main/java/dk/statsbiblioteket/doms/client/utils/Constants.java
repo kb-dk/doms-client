@@ -19,13 +19,15 @@ public class Constants {
     static public final String OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#";
     static public final String FEDORA_MODEL_NAMESPACE = "info:fedora/fedora-system:def/model#";
     static public final String INFO_FEDORA_URI_SCHEME = "info:fedora/";
-    static public final String IS_PART_OF_COLLECTION_RELATION = DOMS_RELATIONS_NAMESPACE+"isPartOfCollection";
-    static public final String EXTENDSMODEL_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#extendsModel";
     static public final String EXTENSIONS_SCHEMA = "SCHEMA";
     static public final String EXTENSIONS_GUI = "GUI";
     static public final String VIEW_GUI = "GUI";
+
+    static public final String IS_PART_OF_COLLECTION_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isPartOfCollection";
+    static public final String EXTENDSMODEL_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#extendsModel";
     public static final String TEMPLATE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isTemplateFor";
     public static final String VIEWANGLE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isEntryForViewAngle";
+    public static final String HASMODEL_PREDICATE = "info:fedora/fedora-system:def/model#hasModel";
 
     /**                         guestplanets
      * If the given string starts with "info:fedora/", remove it.

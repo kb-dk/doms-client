@@ -28,4 +28,6 @@ public interface ContentModelObject extends DigitalObject {
 
     public Set<String> getEntryViewAngles() throws ServerOperationFailed;
 
+    public Set<DigitalObject> getSubscribingObjects() throws ServerOperationFailed;
+
 }
