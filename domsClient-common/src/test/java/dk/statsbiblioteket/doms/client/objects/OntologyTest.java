@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntologyImpl;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -32,6 +33,16 @@ public class OntologyTest extends TestBase{
     public OntologyTest() throws MalformedURLException {
         super();
     }
+
+    @Before
+    public void makeActive() throws Exception {
+        super.setUp();
+        DigitalObject object = factory.getDigitalObject(victimProgram);
+        //Set the object and all subobjects to Inactive
+        object.setState(Constants.FedoraState.Active, "SummaVisible");
+        object.save("SummaVisible");
+    }
+
 
     @Test
     public void testParseOntologyWithoutExceptions() throws ServerOperationFailed, NotFoundException {
