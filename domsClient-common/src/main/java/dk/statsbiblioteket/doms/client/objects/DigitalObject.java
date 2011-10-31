@@ -39,8 +39,6 @@ public interface DigitalObject {
 
     public void addToCollection(CollectionObject collection) throws ServerOperationFailed;
 
-    public void addToCollection(CollectionObject collection, String viewAngle) throws ServerOperationFailed;
-
     /**
      * @return the object's content models
      */
