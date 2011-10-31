@@ -35,6 +35,12 @@ public interface DigitalObject {
      */
     String getPid();
 
+    Set<CollectionObject> getCollections() throws ServerOperationFailed;
+
+    public void addToCollection(CollectionObject collection) throws ServerOperationFailed;
+
+    public void addToCollection(CollectionObject collection, String viewAngle) throws ServerOperationFailed;
+
     /**
      * @return the object's content models
      */

@@ -85,6 +85,11 @@ public class DigitalObjectFactoryImpl extends DigitalObjectFactory {
             object = new ContentModelObjectImpl(profile, getApi(), this);
         } else if ("TemplateObject".equals(profile.getType())){
             object = new TemplateObjectImpl(profile, getApi(), this);
+        } else if ("CollectionObject".equals(profile.getType())){
+            object = new CollectionObjectImpl(profile, getApi(), this);
+        } else if ("FileObject".equals(profile.getType())){
+            object = new FileObjectImpl(profile, getApi(), this);
+
         } else {
             object = new DataObjectImpl(profile,getApi(),this);
         }

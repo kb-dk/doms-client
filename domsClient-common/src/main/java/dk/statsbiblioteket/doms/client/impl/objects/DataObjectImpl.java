@@ -3,10 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
-import dk.statsbiblioteket.doms.client.objects.DataObject;
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
+import dk.statsbiblioteket.doms.client.objects.*;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 

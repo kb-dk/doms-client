@@ -2,12 +2,14 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.TemplateObject;
 
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Template objects are objects that can be cloned to make new objects.
@@ -34,4 +36,5 @@ public class TemplateObjectImpl extends AbstractDigitalObject implements Templat
             throw new ServerOperationFailed(e);
         }
     }
+
 }

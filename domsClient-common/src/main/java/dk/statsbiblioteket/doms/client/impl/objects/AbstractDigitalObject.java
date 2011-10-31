@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
+import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
@@ -613,4 +614,19 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         addedRelations.add(rel);
         return rel;
     }
+
+    @Override
+    public Set<CollectionObject> getCollections() throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public void addToCollection(CollectionObject collection) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");    }
+
+    @Override
+    public void addToCollection(CollectionObject collection, String viewAngle) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
 }

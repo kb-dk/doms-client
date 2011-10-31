@@ -31,6 +31,21 @@ public class MissingObject implements DigitalObject {
     }
 
     @Override
+    public Set<CollectionObject> getCollections() throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public void addToCollection(CollectionObject collection) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public void addToCollection(CollectionObject collection, String viewAngle) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
     public List<ContentModelObject> getType() {
         throw new IllegalAccessError("Missing object");
     }
