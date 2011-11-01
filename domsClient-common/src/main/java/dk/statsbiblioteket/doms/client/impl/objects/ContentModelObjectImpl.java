@@ -204,7 +204,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         List<ObjectRelation> objectRels = getInverseRelations(Constants.HASMODEL_PREDICATE);
         Set<DigitalObject> result = new HashSet<DigitalObject>();
         for (ObjectRelation objectRel : objectRels) {
-            result.add(objectRel.getObject());
+            result.add(objectRel.getSubject());
         }
         return result;
     }
@@ -233,7 +233,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         Set<ContentModelObject> result = new HashSet<ContentModelObject>();
         for (ObjectRelation rel : rels) {
             if (rel.getObject() instanceof ContentModelObject) {
-                ContentModelObject contentModelObject = (ContentModelObject) rel.getObject();
+                ContentModelObject contentModelObject = (ContentModelObject) rel.getSubject();
                 result.add(contentModelObject);
             }
         }
