@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
@@ -21,13 +22,13 @@ public interface DigitalObject {
      * Saves the digital object to the Server.
      * @throws ServerOperationFailed
      */
-    void save() throws ServerOperationFailed;
+    void save() throws ServerOperationFailed, XMLParseException;
 
     /**
      * Saves the digital object to the Server.
      * @throws ServerOperationFailed
      */
-    void save(String viewAngle) throws ServerOperationFailed;
+    void save(String viewAngle) throws ServerOperationFailed, XMLParseException;
 
 
     /**

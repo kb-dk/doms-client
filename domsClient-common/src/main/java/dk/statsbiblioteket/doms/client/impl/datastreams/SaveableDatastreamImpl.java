@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.datastreams;
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 
@@ -17,7 +18,7 @@ public abstract class SaveableDatastreamImpl extends AbstractDatastream{
         this.api = api;
     }
 
-    public abstract void preSave() throws ServerOperationFailed;
+    public abstract void preSave() throws ServerOperationFailed, XMLParseException;
 
     public abstract void postSave();
 
@@ -25,10 +26,10 @@ public abstract class SaveableDatastreamImpl extends AbstractDatastream{
 
 
     public  void markAsDeleted(){
-
+        //TODO
     }
 
     public void create(){
-
+        //TODO
     }
 }

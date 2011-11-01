@@ -7,6 +7,7 @@ import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.utils.Constants;
@@ -16,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.swing.text.html.parser.ContentModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,15 +34,22 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
 
     private boolean parsed = false;
     private List<DatastreamDeclaration> datastreamDeclarations;
+    private ContentModelObject contentModel;
 
 
     public DatastreamModelImpl(DatastreamProfile datastreamProfile,
-                               DigitalObject digitalObject, CentralWebservice api) {
-        super(datastreamProfile, digitalObject, api);
+                               ContentModelObject contentModel,
+                               CentralWebservice api) {
+        super(datastreamProfile, contentModel, api);
+        this.contentModel = contentModel;
         datastreamDeclarations = new ArrayList<DatastreamDeclaration>();
 
     }
 
+
+    public ContentModelObject getContentModel() {
+        return contentModel;
+    }
 
     public List<DatastreamDeclaration> getDatastreamDeclarations() throws ServerOperationFailed {
         try {

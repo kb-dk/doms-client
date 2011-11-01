@@ -2,7 +2,6 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 
 import java.util.List;
@@ -26,8 +25,6 @@ public interface ContentModelObject extends DigitalObject {
     public RelationModel getRelationModel() throws ServerOperationFailed;
 
     public DatastreamModel getDsModel() throws ServerOperationFailed;
-
-    //public ParsedOwlOntology getOntology() throws ServerOperationFailed;
 
     public Set<TemplateObject> getTemplates() throws ServerOperationFailed;
 

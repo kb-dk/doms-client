@@ -2,12 +2,10 @@ package dk.statsbiblioteket.doms.client.impl.datastreams;
 
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
-import java.io.IOException;
 import java.lang.String;
 
 /**
@@ -47,13 +45,11 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
     }
 
     @Override
-    public void preSave() throws ServerOperationFailed {
+    public void preSave() throws ServerOperationFailed, XMLParseException {
         if (hasBeenSDOparsed()){
-            try {
-                getSDOParsedDocument().saveToDatastream();
-            } catch (Exception e) {
-                throw new ServerOperationFailed("Failed to get SDO document",e);
-            }
+
+            getSDOParsedDocument().saveToDatastream();
+
         }
         if (contents == null || originalContents == null){
             return;

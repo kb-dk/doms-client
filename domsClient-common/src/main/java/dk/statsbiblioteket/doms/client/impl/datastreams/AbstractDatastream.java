@@ -3,8 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.datastreams;
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.client.datastreams.*;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLWriteException;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
@@ -12,7 +11,6 @@ import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -110,7 +108,7 @@ public abstract class AbstractDatastream implements Datastream {
     }
 
     public synchronized SDOParsedXmlDocument getSDOParsedDocument()
-            throws ServerOperationFailed, IOException, MyXMLWriteException, MyXMLReadException {
+            throws ServerOperationFailed, XMLParseException {
         if (sdodoc != null){
             return sdodoc;
         }

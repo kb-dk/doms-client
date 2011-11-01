@@ -1,6 +1,5 @@
 package dk.statsbiblioteket.doms.client.datastreams;
 
-import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 
 /**
  * Created by IntelliJ IDEA.

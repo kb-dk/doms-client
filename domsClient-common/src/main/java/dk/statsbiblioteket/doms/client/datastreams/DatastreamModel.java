@@ -1,8 +1,7 @@
 package dk.statsbiblioteket.doms.client.datastreams;
 
-import dk.statsbiblioteket.doms.client.datastreams.Datastream;
-import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 
 import java.util.List;
 
@@ -14,5 +13,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface DatastreamModel extends Datastream {
+
+    ContentModelObject getContentModel();
+
     public List<DatastreamDeclaration> getDatastreamDeclarations() throws ServerOperationFailed;
 }

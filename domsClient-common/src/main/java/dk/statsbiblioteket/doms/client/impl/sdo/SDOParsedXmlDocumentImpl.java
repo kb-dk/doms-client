@@ -12,20 +12,23 @@ import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
-import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.apache.tuscany.sdo.api.SDOUtil;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
-import java.io.*;
-import java.rmi.RemoteException;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
@@ -44,7 +47,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     private List<Type> sdoTypes = new ArrayList<Type>();
 
     public SDOParsedXmlDocumentImpl(DatastreamDeclaration next,Datastream datastream)
-            throws ServerOperationFailed, IOException, MyXMLReadException {
+            throws ServerOperationFailed, XMLParseException {
         generate(next);
         load(datastream);
         this.datastream = datastream;
@@ -125,7 +128,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     private void generate(DatastreamDeclaration compositeSchema)
-            throws IOException, ServerOperationFailed, MyXMLReadException {
+            throws  ServerOperationFailed, XMLParseException {
         if (sdoContext == null){
             sdoContext = SDOUtil.createHelperContext(true);
         }
@@ -154,7 +157,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             try {
                 setSdoTypes(defineTypes(sdoContext,  doc));
             } catch (TransformerException e) {
-                throw new MyXMLReadException("Failed to parse the types",e);
+                throw new XMLParseException("Failed to parse the types",e);
             }
             if (getSdoTypes() != null) {
                 Property rootProperty = getRootProperty(getSdoTypes(), targetNamespace, sdoContext.getXSDHelper());
@@ -167,7 +170,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     }
 
-    private void load(Datastream datastream) throws IOException,  ServerOperationFailed {
+    private void load(Datastream datastream) throws ServerOperationFailed {
 
 
 
@@ -219,7 +222,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     @Override
-    public String dumpToString() throws IOException {
+    public String dumpToString() throws XMLParseException {
         if ((getRootSDOParsedXmlElement() != null) && (getSdoXmlDocument() != null) && (sdoContext != null)) {
             Writer writer = new StringWriter();
             getRootSDOParsedXmlElement().submit(sdoContext);
@@ -234,9 +237,12 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             SdoDataObjectUtils utils = new SdoDataObjectUtils();
             utils.handleDataObject(sdoContext, null, rootCopy, rootProperty);
             //utils.doDelete();
-            sdoContext.getXMLHelper().save(docCopy, writer, null);
-
-            writer.flush();
+            try {
+                sdoContext.getXMLHelper().save(docCopy, writer, null);
+                writer.flush();
+            } catch (IOException e) {
+                throw new RuntimeException("String writer failed to write...",e);
+            }
 
             return writer.toString();
 
@@ -245,7 +251,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     @Override
-    public void saveToDatastream() throws IOException {
+    public void saveToDatastream() throws XMLParseException {
         if (datastream instanceof InternalDatastream) {
             InternalDatastream internalDatastream = (InternalDatastream) datastream;
             internalDatastream.replace(dumpToString());
@@ -268,7 +274,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
      * @param context
      * @param compositeSchema
      * @return
-     * @throws RemoteException
      * @throws IOException
      * @throws MethodFailedException
      * @throws InvalidResourceException

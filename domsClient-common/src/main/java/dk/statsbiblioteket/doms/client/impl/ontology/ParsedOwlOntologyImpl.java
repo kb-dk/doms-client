@@ -3,11 +3,7 @@ package dk.statsbiblioteket.doms.client.impl.ontology;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.ontology.OWLClass;
 
-import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
-import dk.statsbiblioteket.doms.client.ontology.OWLRestriction;
-import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.doms.client.utils.DOMSXMLUtils;
 import dk.statsbiblioteket.util.xml.DOM;

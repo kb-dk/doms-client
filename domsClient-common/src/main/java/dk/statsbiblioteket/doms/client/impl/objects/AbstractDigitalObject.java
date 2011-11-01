@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
@@ -216,8 +217,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             if (frelation.getPredicate().equals(predicate)){ //TODO do not request unneeded relations from server
                 result.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
-                        frelation.getObject(),
-                        factory));
+                                                  frelation.getObject(),
+                                                  factory));
             }
         }
         return result;
@@ -266,8 +267,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             inverseRelations.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
-                    frelation.getObject(),
-                    factory));
+                                                        frelation.getObject(),
+                                                        factory));
         }
     }
 
@@ -292,7 +293,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 type.add(object);
             } else {
                 throw new ServerOperationFailed("Object '" + pid + "' has the content model '" + contentModel +
-                        "' declared, but this is not a content model");
+                                                "' declared, but this is not a content model");
             }
         }
     }
@@ -359,7 +360,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
 
     private void preSaveDatastreams()
-            throws ServerOperationFailed {
+            throws ServerOperationFailed, XMLParseException {
         for (SaveableDatastreamImpl deletedDS : deletedDSs) {
             deletedDS.markAsDeleted();
         }
@@ -432,7 +433,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-    protected void preSave(String viewAngle) throws ServerOperationFailed{
+    protected void preSave(String viewAngle) throws ServerOperationFailed, XMLParseException {
 
         List<AbstractDigitalObject> saved = new ArrayList<AbstractDigitalObject>();
         try {
@@ -457,11 +458,22 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             for (AbstractDigitalObject digitalObject : saved) {
                 digitalObject.undoSave(viewAngle);
             }
-            try {undoSave(viewAngle);
+            try {
+                undoSave(viewAngle);
             } catch (Exception e2){
                 e2.printStackTrace();
             }
             throw new ServerOperationFailed(e.getMessage(),e);
+        } catch (XMLParseException e) {
+            for (AbstractDigitalObject digitalObject : saved) {
+                digitalObject.undoSave(viewAngle);
+            }
+            try {
+                undoSave(viewAngle);
+            } catch (Exception e2){
+                e2.printStackTrace();//TODO log
+            }
+            throw new XMLParseException(e.getMessage(),e);
         }
 
 
@@ -587,14 +599,14 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-    public void save(String viewAngle) throws ServerOperationFailed {
+    public void save(String viewAngle) throws ServerOperationFailed, XMLParseException {
         this.preSave(viewAngle);
         this.postSave(viewAngle);
     }
 
 
 
-    public void save() throws ServerOperationFailed {
+    public void save() throws ServerOperationFailed, XMLParseException {
         save("UNUSEDVIEWANGLE");
     }
 

@@ -1,18 +1,21 @@
 package dk.statsbiblioteket.doms.client.exceptions;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * Created by IntelliJ IDEA.
- * User: eab
+ * User: abr
  * Date: 10/24/11
- * Time: 2:24 PM
+ * Time: 4:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MyXMLWriteException extends Exception {
-    public MyXMLWriteException(String message) {
+public class XMLParseException extends Exception {
+
+    public XMLParseException(String message) {
         super(message);
     }
 
-    public MyXMLWriteException(String message, Throwable cause) {
+    public XMLParseException(String message, Throwable cause) {
         super(message, cause);
     }
 }

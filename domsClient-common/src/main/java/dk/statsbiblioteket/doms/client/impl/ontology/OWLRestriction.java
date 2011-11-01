@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.ontology;
+package dk.statsbiblioteket.doms.client.impl.ontology;
 
 /**
  * Created by IntelliJ IDEA.

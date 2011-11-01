@@ -4,6 +4,8 @@ import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
 import dk.statsbiblioteket.doms.client.impl.AbstractDomsClient;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,6 +14,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -61,6 +64,62 @@ public class TestBase {
     @Ignore
     public void emptyTest(){
 
+    }
+
+
+    protected void emptymize(SDOParsedXmlElement element    ){
+        ArrayList<SDOParsedXmlElement> children = element.getChildren();
+        for (SDOParsedXmlElement child : children) {
+            if (child.isLeaf()){
+                if (child.getValue() == null){
+                    child.setValue("");
+                }
+
+            } else {
+                emptymize(child);
+            }
+        }
+
+    }
+
+    protected void parseDoc(SDOParsedXmlDocument doc){
+        parseTree(doc.getRootSDOParsedXmlElement(),"");
+    }
+
+
+    protected void parseTree(SDOParsedXmlElement doc, String indryk) {
+
+        ArrayList<SDOParsedXmlElement> children = doc.getChildren();
+        for (SDOParsedXmlElement child : children) {
+            if (child.isLeaf()){
+
+                System.out.print(indryk+"'"+child.getLabel()+"': '"+child.getValue()+"'");
+                if (child.getProperty().isMany()){
+                    if (child.getAddable()){
+                        System.out.print(" (+)");
+                    }
+                    if (child.getRemovable()){
+                        System.out.print("(-)");
+                    }
+                }
+                System.out.print("  type="+child.getGuiTypeAsString());
+                System.out.println();
+
+            } else {
+                System.out.print(indryk + "'"+child.getLabel()+"'");
+                if (child.getProperty().isMany()){
+                    if (child.getAddable()){
+                        System.out.print(" (+)");
+                    }
+                    if (child.getRemovable()){
+                        System.out.print("(-)");
+                    }
+                }
+                System.out.println();
+
+                parseTree(child, indryk+"    ");
+            }
+        }
     }
 
 }

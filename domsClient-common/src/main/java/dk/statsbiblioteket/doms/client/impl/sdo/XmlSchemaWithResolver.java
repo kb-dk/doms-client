@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.doms.client.impl.sdo;
 
 
-import dk.statsbiblioteket.doms.client.exceptions.MyXMLReadException;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -48,9 +48,8 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 	 * This is used to parse a schema embedded in a foxml:datastream in a ContentModel.
 	 * @param is
 	 * @return
-
 	 */
-	public boolean load(InputStream is) throws MyXMLReadException {
+	public boolean load(InputStream is) throws XMLParseException {
 		boolean success = false;
 		docNode = null;
 		String errMsg = "";
@@ -70,17 +69,17 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 				document = builder.parse(new InputSource(is));
 				success = true;
 			} catch (Exception e) {
-				throw new MyXMLReadException("Parse failed in XMLDocument. "
+				throw new XMLParseException("Parse failed in XMLDocument. "
 						+ e.getMessage());
 			}
-			docNode = (Node) document.getFirstChild();
+			docNode = document.getFirstChild();
 			
 			
 		} catch (ParserConfigurationException spe) {
 			spe.printStackTrace();
 			errMsg += "ParserConfigurationException";
 			errMsg += "Exception message: " + spe.toString() ;
-			throw new MyXMLReadException(errMsg);
+			throw new XMLParseException(errMsg);
 		} 
 		return success;
 	}
@@ -89,9 +88,9 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 	 * This Load method expects a complete XML document.
 	 * @param docPath
 	 * @return
-	 * @throws MyXMLWriteException
+	 * @throws XMLWriteException
 	 *//*
-	public boolean Load(String docPath) throws MyXMLWriteException {
+	public boolean Load(String docPath) throws XMLWriteException {
 		boolean success = false;
 		docNode = null;
 		String errMsg = "";
@@ -132,13 +131,13 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 					document = builder.parse(new InputSource(fis));
 					success = true;
 				} catch (Exception e) {
-					throw new MyXMLWriteException("Parse failed in XMLDocument. "
+					throw new XMLWriteException("Parse failed in XMLDocument. "
 							+ e.getMessage());
 				}
 				Element docElm = document.getDocumentElement(); //This is the <digitalObject> element
 	
 				if (docElm.getNodeType() != Node.ELEMENT_NODE) {
-					throw new MyXMLWriteException(
+					throw new XMLWriteException(
 							"The root element in the XML document is not the correct type..");
 				}
 	
@@ -155,13 +154,13 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 			errMsg += "ParserConfigurationException";
 			errMsg += docPath;
 			errMsg += "Exception message: " + spe.toString();
-			throw new MyXMLWriteException(errMsg);
+			throw new XMLWriteException(errMsg);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			errMsg += "IOException";
 			errMsg += docPath;
 			errMsg += "Exception message: " + ioe.toString();
-			throw new MyXMLWriteException(errMsg);
+			throw new XMLWriteException(errMsg);
 		}
 		return success;
 	}

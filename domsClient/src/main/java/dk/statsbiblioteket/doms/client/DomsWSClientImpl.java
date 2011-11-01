@@ -28,13 +28,11 @@ package dk.statsbiblioteket.doms.client;
 
 
 import dk.statsbiblioteket.doms.central.*;
-import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.relations.*;
-import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.doms.client.utils.FileInfo;

@@ -1,8 +1,5 @@
 package dk.statsbiblioteket.doms.client.impl.ontology;
 
-import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
-import dk.statsbiblioteket.doms.client.ontology.OWLRestriction;
-import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.doms.client.utils.DOMSXMLUtils;
 import org.w3c.dom.NamedNodeMap;

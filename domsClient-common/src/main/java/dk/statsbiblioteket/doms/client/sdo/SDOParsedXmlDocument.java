@@ -1,10 +1,8 @@
 package dk.statsbiblioteket.doms.client.sdo;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
-import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlElementImpl;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,15 +12,15 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public interface SDOParsedXmlDocument {
-    SDOParsedXmlElementImpl getRootSDOParsedXmlElement();
+    SDOParsedXmlElement getRootSDOParsedXmlElement();
 
     boolean isValid();
 
     boolean isAbstract();
 
-    String dumpToString() throws IOException;
+    String dumpToString() throws XMLParseException;
 
-    void saveToDatastream() throws IOException;
+    void saveToDatastream() throws XMLParseException;
 
     Datastream getDatastream();
 }

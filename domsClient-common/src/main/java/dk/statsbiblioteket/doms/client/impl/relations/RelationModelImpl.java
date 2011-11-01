@@ -1,14 +1,13 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.ontology.OWLObjectProperty;
+import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
-import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 
-import javax.swing.text.html.parser.ContentModel;
 import java.util.*;
 
 /**

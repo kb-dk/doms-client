@@ -1,12 +1,14 @@
 package dk.statsbiblioteket.doms.client.objects;
 
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
+import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Set;
 
@@ -27,7 +29,8 @@ public class CollectionTest extends TestBase{
     }
 
     @Test
-    public void testCollection1() throws ServerOperationFailed {
+    public void testCollection1()
+            throws ServerOperationFailed, XMLParseException, NotFoundException {
         boolean createdProgram = false;
         boolean  createdShard = false;
         boolean createdRelation = false;
