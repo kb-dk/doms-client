@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.ValidationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
@@ -395,6 +396,16 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
             statePreSaved = true;
         } catch (Exception e){
+            String message = e.getMessage();
+            if (message.contains("dk.statsbiblioteket.doms.ecm.fedoravalidatorhook.ValidationFailedException")){
+                int begin = message.indexOf("<validation");
+                int end = message.indexOf("</validation>");
+                if (end > begin  && begin > 0){
+                    end += "</validation>".length();
+                    String xmlMessage = message.substring(begin, end);
+                    throw new ValidationFailed(xmlMessage,e);
+                }
+            }
             throw new ServerOperationFailed(e.getMessage(),e);
         }
 
@@ -446,11 +457,13 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             }
             if(!getState().equals(Constants.FedoraState.Active)){
                 preSaveState();
+                preSaveTitle();
                 preSaveDatastreams();
                 preSaveRelations();
             } else {
                 preSaveDatastreams();
                 preSaveRelations();
+                preSaveTitle();
                 preSaveState();
             }
 
@@ -477,6 +490,18 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
 
 
+    }
+
+    private void preSaveTitle() throws ServerOperationFailed {
+        try {
+            api.setObjectLabel(this.getPid(),title,"Changing the object label");
+        } catch (InvalidCredentialsException e) {
+            throw new ServerOperationFailed(e);
+        } catch (InvalidResourceException e) {
+            throw new ServerOperationFailed(e);
+        } catch (MethodFailedException e) {
+            throw new ServerOperationFailed(e);
+        }
     }
 
     protected  void preSaveRelations() throws ServerOperationFailed {
@@ -513,7 +538,12 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
         postSaveDatastreams();
         postSaveRelations();
+        postSaveTitle();
         postSaveState();
+    }
+
+    private void postSaveTitle() {
+        titleOriginal = title;
     }
 
     private void postSaveRelations() {
@@ -546,7 +576,20 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
         undoSaveDatastreams();
         undoSaveRelations();
+        undoSaveTitle();
         undoSaveState();
+    }
+
+    private void undoSaveTitle() throws ServerOperationFailed {
+        try {
+            api.setObjectLabel(this.getPid(),titleOriginal,"Undoing change of object label");
+        } catch (InvalidCredentialsException e) {
+            throw new ServerOperationFailed(e);
+        } catch (InvalidResourceException e) {
+            throw new ServerOperationFailed(e);
+        } catch (MethodFailedException e) {
+            throw new ServerOperationFailed(e);
+        }
     }
 
     private void undoSaveRelations() throws ServerOperationFailed {

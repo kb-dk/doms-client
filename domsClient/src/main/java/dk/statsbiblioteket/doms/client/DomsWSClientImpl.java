@@ -406,7 +406,7 @@ public class DomsWSClientImpl implements DomsWSClient {
         try {
             return Constants.FedoraState.fromString(domsAPI.getObjectProfile(pid).getState());
         } catch (Exception e) {
-            throw new ServerOperationFailed(e);
+            throw new ServerOperationFailed("Failed getting state from object "+pid,e);
         }
     }
 

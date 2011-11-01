@@ -501,7 +501,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                         try {
                         value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
                         } catch (IllegalArgumentException e) {
-                            throw new XMLParseException("Failed to parse the value '"+this.getValue()+"'of field "+this.getId()+" as a "+this.getProperty().getType().getName(),e);
+                            throw new XMLParseException("Failed to parse the value '"+this.getValue()+"' of field "+this.getLabel()+" as a "+this.getProperty().getType().getName(),e);
                         }
 
                         if (this.getProperty().isMany())
