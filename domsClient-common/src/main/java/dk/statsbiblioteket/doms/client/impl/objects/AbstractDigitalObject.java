@@ -381,6 +381,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     private void preSaveState()
             throws ServerOperationFailed {
+        if (state.equals(stateOriginal)){
+            return;
+        }
         try {
             List<String> pid_list = new ArrayList<String>(1);
             pid_list.add(pid);
@@ -493,6 +496,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     private void preSaveTitle() throws ServerOperationFailed {
+        if (title.equals(titleOriginal)){
+            return;
+        }
         try {
             api.setObjectLabel(this.getPid(),title,"Changing the object label");
         } catch (InvalidCredentialsException e) {
@@ -510,7 +516,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
                 Relation apiRelation = toApiRelation(addedRelation);
                 api.addRelation(this.getPid(),apiRelation,"Added a relation from the Doms Client");
-
             }
             for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
                 Relation apiRelation = toApiRelation(removedRelation);
@@ -581,6 +586,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     private void undoSaveTitle() throws ServerOperationFailed {
+        if (title.equals(titleOriginal)){
+            return;
+        }
         try {
             api.setObjectLabel(this.getPid(),titleOriginal,"Undoing change of object label");
         } catch (InvalidCredentialsException e) {
