@@ -1,14 +1,12 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import com.sun.org.apache.xerces.internal.impl.dtd.models.CMStateSet;
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
 import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.TemplateObject;
-import dk.statsbiblioteket.doms.client.relations.*;
+import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 

@@ -215,10 +215,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         List<ObjectRelation> result = new ArrayList<ObjectRelation>();
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             if (frelation.getPredicate().equals(predicate)){ //TODO do not request unneeded relations from server
-                result.add(new ObjectRelationImpl(frelation.getPredicate(),
-                                                  frelation.getObject(),
-                                                  frelation.getSubject(),
-                                                  factory));
+                result.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
+                        frelation.getObject(),
+                        factory));
             }
         }
         return result;
@@ -239,9 +238,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             if (frelation.isLiteral()) {
-                relations.add(new LiteralRelationImpl(frelation.getPredicate(), this.getPid(), frelation.getObject(),factory));
+                relations.add(new LiteralRelationImpl(this.getPid(), frelation.getPredicate(), frelation.getObject(),factory));
             } else {
-                relations.add(new ObjectRelationImpl(frelation.getPredicate(), this.getPid(), frelation.getObject(), factory));
+                relations.add(new ObjectRelationImpl(this.getPid(),frelation.getPredicate(),frelation.getObject(), factory));
             }
         }
     }
@@ -266,10 +265,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
-            inverseRelations.add(new ObjectRelationImpl(frelation.getPredicate(),
-                                                        frelation.getObject(),
-                                                        frelation.getSubject(),
-                                                        factory));
+            inverseRelations.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
+                    frelation.getObject(),
+                    factory));
         }
     }
 
@@ -294,7 +292,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 type.add(object);
             } else {
                 throw new ServerOperationFailed("Object '" + pid + "' has the content model '" + contentModel +
-                                                "' declared, but this is not a content model");
+                        "' declared, but this is not a content model");
             }
         }
     }
@@ -445,10 +443,15 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                     abstractChild.preSave(viewAngle);
                 }
             }
-
-            preSaveDatastreams();
-            preSaveRelations();
-            preSaveState();
+            if(!getState().equals(Constants.FedoraState.Active)){
+                preSaveState();
+                preSaveDatastreams();
+                preSaveRelations();
+            } else {
+                preSaveDatastreams();
+                preSaveRelations();
+                preSaveState();
+            }
 
         } catch (ServerOperationFailed e){
             for (AbstractDigitalObject digitalObject : saved) {
@@ -602,7 +605,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public ObjectRelation addObjectRelation(String predicate, DigitalObject object) throws ServerOperationFailed {
-        ObjectRelation rel = new ObjectRelationImpl(predicate, this.getPid(), object.getPid(), factory);
+        ObjectRelation rel = new ObjectRelationImpl(this.getPid(),predicate,object.getPid(),  factory);
         addedRelations.add(rel);
         return rel;
 
@@ -610,7 +613,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public LiteralRelation addLiteralRelation(String predicate, String value) {
-        LiteralRelation rel = new LiteralRelationImpl(predicate, this.getPid(), value,factory);
+        LiteralRelation rel = new LiteralRelationImpl(this.getPid(), predicate, value,factory);
         addedRelations.add(rel);
         return rel;
     }

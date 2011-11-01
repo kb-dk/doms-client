@@ -2,7 +2,6 @@ package dk.statsbiblioteket.doms.client.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-import dk.statsbiblioteket.doms.client.relations.Relation;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,5 +14,5 @@ public interface ObjectRelation extends Relation {
     DigitalObject getObject() throws ServerOperationFailed;
 
     String getObjectPid();
-    void setObject(DigitalObject subject);
+
 }

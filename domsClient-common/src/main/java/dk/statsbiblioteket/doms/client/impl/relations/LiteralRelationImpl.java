@@ -14,8 +14,8 @@ public class LiteralRelationImpl extends AbstractRelation implements LiteralRela
         return object;
     }
 
-    @Override
-    public void setObject(String object) {
+
+    private void setObject(String object) {
         if (object.startsWith("\"") && object.endsWith("\"")){
             object = object.substring(1, object.length()-1);
         }
@@ -26,11 +26,11 @@ public class LiteralRelationImpl extends AbstractRelation implements LiteralRela
      * This constructor must be extended to complete the notion of triples
      * representing connections in the object graph.
      *
-     * @param predicate
      * @param subjectPid
+     * @param predicate
      */
-    public LiteralRelationImpl(String predicate, String subjectPid, String object, DigitalObjectFactory factory) {
-        super(predicate, subjectPid, factory);
+    public LiteralRelationImpl(String subjectPid, String predicate, String object, DigitalObjectFactory factory) {
+        super(subjectPid, predicate, factory);
         setObject(object);
     }
 

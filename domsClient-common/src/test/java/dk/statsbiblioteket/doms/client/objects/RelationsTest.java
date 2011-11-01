@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -36,13 +37,14 @@ public class RelationsTest extends TestBase{
     }
 
     @Test
+    @Ignore //Will run for ever
     public void testInverseRelations() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_Program");
         assertTrue(cmdoms instanceof ContentModelObject);
         List<ObjectRelation> inverseRelations = cmdoms.getInverseRelations();
         for (ObjectRelation inverseRelation : inverseRelations) {
-            assertEquals(inverseRelation.getSubjectPid(),cmdoms.getPid());
-            assertNotNull(inverseRelation.getObjectPid());
+            assertEquals(inverseRelation.getObjectPid(),cmdoms.getPid());
+            assertNotNull(inverseRelation.getSubject());
         }
     }
 

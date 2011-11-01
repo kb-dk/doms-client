@@ -1,7 +1,5 @@
 package dk.statsbiblioteket.doms.client.relations;
 
-import dk.statsbiblioteket.doms.client.relations.Relation;
-
 /**
  * Created by IntelliJ IDEA.
  * User: abr
@@ -12,5 +10,5 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
 public interface LiteralRelation extends Relation {
     String getObject();
 
-    void setObject(String subject);
+
 }

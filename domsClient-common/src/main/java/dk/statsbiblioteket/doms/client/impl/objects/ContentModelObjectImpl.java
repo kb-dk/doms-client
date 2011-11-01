@@ -176,8 +176,8 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         List<ObjectRelation> templateRels = getInverseRelations(Constants.TEMPLATE_PREDICATE);
         Set<TemplateObject> result = new HashSet<TemplateObject>();
         for (ObjectRelation templateRel : templateRels) {
-            if (templateRel.getObject() instanceof TemplateObject) {
-                TemplateObject templateObject = (TemplateObject) templateRel.getObject();
+            if (templateRel.getSubject() instanceof TemplateObject) {
+                TemplateObject templateObject = (TemplateObject) templateRel.getSubject();
                 result.add(templateObject);
             }
         }

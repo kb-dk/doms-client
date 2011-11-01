@@ -4,8 +4,6 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
-import dk.statsbiblioteket.doms.client.ontology.OWLObjectProperty;
-import dk.statsbiblioteket.doms.client.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
@@ -29,10 +27,10 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     /**
      * This constructor must be extended to complete the notion of triples
      * representing connections in the subject graph.
-     * @param predicate
      * @param subjectPid
+     * @param predicate
      */
-    public AbstractRelation(String predicate, String subjectPid, DigitalObjectFactory factory) {
+    public AbstractRelation(String subjectPid, String predicate, DigitalObjectFactory factory) {
         this.predicate = predicate;
         this.factory = factory;
         this.subjectPid = Constants.ensurePID(subjectPid);

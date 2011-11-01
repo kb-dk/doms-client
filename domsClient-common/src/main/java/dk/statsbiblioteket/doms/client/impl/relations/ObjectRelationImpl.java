@@ -21,26 +21,22 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
         DigitalObject result = object.get();
         if (result == null){
             result = getFactory().getDigitalObject(objectPid);
-            setObject(result);
+            object = new SoftReference<DigitalObject>(result);
         }
         return result;
     }
 
-    @Override
-    public void setObject(DigitalObject subject) {
-        this.object = new SoftReference<DigitalObject>(subject);
-    }
 
     public String getObjectPid() {
         return objectPid;
     }
 
-    public ObjectRelationImpl(String predicate,
+    public ObjectRelationImpl(String subjectPid,
+                              String predicate,
                               String objectPid,
-                              String subjectPid,
                               DigitalObjectFactory factory) {
-        super(predicate, objectPid, factory);
-        this.objectPid = Constants.ensurePID(subjectPid);
+        super(subjectPid, predicate, factory);
+        this.objectPid = Constants.ensurePID(objectPid);
     }
 
     @Override
