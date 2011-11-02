@@ -5,7 +5,7 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.client</groupId>
         <artifactId>domsClient-parent</artifactId>
-        <version>0.0.10-SNAPSHOT</version>
+        <version>0.0.10</version>
     </parent>
 
     <groupId>dk.statsbiblioteket.doms.guiClient</groupId>
@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.client</groupId>
-            <artifactId>domsClient-common</artifactId>
+            <artifactId>domsClient-common-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
