@@ -97,7 +97,7 @@ public class SdoDataObjectUtils {
 	    		temp = handleValueOfProperty(helperContext, parent, dataObject, p);
 	    		isEmpty = (isEmpty && temp);
 	    		if (temp) {
-	    			//dataObject.unset(p);
+	    			dataObject.unset(p);
 	    		}
 	    	}
 	    }
