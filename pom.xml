@@ -8,16 +8,16 @@
 
     <groupId>dk.statsbiblioteket.doms.client</groupId>
     <artifactId>domsClient-parent</artifactId>
-    <version>0.0.11</version>
+    <version>0.0.12-SNAPSHOT</version>
     <name>Doms Admin Client</name>
 
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/domsClient-parent-0.0.11</connection>
-        <developerConnection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/tags/domsClient-parent-0.0.11
+        <connection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/trunk</connection>
+        <developerConnection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/domsclient/trunk
         </developerConnection>
-        <url>http://doms.svn.sourceforge.net/viewvc/doms/domsclient/tags/domsClient-parent-0.0.11</url>
+        <url>http://doms.svn.sourceforge.net/viewvc/doms/domsclient/trunk</url>
     </scm>
 
 
