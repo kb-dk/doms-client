@@ -196,7 +196,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) {
         if (relation.getSubjectPid().equals(this.getPid())){
-            removedRelations.add(relation);
+            privateRemoveRelation(relation);
         }
     }
 
@@ -669,7 +669,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public ObjectRelation addObjectRelation(String predicate, DigitalObject object) throws ServerOperationFailed {
         ObjectRelation rel = new ObjectRelationImpl(this.getPid(),predicate,object.getPid(),  factory);
-        addedRelations.add(rel);
+        privateAddRelation(rel);
         return rel;
 
     }
@@ -677,7 +677,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public LiteralRelation addLiteralRelation(String predicate, String value) {
         LiteralRelation rel = new LiteralRelationImpl(this.getPid(), predicate, value,factory);
-        addedRelations.add(rel);
+        privateAddRelation(rel);
         return rel;
     }
 
@@ -690,5 +690,38 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     public void addToCollection(CollectionObject collection) throws ServerOperationFailed {
         collection.addObject(this);
     }
+
+    private void privateAddRelation(dk.statsbiblioteket.doms.client.relations.Relation relation){
+        boolean isOriginal = relations.contains(relation);
+        boolean isAlreadyRemoved = removedRelations.contains(relation);
+        boolean isAdded = addedRelations.contains(relation);
+
+        if (isAlreadyRemoved){
+            removedRelations.remove(relation);
+            return;
+        }
+        if (!isAdded && !isOriginal){
+            addedRelations.add(relation);
+        }
+    }
+
+    private void privateRemoveRelation(dk.statsbiblioteket.doms.client.relations.Relation relation){
+        boolean isOriginal = relations.contains(relation);
+        boolean isAlreadyRemoved = removedRelations.contains(relation);
+        boolean isAdded = addedRelations.contains(relation);
+        if (!(isOriginal ||  isAdded)){//is this anywhere?
+            return;//if not present, return
+        }
+
+        if (isAdded){
+            addedRelations.remove(relation);
+            return;
+        }
+        if (!isAlreadyRemoved && isOriginal){
+            removedRelations.add(relation);
+        }
+
+    }
+
 
 }
