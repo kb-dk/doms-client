@@ -579,10 +579,18 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 abstractChild.undoSave(viewAngle);
             }
         }
-        undoSaveDatastreams();
-        undoSaveRelations();
-        undoSaveTitle();
-        undoSaveState();
+        if (getState().equals(Constants.FedoraState.Active)){
+            undoSaveState();
+            undoSaveDatastreams();
+            undoSaveRelations();
+            undoSaveTitle();
+        } else {
+            undoSaveDatastreams();
+            undoSaveRelations();
+            undoSaveTitle();
+            undoSaveState();
+        }
+
     }
 
     private void undoSaveTitle() throws ServerOperationFailed {

@@ -39,15 +39,7 @@ public abstract class AbstractDomsClient implements DomsClient {
                 .getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
-        factory = getFactory(domsAPI);
-    }
-
-    private synchronized AbstractDigitalObjectFactory getFactory(CentralWebservice api) {
-        if (factory.getApi().equals(api)){
-            return new DigitalObjectFactoryImpl(api);
-        } else {
-            return factory;
-        }
+        factory= new DigitalObjectFactoryImpl(domsAPI);
     }
 
 
