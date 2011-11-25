@@ -8,6 +8,8 @@ import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.central.RecordDescription;
 import dk.statsbiblioteket.doms.client.exceptions.NoObjectFound;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.doms.client.utils.FileInfo;
@@ -51,6 +53,11 @@ public interface DomsWSClient {
      */
     List<String> getLabel(List<String> uuids);
 
+    /**
+     * Get the digital object factory.
+     * @return the digital object factory
+     */
+    public DigitalObjectFactory getDigitalObjectFactory();
     /**
      *
      * @param uuid the uuid for which to get the label
@@ -219,12 +226,14 @@ public interface DomsWSClient {
      * type specified by <code>relationType</code> must be valid according to
      * the content model for the object.
      *
-     * @param relation the AbstractRelation to add
-     * @param comment  The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
+     *
+     * @param pid
+     * @param predicate
+     *@param objectPid
+     * @param comment  The message to store in Fedora  @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
      *          if the relation cannot be added.
      */
-    public void addObjectRelation(LiteralRelation relation, String comment) throws ServerOperationFailed;
+    public void addObjectRelation(String pid, String predicate, String objectPid, String comment) throws ServerOperationFailed, XMLParseException;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
