@@ -104,7 +104,22 @@ public class TestBase {
                 System.out.print("  type="+child.getGuiTypeAsString());
                 System.out.println();
 
+            } else if (child.isValueLeaf()){
+                System.out.print(indryk+"'"+child.getLabel()+"': '"+child.getCrapValue().getValue()+"'");
+                if (child.getProperty().isMany()){
+                    if (child.getAddable()){
+                        System.out.print(" (+)");
+                    }
+                    if (child.getRemovable()){
+                        System.out.print("(-)");
+                    }
+                }
+                System.out.print("  type="+child.getGuiTypeAsString());
+                System.out.println();
+
             } else {
+
+
                 System.out.print(indryk + "'"+child.getLabel()+"'");
                 if (child.getProperty().isMany()){
                     if (child.getAddable()){
@@ -119,6 +134,32 @@ public class TestBase {
                 parseTree(child, indryk+"    ");
             }
         }
+    }
+
+    private Object getCrapValue(SDOParsedXmlElement child) {
+        ArrayList<SDOParsedXmlElement> children = child.getChildren();
+        if (children != null && children.size() > 0){
+            SDOParsedXmlElement firstChild = children.get(0);
+            if (firstChild != null && firstChild.getChildren().size() == 0){
+                if (firstChild.getLabel().equals("Value")){
+                    return firstChild.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isValueCrap(SDOParsedXmlElement child) {
+        ArrayList<SDOParsedXmlElement> children = child.getChildren();
+        if (children != null && children.size() > 0){
+            SDOParsedXmlElement firstChild = children.get(0);
+            if (firstChild != null && firstChild.getChildren().size() == 0){
+                if (firstChild.getLabel().equals("Value")){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

@@ -70,6 +70,11 @@ public interface SDOParsedXmlElement {
 
     void setIndex(int i);
 
+    SDOParsedXmlElement getCrapValue();
+
+    boolean isValueLeaf();
+
+
     public static enum GuiType {
         inputfield, textarea, uneditable, NA, enumeration, invisible
     }

@@ -35,7 +35,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     private GuiType guiType = GuiType.NA;
 
     private List<String> valueEnum;
-    static final String PLACEHOLDER = "PLACEHOLDER";
+    static final String PLACEHOLDER = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0";
 
     public SDOParsedXmlElementImpl(SDOParsedXmlDocumentImpl myDocument, SDOParsedXmlElement parent,
                                    DataObject dataobject,
@@ -600,4 +600,25 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         this.guiType = GuiType.enumeration;
         this.valueEnum = valueEnum;
     }
+
+     public SDOParsedXmlElement getCrapValue() {
+        ArrayList<SDOParsedXmlElement> children = getChildren();
+        if (children != null && children.size() > 0){
+            SDOParsedXmlElement firstChild = children.get(0);
+            if (firstChild != null && firstChild.getChildren().size() == 0){
+                if (firstChild.getLabel().equals("Value")){
+                    return firstChild;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isValueLeaf() {
+        if (getCrapValue() != null){
+            return true;
+        }
+        return false;
+    }
+
 }
