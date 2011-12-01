@@ -23,6 +23,8 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
     private String label;
     private Object value;
+    private boolean originallySet;
+
     private int maxOccurence = -1;
     private int minOccurence = -1;
     private int index = -1; // If the dataobject is sequenced this is the sequence index. If the property is multivalued this is the index in the list.
@@ -33,6 +35,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     private GuiType guiType = GuiType.NA;
 
     private List<String> valueEnum;
+    static final String PLACEHOLDER = "PLACEHOLDER";
 
     public SDOParsedXmlElementImpl(SDOParsedXmlDocumentImpl myDocument, SDOParsedXmlElement parent,
                                    DataObject dataobject,
@@ -149,6 +152,15 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             }
         }
         return false;
+    }
+
+
+    public boolean isOriginallySet() {
+        return originallySet;
+    }
+
+    public void setOriginallySet(boolean originallySet) {
+        this.originallySet = originallySet;
     }
 
     @Override
@@ -404,6 +416,10 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     @Override
     public void setValue(Object value) {
         this.value = value;
+        if (value == null){
+            originallySet = true;
+        }
+
     }
 
     /**
@@ -503,6 +519,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                         } catch (IllegalArgumentException e) {
                             throw new XMLParseException("Failed to parse the value '"+this.getValue()+"' of field "+this.getLabel()+" as a "+this.getProperty().getType().getName(),e);
                         }
+                        if (value.toString().isEmpty()){
+                            if (this.isOriginallySet()){
+                                value = PLACEHOLDER;
+                            }
+                        }
 
                         if (this.getProperty().isMany())
                         {
@@ -514,6 +535,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                             }
                         }
                         else {
+
                             this.getDataobject().set(this.getProperty(), value);
                         }
                     }

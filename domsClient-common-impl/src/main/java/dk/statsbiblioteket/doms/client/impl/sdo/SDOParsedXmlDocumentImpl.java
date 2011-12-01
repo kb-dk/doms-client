@@ -232,12 +232,15 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             DataObject rootCopy = sdoContext.getCopyHelper().copy(getSdoXmlDocument().getRootObject());
             Type rootType = rootCopy.getType();
             Property rootProperty = getRootProperty(sdoTypes, rootType.getURI(), sdoContext.getXSDHelper());
-            XMLDocument docCopy = sdoContext.getXMLHelper().createDocument(rootCopy, rootType.getURI(), rootProperty.getName());
+
 
             SdoDataObjectUtils utils = new SdoDataObjectUtils();
             utils.handleDataObject(sdoContext, null, rootCopy, rootProperty);
             utils.doDelete();
+
+
             try {
+                XMLDocument docCopy = sdoContext.getXMLHelper().createDocument(rootCopy, rootType.getURI(), rootProperty.getName());
                 sdoContext.getXMLHelper().save(docCopy, writer, null);
                 writer.flush();
             } catch (IOException e) {
@@ -394,6 +397,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 } else {
                     if (dataObject.isSet(property)) {
                         value = dataObject.get(property);
+
                     }
                     leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, -1);
                     parent.add(leafRoot);
@@ -407,8 +411,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             final DataObject dataObject, final Property property, Object value, int sequenceIndex) {
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(this, parent, dataObject, property);
         newLeaf.setValue(value);
+        newLeaf.setOriginallySet(value != null);
         newLeaf.setLabel(property.getName());
         newLeaf.setIndex(sequenceIndex);
+
         try {
             List<String> valueEnum = (List<String>) SDOUtil.getEnumerationFacet(property.getType());
             newLeaf.setValueEnum(valueEnum);

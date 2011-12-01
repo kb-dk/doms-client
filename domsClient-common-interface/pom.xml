@@ -18,5 +18,5 @@
             <artifactId>tuscany-sdo-tools</artifactId>
         </dependency>
     </dependencies>
-    
+
 </project>
