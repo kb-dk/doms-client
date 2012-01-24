@@ -210,13 +210,13 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     public List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed {
         List<Relation> frelations;
         try {
-            frelations = api.getInverseRelations(pid);
+            frelations = api.getInverseRelationsWithPredicate(pid,predicate);
         } catch (Exception e) {
             throw new ServerOperationFailed("Failed to load inverse relations", e);
         }
         List<ObjectRelation> result = new ArrayList<ObjectRelation>();
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
-            if (frelation.getPredicate().equals(predicate)){ //TODO do not request unneeded relations from server
+            if (frelation.getPredicate().equals(predicate)){//TODO remove?
                 result.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
                                                   frelation.getObject(),
                                                   factory));

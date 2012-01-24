@@ -17,6 +17,14 @@
             <groupId>dk.statsbiblioteket.doms.client</groupId>
             <artifactId>domsClient-common-impl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dk.statsbiblioteket.doms.central</groupId>
+            <artifactId>centralWebservice-interface</artifactId>
+        </dependency>
 
     </dependencies>
 </project>
