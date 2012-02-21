@@ -227,9 +227,11 @@ public class DomsWSClientImpl implements DomsWSClient {
 
             final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
                     .newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
 
             final DocumentBuilder documentBuilder = documentBuilderFactory
                     .newDocumentBuilder();
+
 
             final ByteArrayInputStream datastreamBytes = new ByteArrayInputStream(
                     datastreamXML.getBytes());
