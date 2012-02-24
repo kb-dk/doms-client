@@ -5,18 +5,18 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.client</groupId>
         <artifactId>domsClient-parent</artifactId>
-        <version>0.0.14</version>
+        <version>0.0.15-SNAPSHOT</version>
     </parent>
 
     <groupId>dk.statsbiblioteket.doms.client</groupId>
     <artifactId>domsClient-common-impl</artifactId>
-    <version>0.0.14</version>
+    <version>0.0.15-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.client</groupId>
             <artifactId>domsClient-common-interface</artifactId>
-            <version>0.0.14</version>
+            <version>0.0.15-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.central</groupId>
