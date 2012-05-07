@@ -513,11 +513,15 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 {
                     if (getProperty().getType().getInstanceClass() != null) {
 
-                        Object value = null;
+                        Object value;
                         try {
-                        value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
+                            value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
                         } catch (IllegalArgumentException e) {
-                            throw new XMLParseException("Failed to parse the value '"+this.getValue()+"' of field "+this.getLabel()+" as a "+this.getProperty().getType().getName(),e);
+                            if (this.getValue().toString().isEmpty() && !isRequired()) {
+                                value = "";
+                            } else {
+                                throw new XMLParseException("Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this.getProperty().getType().getName(), e);
+                            }
                         }
                         if (value.toString().isEmpty()){
                             if (this.isOriginallySet()){
@@ -535,8 +539,15 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                             }
                         }
                         else {
-
-                            this.getDataobject().set(this.getProperty(), value);
+                            if (value.toString().isEmpty() && !isRequired()) {
+                                this.getDataobject().unset(this.getProperty());
+                            } else {
+                                try {
+                                    this.getDataobject().set(this.getProperty(), value);
+                                } catch (ClassCastException e) {
+                                    throw new XMLParseException("Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this.getProperty().getType().getName(), e);
+                                }
+                            }
                         }
                     }
                 }
