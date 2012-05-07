@@ -240,7 +240,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
 
             try {
-                XMLDocument docCopy = sdoContext.getXMLHelper().createDocument(rootCopy, rootType.getURI(), rootProperty.getName());
+                XMLDocument docCopy = sdoContext.getXMLHelper().createDocument(rootCopy, rootType.getURI(), rootType.getName());
                 sdoContext.getXMLHelper().save(docCopy, writer, null);
                 writer.flush();
             } catch (IOException e) {
