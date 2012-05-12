@@ -160,7 +160,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 throw new XMLParseException("Failed to parse the types",e);
             }
             if (getSdoTypes() != null) {
-                Property rootProperty = getRootProperty(getSdoTypes(), targetNamespace, sdoContext.getXSDHelper());
+                Property rootProperty = getRootProperty(getSdoTypes(), null, targetNamespace, sdoContext.getXSDHelper());
                 Type rootType = rootProperty.getType();
                 isAbstract = rootType.isAbstract();
                 isValid = !isAbstract;
@@ -196,6 +196,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         isAbstract = rootType.isAbstract();
 
         Property rootProperty = getRootProperty(sdoTypes,
+                                                rootType,
                                                 targetNamespace,
                                                 sdoContext.getXSDHelper());
 
@@ -231,7 +232,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             //objects from the copy before serializing the copy.
             DataObject rootCopy = sdoContext.getCopyHelper().copy(getSdoXmlDocument().getRootObject());
             Type rootType = rootCopy.getType();
-            Property rootProperty = getRootProperty(sdoTypes, rootType.getURI(), sdoContext.getXSDHelper());
+            Property rootProperty = getRootProperty(sdoTypes, rootType, rootType.getURI(), sdoContext.getXSDHelper());
 
 
             SdoDataObjectUtils utils = new SdoDataObjectUtils();
@@ -439,7 +440,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         return null;
     }
 
-    private Property getRootProperty(List<Type> types, String targetNamespace, XSDHelper xsdHelper) {
+    private Property getRootProperty(List<Type> types, Type requiredType, String targetNamespace, XSDHelper xsdHelper) {
         List<Type> relevantTypes = new ArrayList<Type>();
         for (Type type : types) {
             if (type.getName().equals("DocumentRoot")) {
@@ -455,8 +456,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             if (type.getName().equals("DocumentRoot")) {
                 for (Property property : (List<Property>) type.getProperties()) {
                     if (xsdHelper.isElement(property)) {
-                        rootProperty = property;
-                        break;
+                        if (requiredType == null || property.getType().getName().equals(requiredType.getName())) {
+                            rootProperty = property;
+                            break;
+                        }
                     }
                 }
                 break;
