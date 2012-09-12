@@ -36,10 +36,11 @@ public class MethodImpl implements Method {
         }
         parameters = new HashSet<ParameterImpl>();
         //TODO mockup from here
-        parameters.add(new ParameterImpl("channelID", ParameterType.Text,"",true,false,""));
+        parameters.add(new ParameterImpl("file", ParameterType.ServerFile, "", true, false, "/home/fedora/"));
+        parameters.add(new ParameterImpl("channelID", ParameterType.Text, "", true, false, ""));
         parameters.add(new ParameterImpl("startTime", ParameterType.Datetime,"",false,false,""));
         parameters.add(new ParameterImpl("endTime", ParameterType.Datetime,"",false,false,""));
-        parameters.add(new ParameterImpl("vhsLabel", ParameterType.Text,"",false,true,""));
+        parameters.add(new ParameterImpl("vhsLabel", ParameterType.TextBox,"",false,true,""));
         parameters.add(new ParameterImpl("recorder", ParameterType.Text,"",true,false,""));
         parameters.add(new ParameterImpl("quality", ParameterType.Integer,"",true,false,""));
 
