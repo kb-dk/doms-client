@@ -257,7 +257,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     }
 
 	@Override
-	public List<Method> listMethods() throws ServerOperationFailed {
+	public Set<Method> getMethods() throws ServerOperationFailed {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -37,5 +37,5 @@ public interface ContentModelObject extends DigitalObject {
 
     public Set<ContentModelObject> getDescendants() throws ServerOperationFailed;
     
-    public List<Method> listMethods() throws ServerOperationFailed;
+    public Set<Method> getMethods() throws ServerOperationFailed;
 }
