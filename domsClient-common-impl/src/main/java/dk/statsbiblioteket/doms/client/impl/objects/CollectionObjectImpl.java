@@ -62,6 +62,20 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
         }
     }
 
+    @Override
+   	public Set<ContentModelObject> getEntryContentModels(String viewangle)
+   			throws ServerOperationFailed {
+        Set<ContentModelObject> models = getContentModels();
+        Set<ContentModelObject> result = new HashSet<ContentModelObject>();
+        for (ContentModelObject model : models) {
+            if (model.getEntryViewAngles().contains(viewangle)){
+                result.add(model);
+            }
+        }
+        return result;
+   	}
+
+
 
 
     @Override
@@ -83,10 +97,4 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
         object.addObjectRelation(Constants.IS_PART_OF_COLLECTION_PREDICATE,this);
     }
 
-	@Override
-	public Set<ContentModelObject> getEntryContentModels(String viewangle)
-			throws ServerOperationFailed {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

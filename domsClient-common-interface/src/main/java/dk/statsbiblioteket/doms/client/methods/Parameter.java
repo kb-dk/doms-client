@@ -8,11 +8,11 @@ public interface Parameter {
 
     String getValue();
 
-    void setValue();
+    void setValue(String value);
 
-    boolean getRequired();
+    boolean isRequired();
 
-    boolean getRepeatable();
+    boolean isRepeatable();
 
     /**
      * Returns the config value, if any, for this parameter

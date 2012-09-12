@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.datastreams.DatastreamModelImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.methods.MethodImpl;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.relations.RelationModelImpl;
 import dk.statsbiblioteket.doms.client.methods.Method;
@@ -258,8 +259,17 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
 
 	@Override
 	public Set<Method> getMethods() throws ServerOperationFailed {
-		// TODO Auto-generated method stub
-		return null;
+
+		// TODO Mockup
+        HashSet<Method> result = new HashSet<Method>();
+        if (!getPid().equals("doms:ContentModel_VHSFile")){
+            return result;
+        }
+        result.add(new MethodImpl(this,"Ole_Import"));
+        return result;
+
+
+
 	}
 
 
