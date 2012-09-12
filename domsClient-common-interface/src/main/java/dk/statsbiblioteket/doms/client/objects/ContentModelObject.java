@@ -2,6 +2,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 
 import java.util.List;
@@ -35,4 +36,6 @@ public interface ContentModelObject extends DigitalObject {
     public Set<ContentModelObject> getParents() throws ServerOperationFailed;
 
     public Set<ContentModelObject> getDescendants() throws ServerOperationFailed;
+    
+    public List<Method> listMethods() throws ServerOperationFailed;
 }

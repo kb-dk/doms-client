@@ -82,4 +82,11 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
     public void addObject(DigitalObject object) throws ServerOperationFailed {
         object.addObjectRelation(Constants.IS_PART_OF_COLLECTION_PREDICATE,this);
     }
+
+	@Override
+	public Set<ContentModelObject> getEntryContentModels(String viewangle)
+			throws ServerOperationFailed {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

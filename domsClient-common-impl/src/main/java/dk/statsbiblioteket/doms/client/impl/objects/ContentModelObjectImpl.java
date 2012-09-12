@@ -12,6 +12,7 @@ import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.relations.RelationModelImpl;
+import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
@@ -254,6 +255,12 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
             ontologyLoaded = true;
         }
     }
+
+	@Override
+	public List<Method> listMethods() throws ServerOperationFailed {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }
