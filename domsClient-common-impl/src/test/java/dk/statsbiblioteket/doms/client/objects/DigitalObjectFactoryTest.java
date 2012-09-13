@@ -39,7 +39,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         System.out.println("Time to load one object="+(after-before)+"ms");
 
         before = System.currentTimeMillis();
-        DigitalObject object2 = factory.getDigitalObject("uuid:26e3048b-824d-476b-8b1f-671d7906e28a");
+        DigitalObject object2 = factory.getDigitalObject("uuid:17331a2b-ead7-42fb-ad42-310776014a4d");
         after = System.currentTimeMillis();
         System.out.println("Time to load next object="+(after-before)+"ms");
         long load1 = after - before;
@@ -92,7 +92,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
         List<ObjectRelation> inverseRels = cmdoms.getInverseRelations();
         assertNotNull(inverseRels);
-        assertTrue(inverseRels.size() > 3);
+        assertTrue(inverseRels.size() >= 3);
 
     }
 
@@ -102,7 +102,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         if (object instanceof DataObject) {
             DataObject dataObject = (DataObject) object;
             String cmTitle = dataObject.getContentmodelTitle();
-            assertEquals(cmTitle,"Radio/TV Program");
+            assertEquals(cmTitle,"Radio/TV program");
 
         }   else {
             fail();

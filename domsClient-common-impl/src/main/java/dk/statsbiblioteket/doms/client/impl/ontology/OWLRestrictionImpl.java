@@ -119,19 +119,19 @@ public class OWLRestrictionImpl implements OWLRestriction {
 				switch (childNode.getNodeType()) {
 				case Node.ELEMENT_NODE:
 					if (DOMSXMLUtils.doesNodeMatch(childNode, "minCardinality", Constants.OWL_NAMESPACE)) {
-						setMinCardinality(Util.extractInt(DOMSXMLUtils.xmlGetFirstTextValue(childNode)));
+						setMinCardinality(Util.extractInt(DOMSXMLUtils.xmlGetFirstTextValue(childNode).trim()));
 					}
 					else if (DOMSXMLUtils.doesNodeMatch(childNode, "maxCardinality", Constants.OWL_NAMESPACE)) {
-						setMaxCardinality(Util.extractInt(DOMSXMLUtils.xmlGetFirstTextValue(childNode)));
+						setMaxCardinality(Util.extractInt(DOMSXMLUtils.xmlGetFirstTextValue(childNode).trim()));
 					}
 					else if (DOMSXMLUtils.doesNodeMatch(childNode, "cardinality", Constants.OWL_NAMESPACE)) {
-						setCardinality(Util.extractInt(DOMSXMLUtils.xmlGetFirstTextValue(childNode)));
+						setCardinality(Util.extractInt(DOMSXMLUtils.xmlGetFirstTextValue(childNode).trim()));
 					}
 					else if (DOMSXMLUtils.doesNodeMatch(childNode, "onProperty", Constants.OWL_NAMESPACE)) {
-						setOnProperty(DOMSXMLUtils.xmlGetAttribute(childNode, "rdf:resource"));
+						setOnProperty(DOMSXMLUtils.xmlGetAttribute(childNode, "rdf:resource").trim());
 					} 
 					else if (DOMSXMLUtils.doesNodeMatch(childNode, "allValuesFrom", Constants.OWL_NAMESPACE)) {
-						setAllValuesFrom(DOMSXMLUtils.xmlGetAttribute(childNode, "rdf:resource"));
+						setAllValuesFrom(DOMSXMLUtils.xmlGetAttribute(childNode, "rdf:resource").trim());
 					}
 				}
 			}
