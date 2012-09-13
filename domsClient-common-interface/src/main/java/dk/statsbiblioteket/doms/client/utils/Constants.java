@@ -31,6 +31,7 @@ public class Constants {
     public static final String HASLICENSE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"hasLicense";
 
     public static final String CM_CM_PID = "fedora-system:ContentModel-3.0";
+    public static final String METHODS_ID = "METHODS";
 
     /**                         guestplanets
      * If the given string starts with "info:fedora/", remove it.

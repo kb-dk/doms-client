@@ -1,8 +1,7 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.CentralWebservice;
-import dk.statsbiblioteket.doms.central.DatastreamProfile;
-import dk.statsbiblioteket.doms.central.ObjectProfile;
+import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.Parameter;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
@@ -11,9 +10,11 @@ import dk.statsbiblioteket.doms.client.impl.datastreams.DatastreamModelImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.methods.MethodImpl;
+import dk.statsbiblioteket.doms.client.impl.methods.ParameterImpl;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.relations.RelationModelImpl;
-import dk.statsbiblioteket.doms.client.methods.Method;
+import dk.statsbiblioteket.doms.client.impl.methods.*;
+import dk.statsbiblioteket.doms.client.methods.ParameterType;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
@@ -30,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.lang.String;
 import java.util.*;
 
 
@@ -37,7 +39,7 @@ import java.util.*;
  * Content Model objects are the objects that holds the structure of the objects in doms. TODO implement
  */
 public class ContentModelObjectImpl extends AbstractDigitalObject implements
-                                                                  ContentModelObject {
+        ContentModelObject {
     private boolean parsed = false;
     private HashMap<String, List<String>> relations;
     private HashMap<String, List<String>> inverseRelations;
@@ -49,6 +51,8 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     private boolean ontologyLoaded = false;
     private RelationModel relationModel;
 
+    private boolean methodsParsed = false;
+    private Set<dk.statsbiblioteket.doms.client.methods.Method> methods;
 
     public ContentModelObjectImpl(ObjectProfile profile, CentralWebservice api,
                                   DigitalObjectFactory factory)
@@ -104,15 +108,15 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         String contents = viewStream.getContents();
         viewDoc = DOM.stringToDOM(contents, true);
         XPathSelector xPathSelector = DOM.createXPathSelector("v",
-                                                              Constants.VIEWS_NAMESPACE);
+                Constants.VIEWS_NAMESPACE);
 
         NodeList allViewAngles = xPathSelector.selectNodeList(viewDoc,
-                                                              "/v:views/v:viewangle/@name");
+                "/v:views/v:viewangle/@name");
         for (int i = 0; i < allViewAngles.getLength(); i++){
             String viewAngleName = allViewAngles.item(i).getTextContent();
             NodeList namedViewAngles = xPathSelector.selectNodeList(viewDoc,
-                                                                    "/v:views/v:viewangle[@name = '" + viewAngleName +
-                                                                    "']/v:relations/*");
+                    "/v:views/v:viewangle[@name = '" + viewAngleName +
+                            "']/v:relations/*");
             List<String> relList = new ArrayList<String>();
             for (int j = 0; j < namedViewAngles.getLength(); j++){
                 Node item = namedViewAngles.item(j);
@@ -121,8 +125,8 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
             relations.put(viewAngleName, relList);
 
             namedViewAngles = xPathSelector.selectNodeList(viewDoc,
-                                                           "/v:views/v:viewangle[@name = '" + viewAngleName +
-                                                           "']/v:inverseRelations/*");
+                    "/v:views/v:viewangle[@name = '" + viewAngleName +
+                            "']/v:inverseRelations/*");
             List<String> iRelList = new ArrayList<String>();
             for (int j = 0; j < namedViewAngles.getLength(); j++){
                 Node item = namedViewAngles.item(j);
@@ -143,6 +147,36 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         */
     }
 
+    private synchronized void parseMethods() throws ServerOperationFailed {
+        if (methodsParsed) {
+            return;
+        }
+        List<Method> methodsSoap;
+        try {
+            methodsSoap = api.getMethods(this.getPid());
+        } catch (Exception e) {
+            throw new ServerOperationFailed("Failed to parse Methods", e);
+        }
+        methods = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>();
+        for (dk.statsbiblioteket.doms.central.Method soapmethod : methodsSoap) {
+            Set<dk.statsbiblioteket.doms.client.methods.Parameter> myparameters = new HashSet<dk.statsbiblioteket.doms.client.methods.Parameter>();
+            for (dk.statsbiblioteket.doms.central.Parameter soapparameter : soapmethod.getParameters().getParameter()) {
+                String parameterTypeString = soapparameter.getType();
+
+                dk.statsbiblioteket.doms.client.methods.Parameter myparameter = new ParameterImpl(soapparameter.getName(),
+                        ParameterType.valueOf(parameterTypeString),
+                        "",
+                        soapparameter.isRequired(),
+                        soapparameter.isRepeatable(),
+                        soapparameter.getConfig());
+                myparameters.add(myparameter);
+            }
+            MethodImpl myMethod = new MethodImpl(api,this, soapmethod.getName(), myparameters);
+            methods.add(myMethod);
+        }
+        methodsParsed = true;
+    }
+
     public DatastreamModel getDsModel() throws ServerOperationFailed {
         loadDatastreams();
         return dsModel;
@@ -157,7 +191,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
             if(datastreamProfile.getId().equals(Constants.DS_COMPOSITE_MODEL_ID)){
                 dsModel = new DatastreamModelImpl(datastreamProfile, this,
-                                                  this.api);
+                        this.api);
                 datastreams.add(dsModel);
             }else if (datastreamProfile.isInternal()){
                 datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
@@ -257,20 +291,12 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
         }
     }
 
-	@Override
-	public Set<Method> getMethods() throws ServerOperationFailed {
+    @Override
+    public Set<dk.statsbiblioteket.doms.client.methods.Method> getMethods() throws ServerOperationFailed {
+        parseMethods();
+        return Collections.unmodifiableSet(methods);
 
-		// TODO Mockup
-        HashSet<Method> result = new HashSet<Method>();
-        if (!getPid().equals("doms:ContentModel_VHSFile")){
-            return result;
-        }
-        result.add(new MethodImpl(this,"Ole_Import"));
-        return result;
-
-
-
-	}
+    }
 
 
 }

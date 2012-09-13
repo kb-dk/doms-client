@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.doms.client.methods;
 
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 
 import java.util.Set;
@@ -25,7 +26,7 @@ public interface Method {
      *                   @see #getParameters()
      * @return The result as a string.
      */
-	public String invoke(Set<Parameter> parameters);
+	public String invoke(Set<Parameter> parameters) throws ServerOperationFailed;
 	
 	public Set<Parameter> getParameters();
 

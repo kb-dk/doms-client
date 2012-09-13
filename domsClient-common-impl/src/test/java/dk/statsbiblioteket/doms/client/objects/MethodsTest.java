@@ -38,7 +38,7 @@ public class MethodsTest extends TestBase{
             }
             String result = method.invoke(parameters);
             System.out.println(result);
-            assertTrue("result wrong",result.startsWith("uuid:"));
+            assertTrue("result wrong",result.length() > 10);
 
         }
 
