@@ -35,7 +35,10 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
             for (dk.statsbiblioteket.doms.central.SearchResult wresult : wresults) {
                 SearchResult cresult = new SearchResult(wresult.getPid(),
                                                         wresult.getType(),
+                                                        wresult.getSource(),
                                                         wresult.getTitle(),
+                                                        wresult.getTime(),
+                                                        wresult.getDescription(),
                                                         Constants.FedoraState.fromString(wresult.getState()),
                                                         new Date(wresult.getModifiedDate()),
                                                         new Date(wresult.getCreatedDate()),

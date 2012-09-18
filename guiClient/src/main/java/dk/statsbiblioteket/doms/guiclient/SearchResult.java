@@ -15,20 +15,28 @@ import java.util.List;
  */
 public class SearchResult {
 
-	private String pid;
-	private List<String> type;
-	private String title;
-	private Constants.FedoraState state;
+    private String pid;
+    private String type;
+    private String source;
+    private String title;
+    private String time;
+    private String description;
+    private Constants.FedoraState state;
     private Date lastModified;
     private Date created;
     private DigitalObjectFactory factory;
 
 
-    public SearchResult(String pid, List<String> type, String title, Constants.FedoraState state, Date lastModified, Date created,
+    public SearchResult(String pid, String type, String source, String title,
+                        String time, String description,
+                        Constants.FedoraState state, Date lastModified, Date created,
                         DigitalObjectFactory factory) {
         this.pid = pid;
         this.type = type;
+        this.source = source;
         this.title = title;
+        this.time = time;
+        this.description = description;
         this.state = state;
         this.lastModified = lastModified;
         this.created = created;
@@ -39,12 +47,24 @@ public class SearchResult {
         return pid;
     }
 
-    public List<String> getType() {
+    public String getType() {
         return type;
+    }
+
+    public String getSource() {
+        return source;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Constants.FedoraState getState() {
@@ -60,11 +80,7 @@ public class SearchResult {
     }
 
     public String getTypeString(){
-        String retString = "";
-        for (String t : type){
-            retString += t;
-        }
-        return retString;
+        return getType();
     }
 
     public String getLastModifiedString() {
