@@ -69,7 +69,7 @@ public class DomsWSClientImpl implements DomsWSClient {
      */
     private CentralWebservice domsAPI;
 
-    private DigitalObjectFactory dof = new DigitalObjectFactoryImpl(domsAPI);
+    private DigitalObjectFactory dof;
 
     @Deprecated
     public void login(URL domsWSAPIEndpoint, String userName, String password) {
@@ -126,6 +126,7 @@ public class DomsWSClientImpl implements DomsWSClient {
                 .getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
+        dof = new DigitalObjectFactoryImpl(domsAPI);
     }
 
     public String createObjectFromTemplate(String templatePID, String comment)
