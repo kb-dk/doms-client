@@ -6,6 +6,7 @@ import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.methods.Parameter;
 import dk.statsbiblioteket.doms.client.methods.ParameterType;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.w3c.dom.Document;
@@ -24,22 +25,21 @@ import java.util.*;
 public class MethodImpl implements Method {
 
     private CentralWebservice api;
-    private ContentModelObject contentModelObject;
+
+    private DigitalObject boundToObject;
+
     private String name;
     private Set<Parameter> parameters;
 
 
-    public MethodImpl(CentralWebservice api, ContentModelObject contentModelObject,String name, Set<Parameter> parameters) {
+    public MethodImpl(CentralWebservice api, DigitalObject bound,String name, Set<Parameter> parameters) {
         this.api = api;
-        this.contentModelObject = contentModelObject;
         this.name = name;
         this.parameters = parameters;
+        boundToObject = bound;
     }
 
-    @Override
-    public ContentModelObject getContentModelObject() {
-        return contentModelObject;
-    }
+
 
     @Override
     public String getName() {
@@ -56,15 +56,18 @@ public class MethodImpl implements Method {
             pairs.add(soapPair);
         }
         try {
-            String result = api.invokeMethod(contentModelObject.getPid(), name, pairs);
+            String result = api.invokeMethod(boundToObject.getPid(), name, pairs);
             return result;
         } catch (Exception e) {
             throw new ServerOperationFailed(e);
         }
     }
 
-    @Override
     public Set<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public Set<Parameter> getParametersClone() {
         HashSet<Parameter> result = new HashSet<Parameter>();
         for (Parameter parameter : parameters) {
             if (parameter instanceof ParameterImpl) {
@@ -78,6 +81,7 @@ public class MethodImpl implements Method {
         return result;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,18 +89,10 @@ public class MethodImpl implements Method {
 
         MethodImpl method = (MethodImpl) o;
 
-        if (!contentModelObject.equals(method.contentModelObject)) return false;
         if (!name.equals(method.name)) return false;
         if (!parameters.equals(method.parameters)) return false;
 
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        int result = contentModelObject.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + parameters.hashCode();
-        return result;
-    }
 }

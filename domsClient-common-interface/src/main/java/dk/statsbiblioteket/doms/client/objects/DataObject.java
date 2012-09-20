@@ -1,6 +1,9 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.methods.Method;
+
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,4 +15,5 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 public interface DataObject extends DigitalObject {
 
     public String getContentmodelTitle() throws ServerOperationFailed;
+
 }

@@ -9,8 +9,12 @@ import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.methods.MethodImpl;
+import dk.statsbiblioteket.doms.client.impl.methods.ParameterImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
+import dk.statsbiblioteket.doms.client.methods.*;
+import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -60,6 +64,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private boolean invrelsloaded = false;
     private boolean profileloaded = false;
     private boolean statePreSaved = false;
+    private boolean methodsParsed = false;
+    protected HashSet<Method> dynamicMethods;
+    protected HashSet<Method> staticMethods;
 
 
     public AbstractDigitalObject(String pid,
@@ -732,4 +739,47 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
+    protected synchronized void parseMethods() throws ServerOperationFailed {
+        if (methodsParsed) {
+            return;
+        }
+        List<dk.statsbiblioteket.doms.central.Method> methodsSoap;
+        try {
+            methodsSoap = api.getMethods(this.getPid());
+        } catch (Exception e) {
+            throw new ServerOperationFailed("Failed to parse Methods", e);
+        }
+        dynamicMethods = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>();
+        staticMethods = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>();
+        for (dk.statsbiblioteket.doms.central.Method soapmethod : methodsSoap) {
+            Set<dk.statsbiblioteket.doms.client.methods.Parameter> myparameters = new HashSet<dk.statsbiblioteket.doms.client.methods.Parameter>();
+            for (dk.statsbiblioteket.doms.central.Parameter soapparameter : soapmethod.getParameters().getParameter()) {
+                String parameterTypeString = soapparameter.getType();
+
+                dk.statsbiblioteket.doms.client.methods.Parameter myparameter = new ParameterImpl(soapparameter.getName(),
+                        ParameterType.valueOf(parameterTypeString),
+                        "",
+                        soapparameter.isRequired(),
+                        soapparameter.isRepeatable(),
+                        soapparameter.getConfig());
+                myparameters.add(myparameter);
+            }
+            MethodImpl myMethod = new MethodImpl(api,this, soapmethod.getName(), myparameters);
+            if (soapmethod.getType().equals("dynamic")){
+                dynamicMethods.add(myMethod);
+            }
+            if (soapmethod.getType().equals("static")){
+                staticMethods.add(myMethod);
+            }
+
+        }
+        methodsParsed = true;
+    }
+
+
+    @Override
+    public Set<Method> getMethods() throws ServerOperationFailed {
+        parseMethods();
+        return Collections.unmodifiableSet(dynamicMethods);
+    }
 }

@@ -9,12 +9,6 @@ import java.util.Set;
 public interface Method {
 
     /**
-     * Get the contenModel that defined this method
-     * @return
-     */
-    public ContentModelObject getContentModelObject();
-
-    /**
      * Get the name of this method
      * @return
      */
@@ -29,5 +23,6 @@ public interface Method {
 	public String invoke(Set<Parameter> parameters) throws ServerOperationFailed;
 	
 	public Set<Parameter> getParameters();
+
 
 }

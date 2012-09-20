@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.Method;
 import dk.statsbiblioteket.doms.central.Parameter;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
@@ -14,7 +15,7 @@ import dk.statsbiblioteket.doms.client.impl.methods.ParameterImpl;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.impl.relations.RelationModelImpl;
 import dk.statsbiblioteket.doms.client.impl.methods.*;
-import dk.statsbiblioteket.doms.client.methods.ParameterType;
+import dk.statsbiblioteket.doms.client.methods.*;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
@@ -51,8 +52,6 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     private boolean ontologyLoaded = false;
     private RelationModel relationModel;
 
-    private boolean methodsParsed = false;
-    private Set<dk.statsbiblioteket.doms.client.methods.Method> methods;
 
     public ContentModelObjectImpl(ObjectProfile profile, CentralWebservice api,
                                   DigitalObjectFactory factory)
@@ -145,36 +144,6 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
           </v:viewangle>
         </v:views>
         */
-    }
-
-    private synchronized void parseMethods() throws ServerOperationFailed {
-        if (methodsParsed) {
-            return;
-        }
-        List<Method> methodsSoap;
-        try {
-            methodsSoap = api.getMethods(this.getPid());
-        } catch (Exception e) {
-            throw new ServerOperationFailed("Failed to parse Methods", e);
-        }
-        methods = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>();
-        for (dk.statsbiblioteket.doms.central.Method soapmethod : methodsSoap) {
-            Set<dk.statsbiblioteket.doms.client.methods.Parameter> myparameters = new HashSet<dk.statsbiblioteket.doms.client.methods.Parameter>();
-            for (dk.statsbiblioteket.doms.central.Parameter soapparameter : soapmethod.getParameters().getParameter()) {
-                String parameterTypeString = soapparameter.getType();
-
-                dk.statsbiblioteket.doms.client.methods.Parameter myparameter = new ParameterImpl(soapparameter.getName(),
-                        ParameterType.valueOf(parameterTypeString),
-                        "",
-                        soapparameter.isRequired(),
-                        soapparameter.isRepeatable(),
-                        soapparameter.getConfig());
-                myparameters.add(myparameter);
-            }
-            MethodImpl myMethod = new MethodImpl(api,this, soapmethod.getName(), myparameters);
-            methods.add(myMethod);
-        }
-        methodsParsed = true;
     }
 
     public DatastreamModel getDsModel() throws ServerOperationFailed {
@@ -294,10 +263,13 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     @Override
     public Set<dk.statsbiblioteket.doms.client.methods.Method> getMethods() throws ServerOperationFailed {
         parseMethods();
-        return Collections.unmodifiableSet(methods);
+        Set<dk.statsbiblioteket.doms.client.methods.Method> methodsCombined
+                = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>(staticMethods.size()+dynamicMethods.size());
+        methodsCombined.addAll(staticMethods);
+        methodsCombined.addAll(dynamicMethods);
+        return Collections.unmodifiableSet(methodsCombined);
 
     }
-
 
 }
 

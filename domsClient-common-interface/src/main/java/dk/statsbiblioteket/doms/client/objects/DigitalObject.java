@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
+import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
@@ -134,4 +135,6 @@ public interface DigitalObject {
     LiteralRelation addLiteralRelation(String predicate, String value);
 
     public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed;
+
+    public Set<Method> getMethods() throws ServerOperationFailed;
 }
