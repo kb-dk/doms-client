@@ -67,6 +67,7 @@ public class SdoTest extends TestBase{
         DigitalObject program = factory.getDigitalObject(victimProgram);
         try {
             SDOParsedXmlDocument doc = program.getDatastream("RITZAU_ORIGINAL").getSDOParsedDocument();
+            // The ritzau schema is not serializable to SDO and expected to throw an exception.
             fail();
         } catch (Exception e){
 
@@ -79,15 +80,8 @@ public class SdoTest extends TestBase{
     public void testSdoGallup()
             throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
-        try {
-            SDOParsedXmlDocument doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
-            fail();
-        } catch (Exception e){
-
-        }
-
-
-
+        SDOParsedXmlDocument doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
+        parseDoc(doc);
     }
 
 
@@ -100,9 +94,10 @@ public class SdoTest extends TestBase{
 
         try {
             SDOParsedXmlDocument doc = program.getDatastream("RELS-EXT").getSDOParsedDocument();
-            assertNull(doc);
-        } catch (Exception e){
-
+            fail("We expect exceptions for current SDO implementation. If we ever do not fail here, add tests for "
+                         + "expected results.");
+        } catch (RuntimeException e){
+            //Expected. Current SDO implementation does not support the RELS-EXT schema.
         }
 
 

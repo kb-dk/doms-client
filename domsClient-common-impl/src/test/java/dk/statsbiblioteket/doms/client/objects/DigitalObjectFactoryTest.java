@@ -39,7 +39,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         System.out.println("Time to load one object="+(after-before)+"ms");
 
         before = System.currentTimeMillis();
-        DigitalObject object2 = factory.getDigitalObject("uuid:17331a2b-ead7-42fb-ad42-310776014a4d");
+        DigitalObject object2 = factory.getDigitalObject("uuid:009ed9e3-05f0-4fd7-ad64-b4ca589c686f");
         after = System.currentTimeMillis();
         System.out.println("Time to load next object="+(after-before)+"ms");
         long load1 = after - before;
@@ -102,7 +102,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         if (object instanceof DataObject) {
             DataObject dataObject = (DataObject) object;
             String cmTitle = dataObject.getContentmodelTitle();
-            assertEquals(cmTitle,"Radio/TV program");
+            assertEquals(cmTitle,"Program");
 
         }   else {
             fail();

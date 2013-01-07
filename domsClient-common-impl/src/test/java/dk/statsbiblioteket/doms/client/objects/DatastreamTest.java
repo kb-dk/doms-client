@@ -88,7 +88,7 @@ public class DatastreamTest extends TestBase{
     public void testSaveDatastream() throws Exception {
 
 
-        String destroyed = "uuid:1a090dfd-adaa-4159-bf77-ce871d97505a";
+        String destroyed = "uuid:009ed9e3-05f0-4fd7-ad64-b4ca589c686f";
         DigitalObject object = factory.getDigitalObject(destroyed);
         Datastream datastream = object.getDatastream("PBCORE");
         SDOParsedXmlDocument doc = datastream.getSDOParsedDocument();

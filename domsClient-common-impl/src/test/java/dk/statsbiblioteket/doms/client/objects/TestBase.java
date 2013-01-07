@@ -32,13 +32,13 @@ public class TestBase {
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
     public DigitalObjectFactory factory;
-    public static final String victimProgram = "uuid:0153b629-ce90-4526-8f7d-022b574a6fd6";
+    public static final String victimProgram = "uuid:009ed9e3-05f0-4fd7-ad64-b4ca589c686f";
 
-    public static  final String victimShard = "uuid:ea5a9019-d743-4493-ad37-678bbb147776";
+    public static  final String victimShard = "uuid:335bc4bb-d194-4eca-bf2a-dcf4af5d2ee2";
 
 
     public TestBase() throws MalformedURLException {
-        domsWSAPIEndpoint = new URL("http://alhena:7780/centralWebservice-service/central/");
+        domsWSAPIEndpoint = new URL("http://alhena:7380/centralWebservice-service/central/");
     }
 
 

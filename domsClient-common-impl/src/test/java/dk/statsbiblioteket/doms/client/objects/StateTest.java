@@ -38,7 +38,7 @@ public class StateTest extends TestBase{
 
         //Load the object, and assert that everything is Active
         DigitalObject object = factory.getDigitalObject(victimProgram);
-        Set<DigitalObject> children = object.getChildObjects("SummaVisible");
+        Set<DigitalObject> children = object.getChildObjects("GUI");
 
         assertTrue(object.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children) {
@@ -49,8 +49,8 @@ public class StateTest extends TestBase{
         i = 0;
 
         //Set the object and all subobjects to Inactive
-        object.setState(Constants.FedoraState.Inactive, "SummaVisible");
-        object.save("SummaVisible");
+        object.setState(Constants.FedoraState.Inactive, "GUI");
+        object.save("GUI");
         for (DigitalObject child : children) {
             assertTrue(child.getState()== Constants.FedoraState.Inactive);
             i++;
@@ -65,7 +65,7 @@ public class StateTest extends TestBase{
         //Load the object, and check that everything is now in Inactive
         DigitalObject object2 = factory.getDigitalObject(victimProgram);
         assertTrue(object2.getState() == Constants.FedoraState.Inactive);
-        Set<DigitalObject> children2 = object2.getChildObjects("SummaVisible");
+        Set<DigitalObject> children2 = object2.getChildObjects("GUI");
         for (DigitalObject child : children2) {
             assertTrue(child.getState()== Constants.FedoraState.Inactive);
             i++;
@@ -74,8 +74,8 @@ public class StateTest extends TestBase{
         i = 0;
 
         //Then set everything to Active again
-        object2.setState(Constants.FedoraState.Active, "SummaVisible");
-        object2.save("SummaVisible");
+        object2.setState(Constants.FedoraState.Active, "GUI");
+        object2.save("GUI");
         assertTrue(object2.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children2) {
             assertTrue(child.getState()== Constants.FedoraState.Active);
@@ -87,7 +87,7 @@ public class StateTest extends TestBase{
         setUp();
 
         DigitalObject object3 = factory.getDigitalObject(victimProgram);
-        Set<DigitalObject> children3 = object3.getChildObjects("SummaVisible");
+        Set<DigitalObject> children3 = object3.getChildObjects("GUI");
         for (DigitalObject child : children3) {
             assertTrue(child.getState()== Constants.FedoraState.Active);
             i++;
