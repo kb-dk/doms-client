@@ -94,8 +94,9 @@ public class SdoTest extends TestBase{
 
         try {
             SDOParsedXmlDocument doc = program.getDatastream("RELS-EXT").getSDOParsedDocument();
-            fail("We expect exceptions for current SDO implementation. If we ever do not fail here, add tests for "
-                         + "expected results.");
+            //Note: Changes in reflection causes different behaviour in Java 6/7 (NPE or Null document). Both are okay,
+            //the RELS-EXT schema is not supported.
+            assertNull(doc);
         } catch (RuntimeException e){
             //Expected. Current SDO implementation does not support the RELS-EXT schema.
         }
