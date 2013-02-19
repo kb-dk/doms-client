@@ -1,8 +1,7 @@
 package dk.statsbiblioteket.doms.guiclient;
 
-import dk.statsbiblioteket.doms.client.*;
+import dk.statsbiblioteket.doms.client.DomsClient;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public interface GuiClient extends DomsClient {
      * @param   pageLength  the max number of results
      * @return  A list of SearchResult objects
      */
-    List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
+    SearchResultList search(String query, int offset, int pageLength) throws ServerOperationFailed;
 
     String getPasswordForUser(String username, List<String> roles) throws ServerOperationFailed;
 

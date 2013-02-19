@@ -99,18 +99,8 @@ public class DomsWSClientImpl implements DomsWSClient {
     public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
         List<dk.statsbiblioteket.doms.central.SearchResult> wresults;
         try {
-            wresults = domsAPI.findObjects(query, offset, pageLength);
-            /*List<SearchResult> cresults = new ArrayList<SearchResult>();
-            for (dk.statsbiblioteket.doms.central.SearchResult wresult : wresults) {
-                SearchResult cresult = new SearchResult(wresult.getPid(),
-                                                        wresult.getType(),
-                                                        wresult.getTitle(),
-                                                        FedoraState.fromString(wresult.getState()),
-                                                        new Date(wresult.getModifiedDate()),
-                                                        new Date(wresult.getCreatedDate()));
-                cresults.add(cresult);
-        } */
-            return wresults;
+            SearchResultList searchResultList = domsAPI.findObjects(query, offset, pageLength);
+            return searchResultList.getSearchResult();
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed searching", exception);

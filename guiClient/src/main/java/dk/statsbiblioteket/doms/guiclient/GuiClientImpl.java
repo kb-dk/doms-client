@@ -26,13 +26,13 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
     }
 
 
-    public List<SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed {
+    public SearchResultList search(String query, int offset, int pageLength) throws ServerOperationFailed {
         try {
-            List<dk.statsbiblioteket.doms.central.SearchResult> wresults
-                    =
-                    domsAPI.findObjects(query, offset, pageLength);
+            dk.statsbiblioteket.doms.central.SearchResultList searchResultList = domsAPI.findObjects(query, offset, pageLength);
+
             List<SearchResult> cresults = new ArrayList<SearchResult>();
-            for (dk.statsbiblioteket.doms.central.SearchResult wresult : wresults) {
+
+            for (dk.statsbiblioteket.doms.central.SearchResult wresult : searchResultList.getSearchResult()) {
                 SearchResult cresult = new SearchResult(wresult.getPid(),
                                                         wresult.getType(),
                                                         wresult.getSource(),
@@ -45,7 +45,7 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
                                                         getFactory());
                 cresults.add(cresult);
             }
-            return cresults;
+            return new SearchResultList(cresults, searchResultList.getHitCount());
 //        } catch (dk.statsbiblioteket.doms.central.InvalidCredentialsException invalidCredentials){
 //            throw new InvalidCredentialsException("Authorization Failed", invalidCredentials);
         } catch (Exception exception) {
