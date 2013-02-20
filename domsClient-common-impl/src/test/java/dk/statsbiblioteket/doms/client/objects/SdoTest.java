@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class SdoTest extends TestBase{
     }
 
     @Test
+    @Ignore("we do not have shards anymore")
     public void testSdoSHARD()
             throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimShard);
