@@ -38,7 +38,7 @@ public class TestBase {
 
 
     public TestBase() throws MalformedURLException {
-        domsWSAPIEndpoint = new URL("http://alhena:7380/centralWebservice-service/central/");
+        domsWSAPIEndpoint = new URL("http://alhena:7880/centralWebservice-service/central/");
     }
 
 
