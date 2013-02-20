@@ -32,7 +32,7 @@ public class TestBase {
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
     public DigitalObjectFactory factory;
-    public static final String victimProgram = "uuid:009ed9e3-05f0-4fd7-ad64-b4ca589c686f";
+    public static final String victimProgram = "uuid:5856b467-cb38-4c9b-b8b5-03f74451cb82";
 
     public static  final String victimShard = "uuid:335bc4bb-d194-4eca-bf2a-dcf4af5d2ee2";
 
