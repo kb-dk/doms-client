@@ -39,7 +39,7 @@ public class DigitalObjectFactoryTest extends TestBase{
         System.out.println("Time to load one object="+(after-before)+"ms");
 
         before = System.currentTimeMillis();
-        DigitalObject object2 = factory.getDigitalObject("uuid:009ed9e3-05f0-4fd7-ad64-b4ca589c686f");
+        DigitalObject object2 = factory.getDigitalObject(victimProgram);
         after = System.currentTimeMillis();
         System.out.println("Time to load next object="+(after-before)+"ms");
         long load1 = after - before;
