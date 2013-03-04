@@ -95,4 +95,10 @@ public class MethodImpl implements Method {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + parameters.hashCode();
+        return result;
+    }
 }
