@@ -15,6 +15,7 @@ import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
 import dk.statsbiblioteket.doms.client.methods.*;
 import dk.statsbiblioteket.doms.client.methods.Method;
+import dk.statsbiblioteket.doms.client.methods.Parameter;
 import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -77,9 +78,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         this.api = api;
         this.factory = factory;
         type = new ArrayList<ContentModelObject>();
-        datastreams = new HashSet<Datastream>();
-        addedDSs = new HashSet<SaveableDatastreamImpl>();
-        deletedDSs = new HashSet<SaveableDatastreamImpl>();
+        datastreams = new LinkedHashSet<Datastream>();
+        addedDSs = new LinkedHashSet<SaveableDatastreamImpl>();
+        deletedDSs = new LinkedHashSet<SaveableDatastreamImpl>();
 
         relations = new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>();
         removedRelations = new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>();
@@ -342,7 +343,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed {
         Set<String> viewRelationNames = new HashSet<String>();
-        Set<DigitalObject> children = new HashSet<DigitalObject>();
+        Set<DigitalObject> children = new LinkedHashSet<DigitalObject>();
         for (ContentModelObject contentModelObject : getType()) {
             try {
                 List<String> theseRels = contentModelObject.getRelationsWithViewAngle(viewAngle);
@@ -749,10 +750,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         } catch (Exception e) {
             throw new ServerOperationFailed("Failed to parse Methods", e);
         }
-        dynamicMethods = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>();
-        staticMethods = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>();
+        dynamicMethods = new LinkedHashSet<dk.statsbiblioteket.doms.client.methods.Method>();
+        staticMethods = new LinkedHashSet<dk.statsbiblioteket.doms.client.methods.Method>();
         for (dk.statsbiblioteket.doms.central.Method soapmethod : methodsSoap) {
-            Set<dk.statsbiblioteket.doms.client.methods.Parameter> myparameters = new HashSet<dk.statsbiblioteket.doms.client.methods.Parameter>();
+            Set<dk.statsbiblioteket.doms.client.methods.Parameter> myparameters = new LinkedHashSet<Parameter>();
             for (dk.statsbiblioteket.doms.central.Parameter soapparameter : soapmethod.getParameters().getParameter()) {
                 String parameterTypeString = soapparameter.getType();
 

@@ -74,7 +74,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     @Override
     public Set<String> getDeclaredViewAngles() throws ServerOperationFailed {
         parseView();
-        HashSet<String> result = new HashSet<String>(relations.keySet());
+        Set<String> result = new HashSet<String>(relations.keySet());
         result.addAll(inverseRelations.keySet());
         return result;
     }
@@ -217,7 +217,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     @Override
     public Set<ContentModelObject> getParents() throws ServerOperationFailed {
         List<Relation> rels = getRelations();
-        Set<ContentModelObject> result = new HashSet<ContentModelObject>();
+        Set<ContentModelObject> result = new LinkedHashSet<ContentModelObject>();
         for (Relation rel : rels) {
             if (rel instanceof ObjectRelation) {
                 ObjectRelation objectRelation = (ObjectRelation) rel;
@@ -235,7 +235,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     @Override
     public Set<ContentModelObject> getDescendants() throws ServerOperationFailed {
         List<ObjectRelation> rels = getInverseRelations(Constants.EXTENDSMODEL_PREDICATE);
-        Set<ContentModelObject> result = new HashSet<ContentModelObject>();
+        Set<ContentModelObject> result = new LinkedHashSet<ContentModelObject>();
         for (ObjectRelation rel : rels) {
             if (rel.getObject() instanceof ContentModelObject) {
                 ContentModelObject contentModelObject = (ContentModelObject) rel.getSubject();
@@ -264,7 +264,7 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements
     public Set<dk.statsbiblioteket.doms.client.methods.Method> getMethods() throws ServerOperationFailed {
         parseMethods();
         Set<dk.statsbiblioteket.doms.client.methods.Method> methodsCombined
-                = new HashSet<dk.statsbiblioteket.doms.client.methods.Method>(staticMethods.size()+dynamicMethods.size());
+                = new LinkedHashSet<dk.statsbiblioteket.doms.client.methods.Method>(staticMethods.size()+dynamicMethods.size());
         methodsCombined.addAll(staticMethods);
         methodsCombined.addAll(dynamicMethods);
         return Collections.unmodifiableSet(methodsCombined);

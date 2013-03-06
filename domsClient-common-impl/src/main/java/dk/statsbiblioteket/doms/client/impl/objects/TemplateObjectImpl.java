@@ -13,6 +13,7 @@ import dk.statsbiblioteket.doms.client.utils.Constants;
 import java.lang.String;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class TemplateObjectImpl extends AbstractDigitalObject implements Templat
     @Override
     public Set<ContentModelObject> getTemplatedClasses() throws ServerOperationFailed {
         List<Relation> rels = getRelations();
-        Set<ContentModelObject> classes = new HashSet<ContentModelObject>();
+        Set<ContentModelObject> classes = new LinkedHashSet<ContentModelObject>();
         for (Relation rel : rels) {
             if (rel.getPredicate().equals(Constants.TEMPLATE_PREDICATE)){
                 if (rel instanceof ObjectRelation) {

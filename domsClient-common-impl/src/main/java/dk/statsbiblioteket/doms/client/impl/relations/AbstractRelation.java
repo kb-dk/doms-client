@@ -11,6 +11,7 @@ import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.lang.ref.SoftReference;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +71,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     public Set<RelationDeclaration> getDeclarations() throws ServerOperationFailed {
         DigitalObject house = getSubject();
         List<ContentModelObject> types = house.getType();
-        Set<RelationDeclaration> result = new HashSet<RelationDeclaration>();
+        Set<RelationDeclaration> result = new LinkedHashSet<RelationDeclaration>();
         for (ContentModelObject type : types) {
             RelationModel relModel = type.getRelationModel();
             for (RelationDeclaration relationDeclaration : relModel.getRelationDeclarations()) {

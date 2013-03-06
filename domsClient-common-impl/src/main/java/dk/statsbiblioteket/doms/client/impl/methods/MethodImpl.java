@@ -68,7 +68,7 @@ public class MethodImpl implements Method {
     }
 
     public Set<Parameter> getParametersClone() {
-        HashSet<Parameter> result = new HashSet<Parameter>();
+        Set<Parameter> result = new LinkedHashSet<Parameter>();
         for (Parameter parameter : parameters) {
             if (parameter instanceof ParameterImpl) {
                 ParameterImpl parameter1 = (ParameterImpl) parameter;

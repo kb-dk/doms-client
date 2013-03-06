@@ -14,6 +14,7 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -90,7 +91,7 @@ public abstract class AbstractDatastream implements Datastream {
 
     @Override
     public Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed {
-        Set<DatastreamDeclaration> datastreamDeclarations = new HashSet<DatastreamDeclaration>();
+        Set<DatastreamDeclaration> datastreamDeclarations = new LinkedHashSet<DatastreamDeclaration>();
         List<ContentModelObject> contentmodels = digitalObject.getType();
         for (ContentModelObject contentmodel : contentmodels) {
             DatastreamModel dsmodel = contentmodel.getDsModel();
