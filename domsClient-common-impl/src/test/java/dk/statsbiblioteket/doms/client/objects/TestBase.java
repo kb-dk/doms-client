@@ -32,9 +32,9 @@ public class TestBase {
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
     public DigitalObjectFactory factory;
-    public static final String victimProgram = "uuid:5856b467-cb38-4c9b-b8b5-03f74451cb82";
+    public static final String victimProgram = "uuid:068e1e5f-8cdb-4389-9a9d-0bc116d370f2";
 
-    public static  final String victimShard = "uuid:335bc4bb-d194-4eca-bf2a-dcf4af5d2ee2";
+    public static  final String victimShard = "uuid:9cd7763a-e95a-45b6-af2b-c87ae28e10f8";
 
 
     public TestBase() throws MalformedURLException {
