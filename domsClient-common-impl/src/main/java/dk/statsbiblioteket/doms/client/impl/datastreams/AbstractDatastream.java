@@ -34,6 +34,9 @@ public abstract class AbstractDatastream implements Datastream {
     private String label;
     private SDOParsedXmlDocument sdodoc;
 
+    private boolean virtual;
+
+
     public AbstractDatastream(DatastreamProfile datastreamProfile, DigitalObject digitalObject, CentralWebservice api) {
         this.digitalObject = digitalObject;
         this.api = api;

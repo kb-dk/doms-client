@@ -87,6 +87,11 @@ public class MissingObject implements DigitalObject {
     }
 
     @Override
+    public Datastream addInternalDatastream(String name) throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
     public Datastream getDatastream(String id) {
         throw new IllegalAccessError("Missing object");
     }

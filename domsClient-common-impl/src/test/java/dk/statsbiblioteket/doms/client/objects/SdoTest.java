@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.doms.client.objects;
 
+import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
@@ -36,6 +37,15 @@ public class SdoTest extends TestBase{
         parseDoc(doc);
 
     }
+
+    @Test
+     public void testDatastreamAdd() throws Exception {
+         DigitalObject program = factory.getDigitalObject(victimProgram);
+         Datastream testStream = program.addInternalDatastream("ANNOTATIONS");
+         parseDoc(testStream.getSDOParsedDocument());
+        System.out.println(testStream.getSDOParsedDocument().dumpToString());
+     }
+
 
     @Test
     public void testSdoDC()

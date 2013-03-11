@@ -22,10 +22,19 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
     private String originalContents;
     private CentralWebservice api;
 
+    private boolean virtual;
+
     public InternalDatastreamImpl(DatastreamProfile datastreamProfile, DigitalObject digitalObject,
                                   CentralWebservice api) {
         super(datastreamProfile, digitalObject, api);
         this.api = api;
+        virtual = false;
+    }
+
+    public InternalDatastreamImpl(DatastreamProfile datastreamProfile, DigitalObject digitalObject,
+                                  CentralWebservice api, boolean virtual) {
+        this(datastreamProfile,digitalObject,api);
+        this.virtual = virtual;
     }
 
 
@@ -39,9 +48,12 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
         if (contents != null){
             return contents;
         }
-        contents = super.getContents();
-        originalContents = contents;
-        return contents;
+        if (!isVirtual()){
+            contents = super.getContents();
+            originalContents = contents;
+            return contents;
+        }
+        return "<placeholder/>";
     }
 
     @Override
@@ -92,5 +104,13 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
             throw new ServerOperationFailed(e);
         }
         contents = originalContents;
+    }
+
+    public boolean isVirtual() {
+        return virtual;
+    }
+
+    public void setVirtual(boolean virtual) {
+        this.virtual = virtual;
     }
 }

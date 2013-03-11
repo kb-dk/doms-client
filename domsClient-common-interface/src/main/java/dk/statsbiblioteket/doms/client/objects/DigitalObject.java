@@ -83,6 +83,14 @@ public interface DigitalObject {
     List<Datastream> getDatastreams() throws ServerOperationFailed;
 
     /**
+     * Create new internal datastream
+     * @param name the id of the datastream
+     * @return the datastream object
+     * @throws ServerOperationFailed
+     */
+    Datastream addInternalDatastream(String name) throws ServerOperationFailed;
+
+    /**
      *
      * @param id datastream ID
      * @return The datastream

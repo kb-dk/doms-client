@@ -18,6 +18,7 @@ import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.apache.tuscany.sdo.api.SDOUtil;
+import org.apache.tuscany.sdo.impl.DataObjectImpl;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -183,11 +184,17 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //Load the XML document
 
 
+        String contents = datastream.getContents();
+
 
         setSdoXmlDocument(sdoContext.getXMLHelper().load(datastream.getContents()));
         //if we want to use XSD validation. setSdoXmlDocument(sdoContext.getXMLHelper().load(is, schemaurl, options));
 
+
+
         //Get the root data object
+
+
         DataObject rootDataObject = getSdoXmlDocument().getRootObject();
 
         Type rootType = rootDataObject.getType();
@@ -196,12 +203,23 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         isAbstract = rootType.isAbstract();
 
         Property rootProperty = getRootProperty(sdoTypes,
-                                                rootType,
-                                                targetNamespace,
-                                                sdoContext.getXSDHelper());
+                rootType,
+                targetNamespace,
+                sdoContext.getXSDHelper());
 
         if (rootProperty == null) {
-            throw new ServerOperationFailed("Could not get a valid SDO root DataObject for Datastream: '" + datastream.getId() + "'.");
+            for (Type sdoType : sdoTypes) {
+                if (sdoType.getName().equals("DocumentRoot")){
+                    targetNamespace = sdoType.getURI();
+                    //First element declaration
+                    rootProperty = (Property) sdoType.getDeclaredProperties().get(0);
+                    rootDataObject = sdoContext.getDataFactory().create(targetNamespace,rootProperty.getName());
+
+                }
+            }
+            if (rootProperty == null){
+                throw new ServerOperationFailed("Could not get a valid SDO root DataObject for Datastream: '" + datastream.getId() + "'.");
+            }
         }
 
         setSdoXmlDocument(sdoContext.getXMLHelper().createDocument(rootDataObject, targetNamespace, rootProperty.getName()));
@@ -210,7 +228,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         root.setLabel(rootProperty.getName());
 
         setRootSDOParsedXmlElement(root);
-        List containedProps = rootType.getProperties();
+        List containedProps = rootProperty.getType().getDeclaredProperties();
         for (Iterator i = containedProps.iterator(); i.hasNext(); ) {
             Object tmp = i.next();
             if (tmp instanceof Property) {
@@ -354,7 +372,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                                 if (seq != null) {
                                     if (seq.size() > 1) {
                                         throw new RuntimeException("We have a sequenced with more than one value. What to do? Container property = "
-                                                                   + property.getName());
+                                                + property.getName());
                                     }
                                     for (int i = 0; i < seq.size(); i++) {
 
@@ -364,7 +382,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                                             sequenceIndex = i;
                                         } else {
                                             throw new RuntimeException("We have a sequenced dataobject with internal properties. What to do? Container property = "
-                                                                       + property.getName() + ". Internal property = " + p.getName() + ". Value = " + seq.getValue(i));
+                                                    + property.getName() + ". Internal property = " + p.getName() + ". Value = " + seq.getValue(i));
 
                                         }
                                     }

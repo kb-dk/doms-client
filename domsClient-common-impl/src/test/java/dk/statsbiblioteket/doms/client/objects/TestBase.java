@@ -88,6 +88,8 @@ public class TestBase {
 
     protected void parseTree(SDOParsedXmlElement doc, String indryk) {
 
+        System.out.println(indryk + "'"+doc.getLabel()+"'");
+        indryk = indryk+"   ";
         ArrayList<SDOParsedXmlElement> children = doc.getChildren();
         for (SDOParsedXmlElement child : children) {
             if (child.isLeaf()){

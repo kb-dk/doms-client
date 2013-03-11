@@ -181,6 +181,24 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
+    public Datastream addInternalDatastream(String name) throws ServerOperationFailed {
+        loadProfile();
+        DatastreamProfile dsProfile = new DatastreamProfile();
+        dsProfile.setId(name);
+        dsProfile.setInternal(true);
+        Checksum checksum = new Checksum();
+        checksum.setType("MD5");
+        dsProfile.setChecksum(checksum);
+        dsProfile.setMimeType("text/xml");
+        //TODO populate values
+        InternalDatastreamImpl newDs = new InternalDatastreamImpl(dsProfile, this, api,true);
+        datastreams.add(newDs);
+        addedDSs.add(newDs);
+        return newDs;
+    }
+
+
+    @Override
     public void removeDatastream(Datastream deleted) throws ServerOperationFailed {
         loadProfile();
         if (deleted instanceof SaveableDatastreamImpl) {
