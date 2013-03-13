@@ -16,6 +16,5 @@ public interface DataObject extends DigitalObject {
 
     public String getContentmodelTitle() throws ServerOperationFailed;
 
-    public List<LinkPattern> getLinkPatterns() throws ServerOperationFailed;
 
 }

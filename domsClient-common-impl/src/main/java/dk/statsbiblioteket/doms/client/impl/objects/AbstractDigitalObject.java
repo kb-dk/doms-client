@@ -13,6 +13,7 @@ import dk.statsbiblioteket.doms.client.impl.methods.MethodImpl;
 import dk.statsbiblioteket.doms.client.impl.methods.ParameterImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
+import dk.statsbiblioteket.doms.client.links.LinkPattern;
 import dk.statsbiblioteket.doms.client.methods.*;
 import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.methods.Parameter;
@@ -801,4 +802,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         parseMethods();
         return Collections.unmodifiableSet(dynamicMethods);
     }
+
+    @Override
+    public synchronized List<LinkPattern> getLinkPatterns() throws ServerOperationFailed {
+        return new ArrayList<LinkPattern>();
+    }
+
 }

@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
+import dk.statsbiblioteket.doms.client.links.LinkPattern;
 import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
@@ -145,4 +146,9 @@ public interface DigitalObject {
     public Set<DigitalObject> getChildObjects(String viewAngle) throws ServerOperationFailed;
 
     public Set<Method> getMethods() throws ServerOperationFailed;
+
+    public List<LinkPattern> getLinkPatterns() throws ServerOperationFailed;
+
 }
+
+
