@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.impl.objects;
+package dk.statsbiblioteket.doms.client.impl.links;
 
 import dk.statsbiblioteket.doms.client.links.LinkPattern;
 
@@ -13,13 +13,13 @@ public class LinkPatternImpl implements LinkPattern {
 
 
     private String name;
-    private String altText;
+    private String description;
 
     private String value;
 
-    public LinkPatternImpl(String name, String altText, String value) {
+    public LinkPatternImpl(String name, String description, String value) {
         this.name = name;
-        this.altText = altText;
+        this.description = description;
         this.value = value;
     }
 
@@ -31,12 +31,12 @@ public class LinkPatternImpl implements LinkPattern {
         this.name = name;
     }
 
-    public String getAltText() {
-        return altText;
+    public String getDescription() {
+        return description;
     }
 
-    public void setAltText(String altText) {
-        this.altText = altText;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getValue() {

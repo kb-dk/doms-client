@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.impl.links.LinkPatternImpl;
 import dk.statsbiblioteket.doms.client.links.LinkPattern;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DataObject;
@@ -91,7 +92,7 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
                 for (int i = 0; i < linkPatternNodes.getLength(); i++) {
                     Node linkPatternNode = linkPatternNodes.item(i);
                     String name = xpath.selectString(linkPatternNode, "lp:name");
-                    String alt_text = xpath.selectString(linkPatternNode, "lp:alt_text");
+                    String alt_text = xpath.selectString(linkPatternNode, "lp:description");
                     String value = xpath.selectString(linkPatternNode, "lp:value");
 
                     value = value.replaceAll("\\{objectPid\\}",this.getPid());

@@ -11,7 +11,7 @@ public interface LinkPattern {
 
     String getName();
 
-    String getAltText();
+    String getDescription();
 
     String getValue();
 }
