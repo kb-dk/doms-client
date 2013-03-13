@@ -2,6 +2,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.links.LinkPattern;
 import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
@@ -143,6 +144,11 @@ public class MissingObject implements DigitalObject {
 
     @Override
     public Set<Method> getMethods() throws ServerOperationFailed {
+        throw new IllegalAccessError("Missing object");
+    }
+
+    @Override
+    public List<LinkPattern> getLinkPatterns() throws ServerOperationFailed {
         throw new IllegalAccessError("Missing object");
     }
 
