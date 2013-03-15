@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Data objects are the objects that actually holds the data in DOMS. TODO implement
@@ -96,6 +97,13 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
                     String value = xpath.selectString(linkPatternNode, "lp:value");
 
                     value = value.replaceAll("\\{objectPid\\}",this.getPid());
+
+                    NodeList replacements = xpath.selectNodeList(linkPatternNode, "lp:replacements/lp:replacement");
+                    for (int j = 0; j < replacements.getLength(); j++) {
+                        Node replacement = replacements.item(j);
+                        value = linkReplace(value,replacement);
+                    }
+                    
                     LinkPattern linkPattern = new LinkPatternImpl(name, alt_text, value);
                     linkPatterns.add(linkPattern);
                 }
@@ -104,6 +112,51 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
             }
         }
         return linkPatterns;
+    }
+
+    private String linkReplace(String link, Node replacement) throws ServerOperationFailed {
+        String key = null;
+        String datastream = null;
+        String xpath = null;
+
+        NodeList children = replacement.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() != Node.ELEMENT_NODE){
+                continue;
+            }
+            if (child.getLocalName().equals("key")) {
+                key = child.getTextContent();
+            }
+            if (child.getLocalName().equals("datastream")) {
+                datastream = child.getTextContent();
+            }
+            if (child.getLocalName().equals("xpath")) {
+                xpath = child.getTextContent();
+            }
+        }
+        if (key == null || datastream == null || xpath == null) {
+            //TODO log
+            return link;
+        }
+        key = "{" + key + "}";
+
+        if (!link.contains(key)) {
+            return link;
+        }
+
+        Datastream datastreamObject;
+        try {
+            datastreamObject = getDatastream(datastream);
+        } catch (NotFoundException e) {
+            //TODO log
+            return link;
+        }
+        Document doc = DOM.stringToDOM(datastreamObject.getContents());
+        XPathSelector xpathSelector = DOM.createXPathSelector();
+        String value = xpathSelector.selectString(doc, xpath);
+        link = link.replaceAll(Pattern.quote(key),value);
+        return link;
     }
 
 
