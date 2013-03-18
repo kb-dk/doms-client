@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.MissingObject;
 import dk.statsbiblioteket.doms.client.utils.Constants;
+import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 
 
 import java.lang.String;
@@ -19,6 +20,8 @@ public class DigitalObjectFactoryImpl extends AbstractDigitalObjectFactory {
 
     private Map<String, SoftReference<DigitalObject>> cache;
 
+    private TimeSensitiveCache<String,DigitalObject> timeSensitiveCache;
+
     private final DigitalObject MISSING = new MissingObject();
 
 
@@ -29,6 +32,7 @@ public class DigitalObjectFactoryImpl extends AbstractDigitalObjectFactory {
     public DigitalObjectFactoryImpl(CentralWebservice api) {
         super(api);
         cache = new HashMap<String, SoftReference<DigitalObject>>();
+        timeSensitiveCache = new TimeSensitiveCache<String, DigitalObject>(10000,false);
     }
 
     /**
@@ -46,24 +50,19 @@ public class DigitalObjectFactoryImpl extends AbstractDigitalObjectFactory {
 
         pid = Constants.ensurePID(pid);
 
-        SoftReference<DigitalObject> ref = cache.get(pid);
-        DigitalObject object = null;
-        //System.out.println("Getting object from cache: "+pid);
-        if (ref != null) {
-            object = ref.get();
-        }
+        DigitalObject object = timeSensitiveCache.get(pid);
 
         if (object == null) {
             try {
                 try {
                     //System.out.println("Object "+pid+" not in cache, loading");
                     AbstractDigitalObject newobj = retrieveObject(pid);
-                    cache.put(pid, new SoftReference<DigitalObject>(newobj));
+                    timeSensitiveCache.put(pid,newobj);
                     newobj.loadContentModels();
                     object = newobj;
                 } catch (InvalidResourceException e) {
                     object = MISSING;
-                    cache.put(pid, new SoftReference<DigitalObject>(object));
+                    timeSensitiveCache.put(pid,object);
                 }
             } catch (InvalidCredentialsException e) {
                 throw new ServerOperationFailed("Invalid Credentials", e);
