@@ -9,6 +9,7 @@ import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.datastreams.ExternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.InternalDatastreamImpl;
 import dk.statsbiblioteket.doms.client.impl.datastreams.SaveableDatastreamImpl;
+import dk.statsbiblioteket.doms.client.impl.links.LinkPatternImpl;
 import dk.statsbiblioteket.doms.client.impl.methods.MethodImpl;
 import dk.statsbiblioteket.doms.client.impl.methods.ParameterImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
@@ -67,8 +68,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private boolean profileloaded = false;
     private boolean statePreSaved = false;
     private boolean methodsParsed = false;
+    private boolean linksParsed = false;
     protected HashSet<Method> dynamicMethods;
     protected HashSet<Method> staticMethods;
+    private List<LinkPattern> links;
+
 
 
     public AbstractDigitalObject(String pid,
@@ -805,7 +809,29 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public synchronized List<LinkPattern> getLinkPatterns() throws ServerOperationFailed {
-        return new ArrayList<LinkPattern>();
+        parseLinks();
+        return Collections.unmodifiableList(links);
+    }
+
+    private synchronized void parseLinks() throws ServerOperationFailed {
+        if (linksParsed) {
+            return;
+        }
+
+        links = new ArrayList<LinkPattern>();
+        List<Link> linksSoap;
+        try {
+            //Date here?
+            linksSoap = api.getObjectLinks(this.getPid(), this.getLastModified().getTime());
+
+        } catch (Exception e) {
+            throw new ServerOperationFailed("Failed to parse Object Links", e);
+        }
+        for (Link linkSoap : linksSoap) {
+            LinkPattern linkPattern = new LinkPatternImpl(linkSoap.getName(), linkSoap.getDescription(), linkSoap.getValue());
+            links.add(linkPattern);
+        }
+
     }
 
 }

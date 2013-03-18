@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.client.impl.objects;
+package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.links.LinkPattern;
 import dk.statsbiblioteket.doms.client.objects.DataObject;
