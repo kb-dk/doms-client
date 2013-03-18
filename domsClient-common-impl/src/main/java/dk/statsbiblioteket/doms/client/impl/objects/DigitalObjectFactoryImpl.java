@@ -2,6 +2,8 @@ package dk.statsbiblioteket.doms.client.impl.objects;
 
 import dk.statsbiblioteket.doms.central.*;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.objects.CollectionObject;
+import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.objects.MissingObject;
 import dk.statsbiblioteket.doms.client.utils.Constants;
@@ -57,7 +59,9 @@ public class DigitalObjectFactoryImpl extends AbstractDigitalObjectFactory {
                 try {
                     //System.out.println("Object "+pid+" not in cache, loading");
                     AbstractDigitalObject newobj = retrieveObject(pid);
-                    timeSensitiveCache.put(pid,newobj);
+                    if (newobj instanceof ContentModelObject || newobj instanceof CollectionObject) {
+                        timeSensitiveCache.put(pid,newobj);
+                    }
                     newobj.loadContentModels();
                     object = newobj;
                 } catch (InvalidResourceException e) {
