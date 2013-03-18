@@ -31,6 +31,9 @@ public class DataObjectImplTest extends TestBase {
             DataObject dataObject = (DataObject) object;
             List<LinkPattern> linkPatterns = dataObject.getLinkPatterns();
             assertTrue(linkPatterns.size() > 0);
+            for (LinkPattern linkPattern : linkPatterns) {
+                System.out.println(linkPattern.getValue());
+            }
         }
     }
 }
