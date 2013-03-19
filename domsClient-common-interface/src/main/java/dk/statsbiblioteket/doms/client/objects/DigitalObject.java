@@ -136,7 +136,7 @@ public interface DigitalObject {
      * Remove a relation from this object
      * @param relation the relation to remove
      */
-    void removeRelation(Relation relation);
+    void removeRelation(Relation relation) throws ServerOperationFailed;
 
 
     ObjectRelation addObjectRelation(String predicate,DigitalObject object) throws ServerOperationFailed;

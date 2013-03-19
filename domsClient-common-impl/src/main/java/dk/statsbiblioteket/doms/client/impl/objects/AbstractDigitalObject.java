@@ -225,7 +225,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     @Override
-    public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) {
+    public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) throws ServerOperationFailed {
+        loadRelations();
         if (relation.getSubjectPid().equals(this.getPid())){
             privateRemoveRelation(relation);
         }
