@@ -587,9 +587,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
             relations.add(addedRelation);
         }
+        addedRelations.clear();
         for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
             relations.remove(removedRelation);
         }
+        removedRelations.clear();
     }
 
     protected void postSaveDatastreams(){
@@ -631,6 +633,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
         try {
             api.setObjectLabel(this.getPid(),titleOriginal,"Undoing change of object label");
+            titleOriginal = title;
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);
         } catch (InvalidResourceException e) {
