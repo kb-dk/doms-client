@@ -27,8 +27,6 @@ public class DataObjectImpl extends AbstractDigitalObject implements DataObject 
 
     private String contentModelTitle;
 
-    private List<LinkPattern> linkPatterns;
-
     public DataObjectImpl(ObjectProfile profile, CentralWebservice api, DigitalObjectFactory factory)
             throws ServerOperationFailed {
         super(profile, api, factory);    //To change body of overridden methods use File | Settings | File Templates.

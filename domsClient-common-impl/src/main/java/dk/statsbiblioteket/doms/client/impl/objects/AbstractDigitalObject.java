@@ -826,7 +826,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         List<Link> linksSoap;
         try {
             //Date here?
-            linksSoap = api.getObjectLinks(this.getPid(), this.getLastModified().getTime());
+            linksSoap = api.getObjectLinks(this.getPid(), -1);
 
         } catch (Exception e) {
             throw new ServerOperationFailed("Failed to parse Object Links", e);
