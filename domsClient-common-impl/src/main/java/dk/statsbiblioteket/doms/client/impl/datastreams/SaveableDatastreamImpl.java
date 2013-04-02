@@ -29,7 +29,7 @@ public abstract class SaveableDatastreamImpl extends AbstractDatastream{
         //TODO
     }
 
-    public void create(){
+    public void create() throws XMLParseException, ServerOperationFailed {
         //TODO
     }
 }

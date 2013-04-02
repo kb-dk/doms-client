@@ -27,7 +27,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
     private int maxOccurence = -1;
     private int minOccurence = -1;
-    private int index = -1; // If the dataobject is sequenced this is the sequence index. If the property is multivalued this is the index in the list.
+    /**
+     *  If the dataobject is sequenced this is the sequence index.
+     *  If the property is multivalued this is the index in the list.
+     */
+    private int index = -1;
     protected ArrayList<SDOParsedXmlElement> children = new ArrayList<SDOParsedXmlElement>();
 
     private String id = "_" + UUID.randomUUID().toString();
@@ -332,7 +336,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         {
             List values = this.getDataobject().getList(this.getProperty());
             myElem = new SDOParsedXmlElementImpl(this.myDocument, this.parent, this.getDataobject(),
-                                                 this.property, parent.getChildren().indexOf(this) + 1);
+                    this.property, parent.getChildren().indexOf(this) + 1);
             myElem.setIndex(values.size());
             values.add(null);
         }
@@ -340,7 +344,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             DataObject myDo = getDataobject().getContainer().createDataObject(
                     getProperty().getName());
             myElem = new SDOParsedXmlElementImpl(this.myDocument, this.parent, myDo,
-                                                 this.property, parent.getChildren().indexOf(this) + 1);
+                    this.property, parent.getChildren().indexOf(this) + 1);
 
             if (!isLeaf()) {
                 createChildren(myElem);
@@ -531,12 +535,15 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
                         if (this.getProperty().isMany())
                         {
+                            //TODO here is the list bug. Please find out how to correctly add to lists
+                            getDataobject().getList(this.getProperty());
                             List values = this.getDataobject().getList(this.getProperty());
-                            if (value!=null) {
-                                if (this.getDataobject().isSet(this.getProperty())) {
-                                    values.set(this.index, value);
-                                }
+                            if (getIndex() +1 > values.size()){
+                                values.add(value);
+                            } else {
+                                values.set(getIndex(),value);
                             }
+
                         }
                         else {
                             if (value.toString().isEmpty() && !isRequired()) {
@@ -612,7 +619,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         this.valueEnum = valueEnum;
     }
 
-     public SDOParsedXmlElement getCrapValue() {
+    public SDOParsedXmlElement getCrapValue() {
         ArrayList<SDOParsedXmlElement> children = getChildren();
         if (children != null && children.size() > 0){
             SDOParsedXmlElement firstChild = children.get(0);

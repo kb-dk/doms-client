@@ -63,7 +63,7 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
             getSDOParsedDocument().saveToDatastream();
 
         }
-        if (contents == null || originalContents == null){
+        if (contents == null || (!isVirtual() && originalContents == null)){
             return;
         }
         if (contents.equals(originalContents)){
@@ -71,6 +71,7 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
         }
         try {
             api.modifyDatastream(getDigitalObject().getPid(),getId(),contents,"Save from GUI");
+            setVirtual(false);
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);
         } catch (InvalidResourceException e) {
@@ -112,5 +113,10 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     public void setVirtual(boolean virtual) {
         this.virtual = virtual;
+    }
+
+    @Override
+    public void create() throws XMLParseException, ServerOperationFailed {
+       preSave();
     }
 }
