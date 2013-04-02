@@ -65,7 +65,7 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
                 <artifactId>centralWebservice-interface</artifactId>
-                <version>0.0.27-SNAPSHOT</version>
+                <version>0.0.27</version>
             </dependency>
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
