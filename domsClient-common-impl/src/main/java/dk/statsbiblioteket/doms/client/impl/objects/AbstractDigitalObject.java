@@ -838,4 +838,20 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractDigitalObject)) return false;
+
+        AbstractDigitalObject that = (AbstractDigitalObject) o;
+
+        if (!pid.equals(that.pid)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return pid.hashCode();
+    }
 }
