@@ -9,11 +9,12 @@ public class Constants {
     static public final String RELS_EXT_ID = "RELS-EXT";
     static public final String DS_COMPOSITE_MODEL_ID = "DS-COMPOSITE-MODEL";
     static public final String VIEW_ID = "VIEW";
+
     static public final String DS_COMPOSITE_NAMESPACE = "info:fedora/fedora-system:def/dsCompositeModel#";
     static public final String DS_COMPOSITE_SCHEMA_NAMESPACE = "http://doms.statsbiblioteket.dk/types/dscompositeschema/0/1/#";
     static public final String GUI_REPRESENTATION_NAMESPACE = "http://doms.statsbiblioteket.dk/types/dscompositeschema/guirepresentation/0/1/#";
     static public final String DOMS_RELATIONS_NAMESPACE = "http://doms.statsbiblioteket.dk/relations/default/0/1/#";
-    static public final String VIEWS_NAMESPACE = "http://ecm.sourceforge.net/types/view/0/2/#";
+    static public final String VIEWS_NAMESPACE = "http://doms.statsbiblioteket.dk/types/view/default/0/1/#";
     static public final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     static public final String RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#";
     static public final String OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#";
@@ -24,10 +25,10 @@ public class Constants {
     static public final String VIEW_GUI = "GUI";
 
     static public final String IS_PART_OF_COLLECTION_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isPartOfCollection";
-    static public final String EXTENDSMODEL_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#extendsModel";
-    public static final String TEMPLATE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isTemplateFor";
-    public static final String VIEWANGLE_PREDICATE = "http://ecm.sourceforge.net/relations/0/2/#isEntryForViewAngle";
-    public static final String HASMODEL_PREDICATE = "info:fedora/fedora-system:def/model#hasModel";
+    static public final String EXTENDSMODEL_PREDICATE = DOMS_RELATIONS_NAMESPACE+"#extendsModel";
+    public static final String TEMPLATE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"#isTemplateFor";
+    public static final String VIEWANGLE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"#isEntryForViewAngle";
+    public static final String HASMODEL_PREDICATE = FEDORA_MODEL_NAMESPACE+"#hasModel";
     public static final String HASLICENSE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"hasLicense";
 
     public static final String CM_CM_PID = "fedora-system:ContentModel-3.0";
