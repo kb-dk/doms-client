@@ -20,6 +20,10 @@ import java.net.URL;
  * To change this template use File | Settings | File Templates.
  */
 public class FileObjectImpl extends DataObjectImpl implements FileObject{
+
+    public static final String CONTENTS = "CONTENTS";
+    public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+
     public FileObjectImpl(ObjectProfile profile, CentralWebservice api,
                           DigitalObjectFactoryImpl factory) throws ServerOperationFailed {
         super(profile,api,factory);
@@ -28,7 +32,7 @@ public class FileObjectImpl extends DataObjectImpl implements FileObject{
     @Override
     public URL getFileUrl() throws ServerOperationFailed {
         try {
-            Datastream contentsStream = getDatastream("CONTENTS");
+            Datastream contentsStream = getDatastream(CONTENTS);
             if (contentsStream instanceof ExternalDatastream) {
                 ExternalDatastream stream = (ExternalDatastream) contentsStream;
                 return new URL(stream.getUrl());
@@ -44,7 +48,7 @@ public class FileObjectImpl extends DataObjectImpl implements FileObject{
 
     @Override
     public void setFileUrl(URL url) throws ServerOperationFailed {
-       setFileUrl(url,"", "application/octet-stream");
+       setFileUrl(url,"", APPLICATION_OCTET_STREAM);
     }
 
     @Override
@@ -55,7 +59,7 @@ public class FileObjectImpl extends DataObjectImpl implements FileObject{
                 profile = api.getObjectProfile(this.getPid());
                 DatastreamProfile contentDSprofile = null;
                 for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
-                    if (datastreamProfile.getId().equals("CONTENT")){
+                    if (datastreamProfile.getId().equals(CONTENTS)){
                         contentDSprofile = datastreamProfile;
                         break;
                     }
