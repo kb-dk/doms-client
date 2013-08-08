@@ -2,7 +2,11 @@ package dk.statsbiblioteket.doms.client.impl;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.DomsClient;
+import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.objects.AbstractDigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
@@ -10,6 +14,7 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -49,5 +54,21 @@ public abstract class AbstractDomsClient implements DomsClient {
      */
     public DigitalObjectFactory getFactory() {
         return factory;
+    }
+
+    @Override
+    public boolean testLogin() throws ServerOperationFailed {
+        //attempts an operation on an object that does not exist. As policies are checked at the beginning, the
+        //invalid credentials exception will be thrown even for an object that does not exist.
+        try {
+            domsAPI.markInProgressObject(Arrays.asList("doms:This_PID_CANNOT_EXIST"),"attempting login");
+        } catch (InvalidCredentialsException e) {
+            return false;
+        } catch (InvalidResourceException e) {
+            return true;
+        } catch (MethodFailedException e) {
+            return true;
+        }
+        return true;
     }
 }

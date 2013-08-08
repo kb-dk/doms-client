@@ -21,4 +21,6 @@ public interface DomsClient {
     DigitalObjectFactory getFactory() throws ServerOperationFailed;
 
 
+    boolean testLogin() throws ServerOperationFailed;
+
 }
