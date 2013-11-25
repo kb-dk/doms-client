@@ -7,15 +7,17 @@ import commonj.sdo.helper.HelperContext;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
-import org.apache.log4j.Logger;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
-    private static Logger log = Logger.getLogger(SDOParsedXmlElementImpl.class);
     private SDOParsedXmlDocumentImpl myDocument;
     private Property property;
     private DataObject dataobject;
