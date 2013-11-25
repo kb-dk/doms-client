@@ -65,12 +65,12 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
                 <artifactId>centralWebservice-interface</artifactId>
-                <version>0.0.28-SNAPSHOT</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
                 <artifactId>authchecker-authutils</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
