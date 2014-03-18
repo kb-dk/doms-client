@@ -25,10 +25,10 @@ public class Constants {
     static public final String VIEW_GUI = "GUI";
 
     static public final String IS_PART_OF_COLLECTION_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isPartOfCollection";
-    static public final String EXTENDSMODEL_PREDICATE = DOMS_RELATIONS_NAMESPACE+"#extendsModel";
-    public static final String TEMPLATE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"#isTemplateFor";
-    public static final String VIEWANGLE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"#isEntryForViewAngle";
-    public static final String HASMODEL_PREDICATE = FEDORA_MODEL_NAMESPACE+"#hasModel";
+    static public final String EXTENDSMODEL_PREDICATE = DOMS_RELATIONS_NAMESPACE+"extendsModel";
+    public static final String TEMPLATE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isTemplateFor";
+    public static final String VIEWANGLE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isEntryForViewAngle";
+    public static final String HASMODEL_PREDICATE = FEDORA_MODEL_NAMESPACE+"hasModel";
     public static final String HASLICENSE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"hasLicense";
 
     public static final String CM_CM_PID = "fedora-system:ContentModel-3.0";
