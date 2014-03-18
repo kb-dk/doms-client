@@ -336,7 +336,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 // if we are traversing hierarchy without an xml data instance
                 // we create an empty placeholder
                 childObjects = new ArrayList<DataObject>(1);
-                childObjects.add(dataObject.createDataObject(property));
+                if (!property.getType().isAbstract()) {
+                    childObjects.add(dataObject.createDataObject(property));
+                }
+                //TODO Should we add in implementing type? How would we identify that?
             }
 
             for (DataObject childObject : childObjects) {
