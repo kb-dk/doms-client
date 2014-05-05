@@ -12,13 +12,16 @@ import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
-import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.apache.tuscany.sdo.api.SDOUtil;
-import org.apache.tuscany.sdo.impl.DataObjectImpl;
+import org.apache.tuscany.sdo.impl.ClassImpl;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EReference;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -184,7 +187,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //Load the XML document
 
 
-        String contents = datastream.getContents();
 
 
         setSdoXmlDocument(sdoContext.getXMLHelper().load(datastream.getContents()));
@@ -360,6 +362,20 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                     for (Iterator<Property> i = containedProps.iterator(); i.hasNext(); ) {
                         Property childProperty = (Property) i.next();
                         if (!helperContext.getXSDHelper().isAttribute(childProperty)) {
+                            if (childProperty instanceof EReference) {
+                                EReference eReference = (EReference) childProperty;
+                                EClassifier childPropertyType = eReference.getEType();
+                                if (childPropertyType instanceof ClassImpl) {
+                                    ClassImpl propertyType = (ClassImpl) childPropertyType;
+                                    if ( propertyType.getSequenceFeature() instanceof EAttribute){
+                                        continue;
+                                    }
+                                }
+                            }
+
+                            if ( childProperty instanceof EAttribute) {
+                                continue;
+                            }
                             handleProperty(helperContext, child, childObject, childProperty);
                         }
                     }
