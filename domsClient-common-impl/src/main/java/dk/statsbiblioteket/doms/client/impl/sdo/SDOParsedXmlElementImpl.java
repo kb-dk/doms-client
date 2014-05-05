@@ -621,24 +621,4 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         this.valueEnum = valueEnum;
     }
 
-    public SDOParsedXmlElement getCrapValue() {
-        ArrayList<SDOParsedXmlElement> children = getChildren();
-        if (children != null && children.size() > 0){
-            SDOParsedXmlElement firstChild = children.get(0);
-            if (firstChild != null && firstChild.getChildren().size() == 0){
-                if (firstChild.getLabel().equals("Value")){
-                    return firstChild;
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean isValueLeaf() {
-        if (getCrapValue() != null){
-            return true;
-        }
-        return false;
-    }
-
 }

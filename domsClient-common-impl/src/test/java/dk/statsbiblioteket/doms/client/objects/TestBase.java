@@ -106,18 +106,7 @@ public class TestBase {
                 System.out.print("  type="+child.getGuiTypeAsString());
                 System.out.println();
 
-            } else if (child.isValueLeaf()){
-                System.out.print(indryk+"'"+child.getLabel()+"': '"+child.getCrapValue().getValue()+"'");
-                if (child.getProperty().isMany()){
-                    if (child.getAddable()){
-                        System.out.print(" (+)");
-                    }
-                    if (child.getRemovable()){
-                        System.out.print("(-)");
-                    }
-                }
-                System.out.print("  type="+child.getGuiTypeAsString());
-                System.out.println();
+
 
             } else {
 
