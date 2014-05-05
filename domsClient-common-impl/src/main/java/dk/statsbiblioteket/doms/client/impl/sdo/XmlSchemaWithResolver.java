@@ -72,7 +72,7 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 				throw new XMLParseException("Parse failed in XMLDocument. "
 						+ e.getMessage());
 			}
-			docNode = document.getFirstChild();
+			docNode = document.getDocumentElement();
 			
 			
 		} catch (ParserConfigurationException spe) {
