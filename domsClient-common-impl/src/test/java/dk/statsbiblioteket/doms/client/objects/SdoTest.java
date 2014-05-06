@@ -39,6 +39,7 @@ public class SdoTest extends TestBase{
             throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         SDOParsedXmlDocument doc = program.getDatastream("PBCORE").getSDOParsedDocument();
+
         parseDoc(doc);
 
     }
