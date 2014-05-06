@@ -1,6 +1,5 @@
 package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Before;
 
@@ -16,7 +15,7 @@ import static junit.framework.Assert.assertTrue;
  * Time: 4:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StateTest extends TestBase{
+public class StateTest extends TestBase {
     public StateTest() throws MalformedURLException {
         super();
     }
@@ -42,20 +41,20 @@ public class StateTest extends TestBase{
 
         assertTrue(object.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children) {
-            assertTrue(child.getState()== Constants.FedoraState.Active);
+            assertTrue(child.getState() == Constants.FedoraState.Active);
             i++;
         }
-        assertTrue(i>0);
+        assertTrue(i > 0);
         i = 0;
 
         //Set the object and all subobjects to Inactive
         object.setState(Constants.FedoraState.Inactive, "GUI");
         object.save("GUI");
         for (DigitalObject child : children) {
-            assertTrue(child.getState()== Constants.FedoraState.Inactive);
+            assertTrue(child.getState() == Constants.FedoraState.Inactive);
             i++;
         }
-        assertTrue(i>0);
+        assertTrue(i > 0);
         i = 0;
 
 
@@ -67,10 +66,10 @@ public class StateTest extends TestBase{
         assertTrue(object2.getState() == Constants.FedoraState.Inactive);
         Set<DigitalObject> children2 = object2.getChildObjects("GUI");
         for (DigitalObject child : children2) {
-            assertTrue(child.getState()== Constants.FedoraState.Inactive);
+            assertTrue(child.getState() == Constants.FedoraState.Inactive);
             i++;
         }
-        assertTrue(i>0);
+        assertTrue(i > 0);
         i = 0;
 
         //Then set everything to Active again
@@ -78,10 +77,10 @@ public class StateTest extends TestBase{
         object2.save("GUI");
         assertTrue(object2.getState() == Constants.FedoraState.Active);
         for (DigitalObject child : children2) {
-            assertTrue(child.getState()== Constants.FedoraState.Active);
+            assertTrue(child.getState() == Constants.FedoraState.Active);
             i++;
         }
-        assertTrue(i>0);
+        assertTrue(i > 0);
         i = 0;
 
         setUp();
@@ -89,10 +88,10 @@ public class StateTest extends TestBase{
         DigitalObject object3 = factory.getDigitalObject(victimProgram);
         Set<DigitalObject> children3 = object3.getChildObjects("GUI");
         for (DigitalObject child : children3) {
-            assertTrue(child.getState()== Constants.FedoraState.Active);
+            assertTrue(child.getState() == Constants.FedoraState.Active);
             i++;
         }
-        assertTrue(i>0);
+        assertTrue(i > 0);
         i = 0;
 
     }

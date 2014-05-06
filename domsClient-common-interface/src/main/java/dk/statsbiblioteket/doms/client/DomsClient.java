@@ -13,8 +13,6 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 public interface DomsClient {
 
 
-
-
     /**
      * @return Profile The object factory
      */

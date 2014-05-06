@@ -27,29 +27,27 @@ import java.util.Map;
 public abstract class AbstractDomsClient implements DomsClient {
 
     private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
-            "http://central.doms.statsbiblioteket.dk/",
-            "CentralWebserviceService");
+            "http://central.doms.statsbiblioteket.dk/", "CentralWebserviceService");
     /**
      * Reference to the active DOMS webservice client instance.
      */
     protected CentralWebservice domsAPI;
     private AbstractDigitalObjectFactory factory;
 
-    public AbstractDomsClient(URL domsWSAPIEndpoint, String userName,
-                              String password) {
-        domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
-                                               CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
+    public AbstractDomsClient(URL domsWSAPIEndpoint, String userName, String password) {
+        domsAPI = new CentralWebserviceService(
+                domsWSAPIEndpoint, CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
-        Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI)
-                .getRequestContext();
+        Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI).getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
-        factory= new DigitalObjectFactoryImpl(domsAPI);
+        factory = new DigitalObjectFactoryImpl(domsAPI);
     }
 
 
     /**
      * Get the factory to read the objects
+     *
      * @return
      */
     public DigitalObjectFactory getFactory() {
@@ -61,7 +59,7 @@ public abstract class AbstractDomsClient implements DomsClient {
         //attempts an operation on an object that does not exist. As policies are checked at the beginning, the
         //invalid credentials exception will be thrown even for an object that does not exist.
         try {
-            domsAPI.markInProgressObject(Arrays.asList("doms:This_PID_CANNOT_EXIST"),"attempting login");
+            domsAPI.markInProgressObject(Arrays.asList("doms:This_PID_CANNOT_EXIST"), "attempting login");
         } catch (InvalidCredentialsException e) {
             return false;
         } catch (InvalidResourceException e) {

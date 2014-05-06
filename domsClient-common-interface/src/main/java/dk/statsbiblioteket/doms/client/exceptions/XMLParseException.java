@@ -1,7 +1,5 @@
 package dk.statsbiblioteket.doms.client.exceptions;
 
-import javax.xml.transform.TransformerException;
-
 /**
  * Created by IntelliJ IDEA.
  * User: abr

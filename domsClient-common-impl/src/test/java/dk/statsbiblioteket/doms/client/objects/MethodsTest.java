@@ -18,7 +18,7 @@ import static junit.framework.Assert.assertTrue;
  * Time: 1:39 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MethodsTest extends TestBase{
+public class MethodsTest extends TestBase {
 
     public MethodsTest() throws MalformedURLException {
         super();
@@ -28,17 +28,17 @@ public class MethodsTest extends TestBase{
     public void methodsTest1() throws ServerOperationFailed {
         ContentModelObject contentModel = (ContentModelObject) factory.getDigitalObject("doms:ContentModel_VHSFile");
         Set<Method> methods = contentModel.getMethods();
-        assertTrue("No methods defined",methods.size() > 0);
+        assertTrue("No methods defined", methods.size() > 0);
         for (Method method : methods) {
-            assertEquals("Name of method wrong","VHS import",method.getName());
+            assertEquals("Name of method wrong", "VHS import", method.getName());
             Set<Parameter> parameters = method.getParameters();
-            assertTrue("No params defined",parameters.size() > 0);
+            assertTrue("No params defined", parameters.size() > 0);
             for (Parameter parameter : parameters) {
                 parameter.setValue("test");
             }
             String result = method.invoke(parameters);
             System.out.println(result);
-            assertTrue("result wrong",result.length() > 3);
+            assertTrue("result wrong", result.length() > 3);
 
         }
 

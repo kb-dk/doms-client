@@ -22,12 +22,14 @@ public interface DigitalObject {
 
     /**
      * Saves the digital object to the Server.
+     *
      * @throws ServerOperationFailed
      */
     void save() throws ServerOperationFailed, XMLParseException;
 
     /**
      * Saves the digital object to the Server.
+     *
      * @throws ServerOperationFailed
      */
     void save(String viewAngle) throws ServerOperationFailed, XMLParseException;
@@ -54,6 +56,7 @@ public interface DigitalObject {
 
     /**
      * Set the object title. Will not save, yet
+     *
      * @param title the title
      */
     void setTitle(String title) throws ServerOperationFailed;
@@ -85,27 +88,32 @@ public interface DigitalObject {
 
     /**
      * Create new internal datastream
+     *
      * @param name the id of the datastream
+     *
      * @return the datastream object
      * @throws ServerOperationFailed
      */
     Datastream addInternalDatastream(String name) throws ServerOperationFailed;
 
     /**
-     *
      * @param id datastream ID
+     *
      * @return The datastream
      * @throws ServerOperationFailed
      */
     Datastream getDatastream(String id) throws ServerOperationFailed, NotFoundException;
+
     /**
      * Not implemented
+     *
      * @param addition
      */
     void addDatastream(Datastream addition) throws ServerOperationFailed;
 
     /**
      * Not implemented
+     *
      * @param deleted
      */
     void removeDatastream(Datastream deleted) throws ServerOperationFailed;
@@ -113,6 +121,7 @@ public interface DigitalObject {
 
     /**
      * The list of relations in the object.
+     *
      * @return
      */
     List<Relation> getRelations() throws ServerOperationFailed;
@@ -120,26 +129,28 @@ public interface DigitalObject {
 
     /**
      * The list of inverse relations. TODO implement
+     *
      * @return
      */
     List<ObjectRelation> getInverseRelations() throws ServerOperationFailed;
 
     /**
      * The list of inverse relations. TODO implement
+     *
      * @return
      */
     List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed;
 
 
-
     /**
      * Remove a relation from this object
+     *
      * @param relation the relation to remove
      */
     void removeRelation(Relation relation) throws ServerOperationFailed;
 
 
-    ObjectRelation addObjectRelation(String predicate,DigitalObject object) throws ServerOperationFailed;
+    ObjectRelation addObjectRelation(String predicate, DigitalObject object) throws ServerOperationFailed;
 
     LiteralRelation addLiteralRelation(String predicate, String value);
 

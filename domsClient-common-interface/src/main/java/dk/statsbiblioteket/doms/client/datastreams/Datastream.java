@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.doms.client.datastreams;
 
-import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
+import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 
@@ -33,8 +33,7 @@ public interface Datastream {
 
     Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed;
 
-    SDOParsedXmlDocument getSDOParsedDocument()
-            throws ServerOperationFailed, XMLParseException;
+    SDOParsedXmlDocument getSDOParsedDocument() throws ServerOperationFailed, XMLParseException;
 
 
 }

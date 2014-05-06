@@ -21,7 +21,7 @@ public interface ContentModelObject extends DigitalObject {
 
     public List<String> getInverseRelationsWithViewAngle(String viewAngle) throws ServerOperationFailed;
 
-    public Set<String> getDeclaredViewAngles() throws  ServerOperationFailed;
+    public Set<String> getDeclaredViewAngles() throws ServerOperationFailed;
 
     public RelationModel getRelationModel() throws ServerOperationFailed;
 
@@ -36,6 +36,6 @@ public interface ContentModelObject extends DigitalObject {
     public Set<ContentModelObject> getParents() throws ServerOperationFailed;
 
     public Set<ContentModelObject> getDescendants() throws ServerOperationFailed;
-    
+
     public Set<Method> getMethods() throws ServerOperationFailed;
 }

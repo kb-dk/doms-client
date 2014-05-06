@@ -160,11 +160,12 @@ public class FixerTest {
                  "    <extension>showviewcode:468797</extension>\n" +
                  "  </pbcoreExtension>\n" +
                  "</PBCoreDescriptionDocument>";
+
     @Test
     public void testRemoveOriginalTitel() throws Exception {
 
 
-        Document document = DOM.stringToDOM(doc,true);
+        Document document = DOM.stringToDOM(doc, true);
         Fixer fixer = new Fixer();
         fixer.fixAll(document);
         System.out.println(DOM.domToString(document, true));

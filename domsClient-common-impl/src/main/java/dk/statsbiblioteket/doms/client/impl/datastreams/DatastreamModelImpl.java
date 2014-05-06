@@ -25,16 +25,14 @@ import java.util.List;
  * Time: 9:11 AM
  * To change this template use File | Settings | File Templates.
  */
-public class DatastreamModelImpl extends InternalDatastreamImpl
-        implements DatastreamModel {
+public class DatastreamModelImpl extends InternalDatastreamImpl implements DatastreamModel {
 
     private boolean parsed = false;
     private List<DatastreamDeclaration> datastreamDeclarations;
     private ContentModelObject contentModel;
 
 
-    public DatastreamModelImpl(DatastreamProfile datastreamProfile,
-                               ContentModelObject contentModel,
+    public DatastreamModelImpl(DatastreamProfile datastreamProfile, ContentModelObject contentModel,
                                CentralWebservice api) {
         super(datastreamProfile, contentModel, api);
         this.contentModel = contentModel;
@@ -56,10 +54,9 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
         return this.datastreamDeclarations;
     }
 
-    private synchronized void parseDs() throws  ServerOperationFailed,
-                                                NotFoundException {
+    private synchronized void parseDs() throws ServerOperationFailed, NotFoundException {
 
-        if (parsed){
+        if (parsed) {
             return;
         }
         parsed = true;
@@ -67,22 +64,22 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
 
         Document dsDoc = DOM.stringToDOM(getContents(), true);
 
-        XPathSelector pathSelector = DOM.createXPathSelector("ds",
-                                                             Constants.DS_COMPOSITE_NAMESPACE);
+        XPathSelector pathSelector = DOM.createXPathSelector(
+                "ds", Constants.DS_COMPOSITE_NAMESPACE);
 
-        NodeList allDSReferences = pathSelector.selectNodeList(dsDoc,
-                                                               "//ds:dsTypeModel[@ID]");
-//        NodeList allNamedDatastreams = pathSelector.selectNodeList(dsDoc,
-//                "//*[@name]/*[@type='datastream']/@value");
+        NodeList allDSReferences = pathSelector.selectNodeList(
+                dsDoc, "//ds:dsTypeModel[@ID]");
+        //        NodeList allNamedDatastreams = pathSelector.selectNodeList(dsDoc,
+        //                "//*[@name]/*[@type='datastream']/@value");
 
         // For each dsTypeModel
-        for(int i = 0; i < allDSReferences.getLength(); i++){
+        for (int i = 0; i < allDSReferences.getLength(); i++) {
             Node item = allDSReferences.item(i);
-            String dsName = pathSelector.selectString(item,"@ID");
-            String schemaDSname = pathSelector.selectString(item,
-                                                            "ds:extension[@name='SCHEMA']/ds:reference[@type='datastream']/@value");
+            String dsName = pathSelector.selectString(item, "@ID");
+            String schemaDSname = pathSelector.selectString(
+                    item, "ds:extension[@name='SCHEMA']/ds:reference[@type='datastream']/@value");
             Datastream compositeSchemas = null;
-            if (schemaDSname != null && !schemaDSname.isEmpty()){
+            if (schemaDSname != null && !schemaDSname.isEmpty()) {
                 compositeSchemas = getDigitalObject().getDatastream(schemaDSname);
 
             }
@@ -90,27 +87,27 @@ public class DatastreamModelImpl extends InternalDatastreamImpl
             // Vilkårligt mange (0..*) form elementer
             List<String> dsMimeTypes = new ArrayList<String>();
             NodeList dsMimeTypeList = pathSelector.selectNodeList(item, "ds:form/@MIME");
-            for(int j = 0; j < dsMimeTypeList.getLength(); j++){
+            for (int j = 0; j < dsMimeTypeList.getLength(); j++) {
                 dsMimeTypes.add(dsMimeTypeList.item(j).getNodeValue());
             }
 
             List<String> dsFormatUris = new ArrayList<String>();
             NodeList dsFormatUriList = pathSelector.selectNodeList(item, "ds:form/@FORMAT_URI");
-            for(int j = 0; j < dsFormatUriList.getLength(); j++){
+            for (int j = 0; j < dsFormatUriList.getLength(); j++) {
                 dsFormatUris.add(dsFormatUriList.item(j).getNodeValue());
             }
 
             // Her håndteres at der er viewAngles for Gui
-            Node guiPresentAs = pathSelector.selectNode(item,
-                                                        "ds:extension[@name='GUI']/ds:presentAs/@type");
+            Node guiPresentAs = pathSelector.selectNode(
+                    item, "ds:extension[@name='GUI']/ds:presentAs/@type");
             Constants.GuiRepresentation presentation;
             try {
-                if (guiPresentAs != null){
+                if (guiPresentAs != null) {
                     presentation = Constants.GuiRepresentation.valueOf(guiPresentAs.getNodeValue());
                 } else {
                     presentation = Constants.GuiRepresentation.undefined;
                 }
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 presentation = Constants.GuiRepresentation.undefined;
             }
             DatastreamDeclarationImpl dsDecl = new DatastreamDeclarationImpl(dsName, this);

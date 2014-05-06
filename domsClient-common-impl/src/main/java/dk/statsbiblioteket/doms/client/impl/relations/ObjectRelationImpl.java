@@ -1,8 +1,8 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
@@ -16,27 +16,23 @@ public class ObjectRelationImpl extends AbstractRelation implements ObjectRelati
     private String objectPid;
 
 
+    public ObjectRelationImpl(String subjectPid, String predicate, String objectPid, DigitalObjectFactory factory) {
+        super(subjectPid, predicate, factory);
+        this.objectPid = Constants.ensurePID(objectPid);
+    }
+
     @Override
     public synchronized DigitalObject getObject() throws ServerOperationFailed {
         DigitalObject result = object.get();
-        if (result == null){
+        if (result == null) {
             result = getFactory().getDigitalObject(objectPid);
             object = new SoftReference<DigitalObject>(result);
         }
         return result;
     }
 
-
     public String getObjectPid() {
         return objectPid;
-    }
-
-    public ObjectRelationImpl(String subjectPid,
-                              String predicate,
-                              String objectPid,
-                              DigitalObjectFactory factory) {
-        super(subjectPid, predicate, factory);
-        this.objectPid = Constants.ensurePID(objectPid);
     }
 
     @Override

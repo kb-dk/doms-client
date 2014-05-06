@@ -43,7 +43,6 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
     }
 
 
-
     @Override
     public List<String> getDsMimeTypes() {
         return dsMimeTypes;
@@ -59,11 +58,14 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
         return presentation;
     }
 
+    public void setPresentation(Constants.GuiRepresentation presentation) {
+        this.presentation = presentation;
+    }
+
     @Override
     public String getName() {
         return name;
     }
-
 
     public Datastream getSchema() {
         return schema;
@@ -71,9 +73,5 @@ public class DatastreamDeclarationImpl implements DatastreamDeclaration {
 
     public void setSchema(Datastream schema) {
         this.schema = schema;
-    }
-
-    public void setPresentation(Constants.GuiRepresentation presentation) {
-        this.presentation = presentation;
     }
 }

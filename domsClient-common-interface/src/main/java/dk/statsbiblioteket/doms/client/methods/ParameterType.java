@@ -9,5 +9,13 @@ package dk.statsbiblioteket.doms.client.methods;
  */
 public enum ParameterType {
 
-    Text,TextBox,Integer,Float,Datetime,Date,Time,ServerFile,LocalFile
+    Text,
+    TextBox,
+    Integer,
+    Float,
+    Datetime,
+    Date,
+    Time,
+    ServerFile,
+    LocalFile
 }

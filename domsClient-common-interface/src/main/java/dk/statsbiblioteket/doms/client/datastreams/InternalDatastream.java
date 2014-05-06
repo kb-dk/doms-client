@@ -11,5 +11,5 @@ package dk.statsbiblioteket.doms.client.datastreams;
 public interface InternalDatastream extends Datastream {
 
 
-     public void replace(String content);
+    public void replace(String content);
 }

@@ -11,33 +11,35 @@ public class Constants {
     static public final String VIEW_ID = "VIEW";
 
     static public final String DS_COMPOSITE_NAMESPACE = "info:fedora/fedora-system:def/dsCompositeModel#";
-    static public final String DS_COMPOSITE_SCHEMA_NAMESPACE = "http://doms.statsbiblioteket.dk/types/dscompositeschema/0/1/#";
-    static public final String GUI_REPRESENTATION_NAMESPACE = "http://doms.statsbiblioteket.dk/types/dscompositeschema/guirepresentation/0/1/#";
+    static public final String DS_COMPOSITE_SCHEMA_NAMESPACE
+            = "http://doms.statsbiblioteket.dk/types/dscompositeschema/0/1/#";
+    static public final String GUI_REPRESENTATION_NAMESPACE
+            = "http://doms.statsbiblioteket.dk/types/dscompositeschema/guirepresentation/0/1/#";
     static public final String DOMS_RELATIONS_NAMESPACE = "http://doms.statsbiblioteket.dk/relations/default/0/1/#";
+    static public final String IS_PART_OF_COLLECTION_PREDICATE = DOMS_RELATIONS_NAMESPACE + "isPartOfCollection";
+    static public final String EXTENDSMODEL_PREDICATE = DOMS_RELATIONS_NAMESPACE + "extendsModel";
+    public static final String TEMPLATE_PREDICATE = DOMS_RELATIONS_NAMESPACE + "isTemplateFor";
+    public static final String VIEWANGLE_PREDICATE = DOMS_RELATIONS_NAMESPACE + "isEntryForViewAngle";
+    public static final String HASLICENSE_PREDICATE = DOMS_RELATIONS_NAMESPACE + "hasLicense";
     static public final String VIEWS_NAMESPACE = "http://doms.statsbiblioteket.dk/types/view/default/0/1/#";
     static public final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     static public final String RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#";
     static public final String OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#";
     static public final String FEDORA_MODEL_NAMESPACE = "info:fedora/fedora-system:def/model#";
+    public static final String HASMODEL_PREDICATE = FEDORA_MODEL_NAMESPACE + "hasModel";
     static public final String INFO_FEDORA_URI_SCHEME = "info:fedora/";
     static public final String EXTENSIONS_SCHEMA = "SCHEMA";
     static public final String EXTENSIONS_GUI = "GUI";
     static public final String VIEW_GUI = "GUI";
-
-    static public final String IS_PART_OF_COLLECTION_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isPartOfCollection";
-    static public final String EXTENDSMODEL_PREDICATE = DOMS_RELATIONS_NAMESPACE+"extendsModel";
-    public static final String TEMPLATE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isTemplateFor";
-    public static final String VIEWANGLE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"isEntryForViewAngle";
-    public static final String HASMODEL_PREDICATE = FEDORA_MODEL_NAMESPACE+"hasModel";
-    public static final String HASLICENSE_PREDICATE = DOMS_RELATIONS_NAMESPACE+"hasLicense";
-
     public static final String CM_CM_PID = "fedora-system:ContentModel-3.0";
     public static final String METHODS_ID = "METHODS";
 
-    /**                         guestplanets
+    /**
+     * guestplanets
      * If the given string starts with "info:fedora/", remove it.
      *
      * @param pid A pid, possibly as a URI
+     *
      * @return The pid, with the possible URI prefix removed.
      */
     public static String ensurePID(String pid) {
@@ -51,6 +53,7 @@ public class Constants {
      * If the given string does not start with "info:fedora/", remove it.
      *
      * @param uri An URI, possibly as a PID
+     *
      * @return The uri, with the possible URI prefix prepended.
      */
     public static String ensureURI(String uri) {
@@ -63,16 +66,26 @@ public class Constants {
 
     public static enum GuiRepresentation {
 
-        editable, importable, uploadable, readonly, invisible, undefined;
+        editable,
+        importable,
+        uploadable,
+        readonly,
+        invisible,
+        undefined;
 
-        public static GuiRepresentation fromString(String a){
+        public static GuiRepresentation fromString(String a) {
             return GuiRepresentation.valueOf(a);
         }
     }
 
     public static enum DatastreamControlGroup {
-        E, M, R, X, B;
-        public static DatastreamControlGroup fromString(String a){
+        E,
+        M,
+        R,
+        X,
+        B;
+
+        public static DatastreamControlGroup fromString(String a) {
             return DatastreamControlGroup.valueOf(a);
         }
 
@@ -87,7 +100,9 @@ public class Constants {
      * To change this template use File | Settings | File Templates.
      */
     public static enum FedoraState {
-        Active("A", "Published"), Inactive("I", "InProgress"), Deleted("D", "Deleted");
+        Active("A", "Published"),
+        Inactive("I", "InProgress"),
+        Deleted("D", "Deleted");
         private String shorthand;
         private String editorState;
 
@@ -97,14 +112,11 @@ public class Constants {
         }
 
 
-
-
-
         public static FedoraState fromString(String state) {
 
             state = state.trim();
             for (FedoraState fedoraState : FedoraState.values()) {
-                if (fedoraState.shorthand.equals(state)){
+                if (fedoraState.shorthand.equals(state)) {
                     return fedoraState;
                 }
             }

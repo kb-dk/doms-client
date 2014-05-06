@@ -11,7 +11,7 @@ import java.net.URL;
  * Time: 11:16 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface FileObject extends DataObject{
+public interface FileObject extends DataObject {
 
     public URL getFileUrl() throws ServerOperationFailed;
 

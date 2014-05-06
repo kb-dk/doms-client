@@ -1,6 +1,10 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -10,9 +14,7 @@ import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
-import java.lang.String;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +24,8 @@ import java.util.Set;
  */
 public class TemplateObjectImpl extends AbstractDigitalObject implements TemplateObject {
 
-    public TemplateObjectImpl(ObjectProfile profile, CentralWebservice api, DigitalObjectFactory factory)
-            throws ServerOperationFailed {
+    public TemplateObjectImpl(ObjectProfile profile, CentralWebservice api, DigitalObjectFactory factory) throws
+                                                                                                          ServerOperationFailed {
         super(profile, api, factory);
     }
 
@@ -48,7 +50,7 @@ public class TemplateObjectImpl extends AbstractDigitalObject implements Templat
         List<Relation> rels = getRelations();
         Set<ContentModelObject> classes = new LinkedHashSet<ContentModelObject>();
         for (Relation rel : rels) {
-            if (rel.getPredicate().equals(Constants.TEMPLATE_PREDICATE)){
+            if (rel.getPredicate().equals(Constants.TEMPLATE_PREDICATE)) {
                 if (rel instanceof ObjectRelation) {
                     ObjectRelation objectRelation = (ObjectRelation) rel;
                     if (objectRelation.getObject() instanceof ContentModelObject) {

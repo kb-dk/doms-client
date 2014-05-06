@@ -48,17 +48,19 @@ public interface SDOParsedXmlElement {
 
     void delete();
 
-    void setLabel(String label);
-
     String getLabel();
 
-    void setValue(Object value);
+    void setLabel(String label);
 
     Object getValue();
+
+    void setValue(Object value);
 
     String getStringValue();
 
     int getIndex();
+
+    void setIndex(int i);
 
     ArrayList<SDOParsedXmlElement> getChildren();
 
@@ -68,9 +70,12 @@ public interface SDOParsedXmlElement {
 
     String toString();
 
-    void setIndex(int i);
-
     public static enum GuiType {
-        inputfield, textarea, uneditable, NA, enumeration, invisible
+        inputfield,
+        textarea,
+        uneditable,
+        NA,
+        enumeration,
+        invisible
     }
 }

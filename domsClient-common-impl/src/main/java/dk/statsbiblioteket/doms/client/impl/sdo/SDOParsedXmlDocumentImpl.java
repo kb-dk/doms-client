@@ -50,19 +50,13 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     //XML document that is an instance of the XML Schema.
     private List<Type> sdoTypes = new ArrayList<Type>();
 
-    public SDOParsedXmlDocumentImpl(DatastreamDeclaration next,Datastream datastream)
-            throws ServerOperationFailed, XMLParseException {
+    public SDOParsedXmlDocumentImpl(DatastreamDeclaration next, Datastream datastream) throws
+                                                                                       ServerOperationFailed,
+                                                                                       XMLParseException {
         generate(next);
         load(datastream);
         this.datastream = datastream;
 
-    }
-
-    /**
-     * @param sdoXmlDocument the sdoXmlDocument to set
-     */
-    public void setSdoXmlDocument(XMLDocument sdoXmlDocument) {
-        this.sdoXmlDocument = sdoXmlDocument;
     }
 
     /**
@@ -73,10 +67,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     /**
-     * @param rootSDOParsedXmlElement the rootSDOParsedXmlElement to set
+     * @param sdoXmlDocument the sdoXmlDocument to set
      */
-    public void setRootSDOParsedXmlElement(SDOParsedXmlElementImpl rootSDOParsedXmlElement) {
-        this.rootSDOParsedXmlElement = rootSDOParsedXmlElement;
+    public void setSdoXmlDocument(XMLDocument sdoXmlDocument) {
+        this.sdoXmlDocument = sdoXmlDocument;
     }
 
     /**
@@ -85,6 +79,13 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     @Override
     public SDOParsedXmlElementImpl getRootSDOParsedXmlElement() {
         return rootSDOParsedXmlElement;
+    }
+
+    /**
+     * @param rootSDOParsedXmlElement the rootSDOParsedXmlElement to set
+     */
+    public void setRootSDOParsedXmlElement(SDOParsedXmlElementImpl rootSDOParsedXmlElement) {
+        this.rootSDOParsedXmlElement = rootSDOParsedXmlElement;
     }
 
     /**
@@ -104,13 +105,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     /**
-     * @param sdoContext the sdoContext to set
-     */
-    public void setSdoContext(HelperContext sdoContext) {
-        this.sdoContext = sdoContext;
-    }
-
-    /**
      * @return the sdoContext
      */
     public HelperContext getSdoContext() {
@@ -118,10 +112,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     /**
-     * @param sdoTypes the sdoTypes to set
+     * @param sdoContext the sdoContext to set
      */
-    public void setSdoTypes(List<Type> sdoTypes) {
-        this.sdoTypes = sdoTypes;
+    public void setSdoContext(HelperContext sdoContext) {
+        this.sdoContext = sdoContext;
     }
 
     /**
@@ -131,13 +125,19 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         return sdoTypes;
     }
 
-    private void generate(DatastreamDeclaration compositeSchema)
-            throws  ServerOperationFailed, XMLParseException {
-        if (sdoContext == null){
+    /**
+     * @param sdoTypes the sdoTypes to set
+     */
+    public void setSdoTypes(List<Type> sdoTypes) {
+        this.sdoTypes = sdoTypes;
+    }
+
+    private void generate(DatastreamDeclaration compositeSchema) throws ServerOperationFailed, XMLParseException {
+        if (sdoContext == null) {
             sdoContext = SDOUtil.createHelperContext(true);
         }
 
-        if (compositeSchema.getSchema() != null){
+        if (compositeSchema.getSchema() != null) {
             String is2 = compositeSchema.getSchema().getContents();
 
 
@@ -159,12 +159,16 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
             //Define types based on the XML Schema
             try {
-                setSdoTypes(defineTypes(sdoContext,  doc));
+                setSdoTypes(defineTypes(sdoContext, doc));
             } catch (TransformerException e) {
-                throw new XMLParseException("Failed to parse the types",e);
+                throw new XMLParseException("Failed to parse the types", e);
             }
             if (getSdoTypes() != null) {
-                Property rootProperty = getRootProperty(getSdoTypes(), null, targetNamespace, sdoContext.getXSDHelper());
+                Property rootProperty = getRootProperty(
+                        getSdoTypes(),
+                        null,
+                        targetNamespace,
+                        sdoContext.getXSDHelper());
                 Type rootType = rootProperty.getType();
                 isAbstract = rootType.isAbstract();
                 isValid = !isAbstract;
@@ -175,7 +179,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     }
 
     private void load(Datastream datastream) throws ServerOperationFailed {
-
 
 
         //For XSD validation. Does not seem to work
@@ -191,7 +194,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //if we want to use XSD validation. setSdoXmlDocument(sdoContext.getXMLHelper().load(is, schemaurl, options));
 
 
-
         //Get the root data object
 
 
@@ -202,27 +204,27 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
         isAbstract = rootType.isAbstract();
 
-        Property rootProperty = getRootProperty(sdoTypes,
-                rootType,
-                targetNamespace,
-                sdoContext.getXSDHelper());
+        Property rootProperty = getRootProperty(sdoTypes, rootType, targetNamespace, sdoContext.getXSDHelper());
 
         if (rootProperty == null) {
             for (Type sdoType : sdoTypes) {
-                if (sdoType.getName().equals("DocumentRoot")){
+                if (sdoType.getName().equals("DocumentRoot")) {
                     targetNamespace = sdoType.getURI();
                     //First element declaration
                     rootProperty = (Property) sdoType.getDeclaredProperties().get(0);
-                    rootDataObject = sdoContext.getDataFactory().create(targetNamespace,rootProperty.getName());
+                    rootDataObject = sdoContext.getDataFactory().create(targetNamespace, rootProperty.getName());
 
                 }
             }
-            if (rootProperty == null){
-                throw new ServerOperationFailed("Could not get a valid SDO root DataObject for Datastream: '" + datastream.getId() + "'.");
+            if (rootProperty == null) {
+                throw new ServerOperationFailed(
+                        "Could not get a valid SDO root DataObject for Datastream: '" + datastream.getId() + "'.");
             }
         }
 
-        setSdoXmlDocument(sdoContext.getXMLHelper().createDocument(rootDataObject, targetNamespace, rootProperty.getName()));
+        setSdoXmlDocument(
+                sdoContext.getXMLHelper().createDocument(
+                        rootDataObject, targetNamespace, rootProperty.getName()));
 
         SDOParsedXmlElementImpl root = new SDOParsedXmlElementImpl(this, null, rootDataObject, rootProperty);
         root.setLabel(rootProperty.getName());
@@ -259,11 +261,12 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
 
             try {
-                XMLDocument docCopy = sdoContext.getXMLHelper().createDocument(rootCopy, rootType.getURI(), rootType.getName());
+                XMLDocument docCopy = sdoContext.getXMLHelper().createDocument(
+                        rootCopy, rootType.getURI(), rootType.getName());
                 sdoContext.getXMLHelper().save(docCopy, writer, null);
                 writer.flush();
             } catch (IOException e) {
-                throw new RuntimeException("String writer failed to write...",e);
+                throw new RuntimeException("String writer failed to write...", e);
             }
 
             return writer.toString();
@@ -295,6 +298,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
      *
      * @param context
      * @param compositeSchema
+     *
      * @return
      * @throws IOException
      * @throws MethodFailedException
@@ -302,7 +306,9 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
      */
     private List<Type> defineTypes(HelperContext context,
 
-                                   XmlSchemaWithResolver compositeSchema) throws ServerOperationFailed, TransformerException {
+                                   XmlSchemaWithResolver compositeSchema) throws
+                                                                          ServerOperationFailed,
+                                                                          TransformerException {
         List<Type> types;
 
         types = context.getXSDHelper().define(DOM.domToString(compositeSchema.getDocNode()));
@@ -310,47 +316,46 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         return types;
     }
 
-    private void handleProperty(HelperContext helperContext,
-                                final SDOParsedXmlElement parent, final DataObject dataObject,
-                                final Property property) {
+    private void handleProperty(HelperContext helperContext, final SDOParsedXmlElement parent,
+                                final DataObject dataObject, final Property property) {
         if (!(property.isContainment() && !property.getType().isDataType())) {
 
-                handleLeafElement(helperContext, parent, dataObject, property);
+            handleLeafElement(helperContext, parent, dataObject, property);
 
             return;
 
         }
 
-            List<DataObject> childObjects;
-            if (dataObject.isSet(property)) {
-                childObjects = new ArrayList<DataObject>(1);
-                if (property.isMany()) {
-                    List<DataObject> list = dataObject.getList(property);
-                    if (list != null) {
-                        for (Iterator<DataObject> i = list.iterator(); i.hasNext(); ) {
-                            childObjects.add((DataObject) i.next());
-                        }
+        List<DataObject> childObjects;
+        if (dataObject.isSet(property)) {
+            childObjects = new ArrayList<DataObject>(1);
+            if (property.isMany()) {
+                List<DataObject> list = dataObject.getList(property);
+                if (list != null) {
+                    for (Iterator<DataObject> i = list.iterator(); i.hasNext(); ) {
+                        childObjects.add((DataObject) i.next());
                     }
-                } else {
-                    childObjects.add(dataObject.getDataObject(property));
                 }
             } else {
-                // if we are traversing hierarchy without an xml data instance
-                // we create an empty placeholder
-                childObjects = new ArrayList<DataObject>(1);
-                if (!property.getType().isAbstract()) {
-                    childObjects.add(dataObject.createDataObject(property));
-                }
-                //TODO Should we add in implementing type? How would we identify that?
+                childObjects.add(dataObject.getDataObject(property));
             }
+        } else {
+            // if we are traversing hierarchy without an xml data instance
+            // we create an empty placeholder
+            childObjects = new ArrayList<DataObject>(1);
+            if (!property.getType().isAbstract()) {
+                childObjects.add(dataObject.createDataObject(property));
+            }
+            //TODO Should we add in implementing type? How would we identify that?
+        }
 
-            for (DataObject childObject : childObjects) {
-                Type type = property.getType();
-                List<Property> containedProps = type.getProperties();
+        for (DataObject childObject : childObjects) {
+            Type type = property.getType();
+            List<Property> containedProps = type.getProperties();
             if ((containedProps.size() > 0)) {
-                    SDOParsedXmlElement child = new SDOParsedXmlElementImpl(this, parent, childObject, property);
-                    child.setLabel(property.getName());
-                    parent.add(child);
+                SDOParsedXmlElement child = new SDOParsedXmlElementImpl(this, parent, childObject, property);
+                child.setLabel(property.getName());
+                parent.add(child);
                 int i = 0;
                 for (Property childProperty : containedProps) {
                     i++;
@@ -361,8 +366,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                         continue;
 
                     }
-                            handleProperty(helperContext, child, childObject, childProperty);
-                        }
+                    handleProperty(helperContext, child, childObject, childProperty);
+                }
             } else {
                 handleLeafElement2(helperContext, parent, dataObject, property, childObject);
             }
@@ -371,67 +376,71 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     private void handleLeafElement2(HelperContext helperContext, SDOParsedXmlElement parent, DataObject dataObject,
                                     Property property, DataObject childObject) {
-                    // Leaf xml element
-                    SDOParsedXmlElement leafRoot = null;
-                    Object value = null;
-                    int sequenceIndex = -1;
-                    if (dataObject.isSet(property)) {
-                        if (property.getType().isSequenced()) {
-                            if (helperContext.getXSDHelper().isMixed(property.getType())) {
-                                Sequence seq = childObject.getSequence();
-                                if (seq != null) {
-                                    if (seq.size() > 1) {
-                                        throw new RuntimeException("We have a sequenced with more than one value. What to do? Container property = "
-                                                + property.getName());
-                                    }
-                                    for (int i = 0; i < seq.size(); i++) {
+        // Leaf xml element
+        SDOParsedXmlElement leafRoot = null;
+        Object value = null;
+        int sequenceIndex = -1;
+        if (dataObject.isSet(property)) {
+            if (property.getType().isSequenced()) {
+                if (helperContext.getXSDHelper().isMixed(property.getType())) {
+                    Sequence seq = childObject.getSequence();
+                    if (seq != null) {
+                        if (seq.size() > 1) {
+                            throw new RuntimeException(
+                                    "We have a sequenced with more than one value. What to do? Container property = " + property
+                                            .getName());
+                        }
+                        for (int i = 0; i < seq.size(); i++) {
 
-                                        Property p = seq.getProperty(i);
-                                        if (p == null) {
-                                            value = seq.getValue(i);
-                                            sequenceIndex = i;
-                                        } else {
-                                            throw new RuntimeException("We have a sequenced dataobject with internal properties. What to do? Container property = "
-                                                    + property.getName() + ". Internal property = " + p.getName() + ". Value = " + seq.getValue(i));
+                            Property p = seq.getProperty(i);
+                            if (p == null) {
+                                value = seq.getValue(i);
+                                sequenceIndex = i;
+                            } else {
+                                throw new RuntimeException(
+                                        "We have a sequenced dataobject with internal properties. What to do? Container property = " + property
+                                                .getName() + ". Internal property = " + p.getName() + ". Value = " + seq
+                                                .getValue(
+                                                        i));
 
-                                        }
-                                    }
-                                }
                             }
-                        } else {
-                            value = dataObject.get(property);
                         }
                     }
-                    leafRoot = generateLeaf(helperContext, parent, childObject, property, value, sequenceIndex);
-                    parent.add(leafRoot);
                 }
+            } else {
+                value = dataObject.get(property);
+            }
+        }
+        leafRoot = generateLeaf(helperContext, parent, childObject, property, value, sequenceIndex);
+        parent.add(leafRoot);
+    }
 
     private void handleLeafElement(HelperContext helperContext, SDOParsedXmlElement parent, DataObject dataObject,
                                    Property property) {
-                // Leaf xml element
-                SDOParsedXmlElement leafRoot = null;
-                Object value = null;
-                if (property.isMany()) {
-                    if (dataObject.isSet(property)) {
-                        List values = dataObject.getList(property);
-                        for (int v = 0, count = values.size(); v < count; v++) {
-                            value = values.get(v);
-                            leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, v);
-                            parent.add(leafRoot);
-                        }
-                    } else {
-                        leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, 0);
-                        parent.add(leafRoot);
-                    }
-                } else {
-                    if (dataObject.isSet(property)) {
-                        value = dataObject.get(property);
-
-                    }
-                    leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, -1);
+        // Leaf xml element
+        SDOParsedXmlElement leafRoot = null;
+        Object value = null;
+        if (property.isMany()) {
+            if (dataObject.isSet(property)) {
+                List values = dataObject.getList(property);
+                for (int v = 0, count = values.size(); v < count; v++) {
+                    value = values.get(v);
+                    leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, v);
                     parent.add(leafRoot);
                 }
+            } else {
+                leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, 0);
+                parent.add(leafRoot);
             }
+        } else {
+            if (dataObject.isSet(property)) {
+                value = dataObject.get(property);
+
+            }
+            leafRoot = generateLeaf(helperContext, parent, dataObject, property, value, -1);
+            parent.add(leafRoot);
+        }
+    }
 
 
     private boolean isAttribute(HelperContext helperContext, Property childProperty) {
@@ -456,9 +465,9 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         return false;
     }
 
-    private SDOParsedXmlElement generateLeaf(
-            final HelperContext helperContext, SDOParsedXmlElement parent,
-            final DataObject dataObject, final Property property, Object value, int sequenceIndex) {
+    private SDOParsedXmlElement generateLeaf(final HelperContext helperContext, SDOParsedXmlElement parent,
+                                             final DataObject dataObject, final Property property, Object value,
+                                             int sequenceIndex) {
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(this, parent, dataObject, property);
         newLeaf.setValue(value);
         newLeaf.setOriginallySet(value != null);

@@ -1,12 +1,14 @@
 package dk.statsbiblioteket.doms.client.impl.datastreams;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.DatastreamProfile;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
 import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-
-import java.lang.String;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +35,7 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     public InternalDatastreamImpl(DatastreamProfile datastreamProfile, DigitalObject digitalObject,
                                   CentralWebservice api, boolean virtual) {
-        this(datastreamProfile,digitalObject,api);
+        this(datastreamProfile, digitalObject, api);
         this.virtual = virtual;
     }
 
@@ -45,10 +47,10 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     @Override
     public synchronized String getContents() throws ServerOperationFailed {
-        if (contents != null){
+        if (contents != null) {
             return contents;
         }
-        if (!isVirtual()){
+        if (!isVirtual()) {
             contents = super.getContents();
             originalContents = contents;
             return contents;
@@ -58,19 +60,19 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     @Override
     public void preSave() throws ServerOperationFailed, XMLParseException {
-        if (hasBeenSDOparsed()){
+        if (hasBeenSDOparsed()) {
 
             getSDOParsedDocument().saveToDatastream();
 
         }
-        if (contents == null || (!isVirtual() && originalContents == null)){
+        if (contents == null || (!isVirtual() && originalContents == null)) {
             return;
         }
-        if (contents.equals(originalContents)){
+        if (contents.equals(originalContents)) {
             return;
         }
         try {
-            api.modifyDatastream(getDigitalObject().getPid(),getId(),contents,"Save from GUI");
+            api.modifyDatastream(getDigitalObject().getPid(), getId(), contents, "Save from GUI");
             setVirtual(false);
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);
@@ -89,14 +91,14 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     @Override
     public void undoSave() throws ServerOperationFailed {
-        if (contents == null || originalContents == null){
+        if (contents == null || originalContents == null) {
             return;
         }
-        if (contents.equals(originalContents)){
+        if (contents.equals(originalContents)) {
             return;
         }
         try {
-            api.modifyDatastream(getDigitalObject().getPid(),getId(),originalContents,"Save from GUI");
+            api.modifyDatastream(getDigitalObject().getPid(), getId(), originalContents, "Save from GUI");
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);
         } catch (InvalidResourceException e) {
@@ -117,6 +119,6 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     @Override
     public void create() throws XMLParseException, ServerOperationFailed {
-       preSave();
+        preSave();
     }
 }

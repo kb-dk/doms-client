@@ -15,82 +15,84 @@ import java.io.InputStream;
 
 public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityResolver {
 
-	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+    static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+    static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 
-	private Node docNode;
-	private Document document;
-	
-	
+    private Node docNode;
+    private Document document;
 
-	public XmlSchemaWithResolver() {
-		document = null;
-		docNode = null;
-	}
 
-	public Node getDocNode() {		
-		return docNode;
-	}
-	
-	public NodeList getElementsByTagName(String tagName) {
-		return document.getElementsByTagName(tagName);
-	}
+    public XmlSchemaWithResolver() {
+        document = null;
+        docNode = null;
+    }
 
-	public Node getNodeById(String elementId) {
-		if (document != null) {
-			return (Node) document.getElementById(elementId);
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * This is used to parse a schema embedded in a foxml:datastream in a ContentModel.
-	 * @param is
-	 * @return
-	 */
-	public boolean load(InputStream is) throws XMLParseException {
-		boolean success = false;
-		docNode = null;
-		String errMsg = "";
+    public Node getDocNode() {
+        return docNode;
+    }
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
+    public NodeList getElementsByTagName(String tagName) {
+        return document.getElementsByTagName(tagName);
+    }
 
-		try {
+    public Node getNodeById(String elementId) {
+        if (document != null) {
+            return (Node) document.getElementById(elementId);
+        } else {
+            return null;
+        }
+    }
 
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			builder.setErrorHandler(this);
-			builder.setEntityResolver(this);
+    /**
+     * This is used to parse a schema embedded in a foxml:datastream in a ContentModel.
+     *
+     * @param is
+     *
+     * @return
+     */
+    public boolean load(InputStream is) throws XMLParseException {
+        boolean success = false;
+        docNode = null;
+        String errMsg = "";
 
-			document = null;
-			try {
-				
-				document = builder.parse(new InputSource(is));
-				success = true;
-			} catch (Exception e) {
-				throw new XMLParseException("Parse failed in XMLDocument. "
-						+ e.getMessage());
-			}
-			docNode = document.getDocumentElement();
-			
-			
-		} catch (ParserConfigurationException spe) {
-			spe.printStackTrace();
-			errMsg += "ParserConfigurationException";
-			errMsg += "Exception message: " + spe.toString() ;
-			throw new XMLParseException(errMsg);
-		} 
-		return success;
-	}
-	/*
-	/**
-	 * This Load method expects a complete XML document.
-	 * @param docPath
-	 * @return
-	 * @throws XMLWriteException
-	 *//*
-	public boolean Load(String docPath) throws XMLWriteException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+
+        try {
+
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setErrorHandler(this);
+            builder.setEntityResolver(this);
+
+            document = null;
+            try {
+
+                document = builder.parse(new InputSource(is));
+                success = true;
+            } catch (Exception e) {
+                throw new XMLParseException(
+                        "Parse failed in XMLDocument. " + e.getMessage());
+            }
+            docNode = document.getDocumentElement();
+
+
+        } catch (ParserConfigurationException spe) {
+            spe.printStackTrace();
+            errMsg += "ParserConfigurationException";
+            errMsg += "Exception message: " + spe.toString();
+            throw new XMLParseException(errMsg);
+        }
+        return success;
+    }
+
+    /*
+    /**
+     * This Load method expects a complete XML document.
+     * @param docPath
+     * @return
+     * @throws XMLWriteException
+     *//*
+    public boolean Load(String docPath) throws XMLWriteException {
 		boolean success = false;
 		docNode = null;
 		String errMsg = "";
@@ -165,12 +167,12 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 		return success;
 	}
 */
-	public InputSource resolveEntity(String publicID, String systemID) {
+    public InputSource resolveEntity(String publicID, String systemID) {
 		/*System.out.println("resolveEntity is called. publicID = " + publicID
 				+ ". systemID= " + systemID);
 				*/
 
         //TODO this must be able to resolve the schema locations used in Doms
-		return null;
-	}
+        return null;
+    }
 }

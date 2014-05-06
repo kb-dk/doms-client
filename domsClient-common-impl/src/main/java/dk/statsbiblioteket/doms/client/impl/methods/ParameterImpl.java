@@ -24,7 +24,8 @@ public class ParameterImpl implements Parameter {
 
     private String config;
 
-    public ParameterImpl(String name, ParameterType type, String value, boolean required, boolean repeatable, String config) {
+    public ParameterImpl(String name, ParameterType type, String value, boolean required, boolean repeatable,
+                         String config) {
         this.name = name;
         this.type = type;
         this.value = value;
@@ -45,6 +46,10 @@ public class ParameterImpl implements Parameter {
         return value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public boolean isRequired() {
         return required;
     }
@@ -57,27 +62,39 @@ public class ParameterImpl implements Parameter {
         return config;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    protected Parameter clone(){
-        return new ParameterImpl(name,type,value,required,repeatable,config);
+    protected Parameter clone() {
+        return new ParameterImpl(name, type, value, required, repeatable, config);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ParameterImpl)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ParameterImpl)) {
+            return false;
+        }
 
         ParameterImpl parameter = (ParameterImpl) o;
 
-        if (repeatable != parameter.repeatable) return false;
-        if (required != parameter.required) return false;
-        if (config != null ? !config.equals(parameter.config) : parameter.config != null) return false;
-        if (name != null ? !name.equals(parameter.name) : parameter.name != null) return false;
-        if (type != parameter.type) return false;
-        if (value != null ? !value.equals(parameter.value) : parameter.value != null) return false;
+        if (repeatable != parameter.repeatable) {
+            return false;
+        }
+        if (required != parameter.required) {
+            return false;
+        }
+        if (config != null ? !config.equals(parameter.config) : parameter.config != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(parameter.name) : parameter.name != null) {
+            return false;
+        }
+        if (type != parameter.type) {
+            return false;
+        }
+        if (value != null ? !value.equals(parameter.value) : parameter.value != null) {
+            return false;
+        }
 
         return true;
     }
@@ -96,12 +113,12 @@ public class ParameterImpl implements Parameter {
     @Override
     public String toString() {
         return "ParameterImpl{" +
-                "name='" + name + '\'' +
-                ", type=" + type +
-                ", value='" + value + '\'' +
-                ", required=" + required +
-                ", repeatable=" + repeatable +
-                ", config='" + config + '\'' +
-                '}';
+               "name='" + name + '\'' +
+               ", type=" + type +
+               ", value='" + value + '\'' +
+               ", required=" + required +
+               ", repeatable=" + repeatable +
+               ", config='" + config + '\'' +
+               '}';
     }
 }

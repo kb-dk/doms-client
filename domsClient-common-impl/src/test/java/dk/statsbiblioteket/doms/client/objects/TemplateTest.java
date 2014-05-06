@@ -18,7 +18,7 @@ import static org.junit.Assert.fail;
  * Time: 11:10 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TemplateTest extends TestBase{
+public class TemplateTest extends TestBase {
 
     public TemplateTest() throws MalformedURLException {
         super();

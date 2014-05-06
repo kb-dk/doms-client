@@ -7,7 +7,7 @@ import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 
-public abstract class SaveableDatastreamImpl extends AbstractDatastream{
+public abstract class SaveableDatastreamImpl extends AbstractDatastream {
 
 
     private CentralWebservice api;
@@ -25,7 +25,7 @@ public abstract class SaveableDatastreamImpl extends AbstractDatastream{
     public abstract void undoSave() throws ServerOperationFailed;
 
 
-    public  void markAsDeleted(){
+    public void markAsDeleted() {
         //TODO
     }
 

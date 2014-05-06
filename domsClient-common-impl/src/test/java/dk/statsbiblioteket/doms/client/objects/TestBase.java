@@ -25,16 +25,14 @@ import java.util.Map;
  */
 public class TestBase {
 
+    public static final String victimProgram = "uuid:068e1e5f-8cdb-4389-9a9d-0bc116d370f2";
+    public static final String victimShard = "uuid:9cd7763a-e95a-45b6-af2b-c87ae28e10f8";
     private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
-            "http://central.doms.statsbiblioteket.dk/",
-            "CentralWebserviceService");
+            "http://central.doms.statsbiblioteket.dk/", "CentralWebserviceService");
+    public DigitalObjectFactory factory;
     private URL domsWSAPIEndpoint;
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
-    public DigitalObjectFactory factory;
-    public static final String victimProgram = "uuid:068e1e5f-8cdb-4389-9a9d-0bc116d370f2";
-
-    public static  final String victimShard = "uuid:9cd7763a-e95a-45b6-af2b-c87ae28e10f8";
 
 
     public TestBase() throws MalformedURLException {
@@ -45,11 +43,10 @@ public class TestBase {
     @org.junit.Before
     public void setUp() throws Exception {
 
-        CentralWebservice domsAPI = new CentralWebserviceService(domsWSAPIEndpoint,
-                                                                 CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
+        CentralWebservice domsAPI = new CentralWebserviceService(
+                domsWSAPIEndpoint, CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
-        Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI)
-                .getRequestContext();
+        Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI).getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
         domsAPILogin.put(BindingProvider.PASSWORD_PROPERTY, password);
         factory = new DigitalObjectFactoryImpl(domsAPI);
@@ -59,18 +56,19 @@ public class TestBase {
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
     }
+
     @Test
     @Ignore
-    public void emptyTest(){
+    public void emptyTest() {
 
     }
 
 
-    protected void emptymize(SDOParsedXmlElement element    ){
+    protected void emptymize(SDOParsedXmlElement element) {
         ArrayList<SDOParsedXmlElement> children = element.getChildren();
         for (SDOParsedXmlElement child : children) {
-            if (child.isLeaf()){
-                if (child.getValue() == null){
+            if (child.isLeaf()) {
+                if (child.getValue() == null) {
                     child.setValue("");
                 }
 
@@ -81,58 +79,57 @@ public class TestBase {
 
     }
 
-    protected void parseDoc(SDOParsedXmlDocument doc){
-        parseTree(doc.getRootSDOParsedXmlElement(),"");
+    protected void parseDoc(SDOParsedXmlDocument doc) {
+        parseTree(doc.getRootSDOParsedXmlElement(), "");
     }
 
 
     protected void parseTree(SDOParsedXmlElement doc, String indryk) {
 
-        System.out.println(indryk + "'"+doc.getLabel()+"'");
-        indryk = indryk+"   ";
+        System.out.println(indryk + "'" + doc.getLabel() + "'");
+        indryk = indryk + "   ";
         ArrayList<SDOParsedXmlElement> children = doc.getChildren();
         for (SDOParsedXmlElement child : children) {
-            if (child.isLeaf()){
+            if (child.isLeaf()) {
 
-                System.out.print(indryk+"'"+child.getLabel()+"': '"+child.getValue()+"'");
-                if (child.getProperty().isMany()){
-                    if (child.getAddable()){
+                System.out.print(indryk + "'" + child.getLabel() + "': '" + child.getValue() + "'");
+                if (child.getProperty().isMany()) {
+                    if (child.getAddable()) {
                         System.out.print(" (+)");
                     }
-                    if (child.getRemovable()){
+                    if (child.getRemovable()) {
                         System.out.print("(-)");
                     }
                 }
-                System.out.print("  type="+child.getGuiTypeAsString());
+                System.out.print("  type=" + child.getGuiTypeAsString());
                 System.out.println();
-
 
 
             } else {
 
 
-                System.out.print(indryk + "'"+child.getLabel()+"'");
-                if (child.getProperty().isMany()){
-                    if (child.getAddable()){
+                System.out.print(indryk + "'" + child.getLabel() + "'");
+                if (child.getProperty().isMany()) {
+                    if (child.getAddable()) {
                         System.out.print(" (+)");
                     }
-                    if (child.getRemovable()){
+                    if (child.getRemovable()) {
                         System.out.print("(-)");
                     }
                 }
                 System.out.println();
 
-                parseTree(child, indryk+"    ");
+                parseTree(child, indryk + "    ");
             }
         }
     }
 
     private Object getCrapValue(SDOParsedXmlElement child) {
         ArrayList<SDOParsedXmlElement> children = child.getChildren();
-        if (children != null && children.size() > 0){
+        if (children != null && children.size() > 0) {
             SDOParsedXmlElement firstChild = children.get(0);
-            if (firstChild != null && firstChild.getChildren().size() == 0){
-                if (firstChild.getLabel().equals("Value")){
+            if (firstChild != null && firstChild.getChildren().size() == 0) {
+                if (firstChild.getLabel().equals("Value")) {
                     return firstChild.getValue();
                 }
             }
@@ -142,10 +139,10 @@ public class TestBase {
 
     private boolean isValueCrap(SDOParsedXmlElement child) {
         ArrayList<SDOParsedXmlElement> children = child.getChildren();
-        if (children != null && children.size() > 0){
+        if (children != null && children.size() > 0) {
             SDOParsedXmlElement firstChild = children.get(0);
-            if (firstChild != null && firstChild.getChildren().size() == 0){
-                if (firstChild.getLabel().equals("Value")){
+            if (firstChild != null && firstChild.getChildren().size() == 0) {
+                if (firstChild.getLabel().equals("Value")) {
                     return true;
                 }
             }

@@ -12,23 +12,20 @@ import java.util.List;
 
 /**
  * Utility class that is used to remove empty DataObjects from a XMLDocument.
- *
  */
 public class SdoDataObjectUtils {
 
     private ArrayList<DataObject> dataObjectsToDelete;
 
-    public SdoDataObjectUtils()
-    {
+    public SdoDataObjectUtils() {
         dataObjectsToDelete = new ArrayList<DataObject>();
     }
 
     /**
      * Performs the actual deletion of the DataObjects
      */
-    public void doDelete()
-    {
-        for (DataObject dob: dataObjectsToDelete) {
+    public void doDelete() {
+        for (DataObject dob : dataObjectsToDelete) {
             dob.delete();
         }
     }
@@ -38,8 +35,7 @@ public class SdoDataObjectUtils {
      *
      * @param obj the object to delete
      */
-    private void addObjectToDelete(DataObject obj)
-    {
+    private void addObjectToDelete(DataObject obj) {
         for (DataObject curObj : dataObjectsToDelete) {
             if (curObj.equals(obj)) {
                 return;
@@ -49,48 +45,50 @@ public class SdoDataObjectUtils {
     }
 
     /**
-     * Traverses the hierarchy of DataObjects that can be reached from dataObject. If a data object is empty it is deleted.
+     * Traverses the hierarchy of DataObjects that can be reached from dataObject. If a data object is empty it is
+     * deleted.
+     *
      * @param helperContext
      * @param parent
      * @param dataObject
      * @param parentProperty
+     *
      * @return true if dataObject is empty.
      */
-    public boolean  handleDataObject(HelperContext helperContext, final DataObject parent, final DataObject dataObject, final Property parentProperty)
-    {
+    public boolean handleDataObject(HelperContext helperContext, final DataObject parent, final DataObject dataObject,
+                                    final Property parentProperty) {
         boolean isEmpty = true;
-        boolean temp= false;
+        boolean temp = false;
 
-        if (dataObject.getType().isSequenced())
-        {
+        if (dataObject.getType().isSequenced()) {
             XSDHelper xsdHelper = helperContext.getXSDHelper();
 
             Sequence seq = dataObject.getSequence();
 
             for (int i = 0; i < seq.size(); i++) {
                 Property p = seq.getProperty(i);
-                if (p == null)
-                {
-                    if (seq.getValue(i)==null) {
+                if (p == null) {
+                    if (seq.getValue(i) == null) {
                         temp = true;
-                    }
-                    else {
-                        temp = (seq.getValue(i).toString().length()==0);
+                    } else {
+                        temp = (seq.getValue(i).toString().length() == 0);
                     }
                     if (temp) {
                         addObjectToDelete(dataObject);
                     }
                     isEmpty = (isEmpty && temp);
-                }
-                else if(!xsdHelper.isAttribute(p))
-                {
-                    temp = handlePropertyValuePair(helperContext, parent, dataObject, parentProperty, p, seq.getValue(i));
+                } else if (!xsdHelper.isAttribute(p)) {
+                    temp = handlePropertyValuePair(
+                            helperContext,
+                            parent,
+                            dataObject,
+                            parentProperty,
+                            p,
+                            seq.getValue(i));
                     isEmpty = (isEmpty && temp);
                 }
             }
-        }
-        else
-        {
+        } else {
             for (int i = 0; i < dataObject.getInstanceProperties().size(); i++) {
 
                 Property p = (Property) dataObject.getInstanceProperties().get(i);
@@ -101,9 +99,8 @@ public class SdoDataObjectUtils {
                 }
             }
         }
-        if (isEmpty)
-        {
-            if (parent!=null) {
+        if (isEmpty) {
+            if (parent != null) {
                 addObjectToDelete(dataObject);
             }
         }
@@ -111,8 +108,7 @@ public class SdoDataObjectUtils {
     }
 
 
-    private boolean handlePropertyValuePair(HelperContext helperContext,
-                                            final DataObject parent, DataObject dataObject,
+    private boolean handlePropertyValuePair(HelperContext helperContext, final DataObject parent, DataObject dataObject,
                                             Property parentProperty, Property p, Object value) {
         boolean isEmpty = false;
 
@@ -120,8 +116,7 @@ public class SdoDataObjectUtils {
             isEmpty = handleSimpleValue(helperContext, parent, dataObject, p, value);
         } else {
             if (p.isContainment()) {
-                isEmpty = handleDataObject(helperContext, dataObject,
-                                           (DataObject) value, p);
+                isEmpty = handleDataObject(helperContext, dataObject, (DataObject) value, p);
                 if (isEmpty) {
                     addObjectToDelete((DataObject) value);
                 }
@@ -131,11 +126,9 @@ public class SdoDataObjectUtils {
     }
 
     private boolean handleValueOfProperty(HelperContext helperContext, final DataObject parent, DataObject dataObject,
-                                          Property p)
-    {
+                                          Property p) {
         boolean isEmpty = false;
-        if (dataObject.isSet(p))
-        {
+        if (dataObject.isSet(p)) {
             if (p.getType().isDataType()) {
                 if (p.isMany()) {
                     isEmpty = handleSimpleValues(helperContext, parent, dataObject, p, dataObject.getList(p));
@@ -151,21 +144,21 @@ public class SdoDataObjectUtils {
                     }
                 }
             }
-        }
-        else {
+        } else {
             isEmpty = true;
         }
         return isEmpty;
     }
 
-    private boolean handleDataObjects(HelperContext helperContext, final DataObject parent, List list, final Property parentProperty) {
+    private boolean handleDataObjects(HelperContext helperContext, final DataObject parent, List list,
+                                      final Property parentProperty) {
         /*
            * "Traversing a list of DataObjects which represent the values of a
            * multi-valued containment Property"
            */
         boolean isEmpty = true;
         boolean temp;
-        for (Iterator i = list.iterator(); i.hasNext();) {
+        for (Iterator i = list.iterator(); i.hasNext(); ) {
             temp = handleDataObject(helperContext, parent, (DataObject) i.next(), parentProperty);
             isEmpty = (isEmpty && temp);
         }
@@ -176,11 +169,11 @@ public class SdoDataObjectUtils {
     private boolean handleSimpleValue(HelperContext helperContext, final DataObject parent, DataObject dataObject,
                                       Property property, Object value) {
         boolean isEmpty = true;
-        if (value!=null) {
-            if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER)){
+        if (value != null) {
+            if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER)) {
                 isEmpty = false;
-                dataObject.set(property,"");
-            } else if (!value.toString().isEmpty()){
+                dataObject.set(property, "");
+            } else if (!value.toString().isEmpty()) {
                 isEmpty = false;
             }
         }
@@ -188,11 +181,10 @@ public class SdoDataObjectUtils {
     }
 
     private boolean handleSimpleValues(HelperContext helperContext, final DataObject parent, DataObject dataObject,
-                                       Property property, List values)
-    {
+                                       Property property, List values) {
         boolean isEmpty = true;
         boolean temp;
-        for (Iterator i = values.iterator(); i.hasNext();) {
+        for (Iterator i = values.iterator(); i.hasNext(); ) {
             temp = handleSimpleValue(helperContext, parent, dataObject, property, i.next());
             isEmpty = (isEmpty && temp);
         }

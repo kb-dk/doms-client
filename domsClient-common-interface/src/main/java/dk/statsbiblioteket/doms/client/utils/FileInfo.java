@@ -80,7 +80,7 @@ public class FileInfo {
      * <code>FileInfo</code> object.
      *
      * @return The MD5 checksum of the file described by this
-     *         <code>FileInfo</code> object.
+     * <code>FileInfo</code> object.
      */
     public String getMd5Sum() {
         return md5Sum;
@@ -91,7 +91,7 @@ public class FileInfo {
      * described by this <code>FileInfo</code> object.
      *
      * @return The file format <code>URI</code> for the file described by this
-     *         <code>FileInfo</code>.
+     * <code>FileInfo</code>.
      */
     public URI getFileFormatURI() {
         return fileFormatURI;
@@ -102,8 +102,6 @@ public class FileInfo {
      */
     @Override
     public String toString() {
-        return "FileInfo [fileFormatURI=" + fileFormatURI + ", fileLocation="
-               + fileLocation + ", fileName=" + fileName + ", md5Sum="
-               + md5Sum + "]";
+        return "FileInfo [fileFormatURI=" + fileFormatURI + ", fileLocation=" + fileLocation + ", fileName=" + fileName + ", md5Sum=" + md5Sum + "]";
     }
 }

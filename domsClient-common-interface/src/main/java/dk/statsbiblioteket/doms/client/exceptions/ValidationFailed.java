@@ -13,6 +13,6 @@ public class ValidationFailed extends ServerOperationFailed {
     }
 
     public ValidationFailed(String message, Exception e) {
-        super(message,e);
+        super(message, e);
     }
 }

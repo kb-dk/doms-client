@@ -11,7 +11,10 @@ import org.junit.Test;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +23,7 @@ import static junit.framework.Assert.*;
  * Time: 4:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RelationsTest extends TestBase{
+public class RelationsTest extends TestBase {
 
     public RelationsTest() throws MalformedURLException {
         super();
@@ -43,7 +46,7 @@ public class RelationsTest extends TestBase{
         assertTrue(cmdoms instanceof ContentModelObject);
         List<ObjectRelation> inverseRelations = cmdoms.getInverseRelations();
         for (ObjectRelation inverseRelation : inverseRelations) {
-            assertEquals(inverseRelation.getObjectPid(),cmdoms.getPid());
+            assertEquals(inverseRelation.getObjectPid(), cmdoms.getPid());
             assertNotNull(inverseRelation.getSubject());
         }
     }
@@ -55,14 +58,16 @@ public class RelationsTest extends TestBase{
         object.setState(Constants.FedoraState.Inactive); //To open it up for changes
         object.save();
 
-        LiteralRelation newRel = object.addLiteralRelation("http://domclient.unittests/#testRelationPredicateLiteral", "literalValue");
+        LiteralRelation newRel = object.addLiteralRelation(
+                "http://domclient.unittests/#testRelationPredicateLiteral",
+                "literalValue");
         object.save();
 
         setUp();
         object = factory.getDigitalObject(victimProgram);
         boolean present = false;
         for (Relation relation : object.getRelations()) {
-            if (relation.equals(newRel)){
+            if (relation.equals(newRel)) {
                 present = true;
                 newRel = (LiteralRelation) relation;
                 break;
@@ -72,7 +77,7 @@ public class RelationsTest extends TestBase{
         newRel.remove();
         present = false;
         for (Relation relation : object.getRelations()) {
-            if (relation.equals(newRel)){
+            if (relation.equals(newRel)) {
                 present = true;
                 fail("Relation should have been removed");
             }
@@ -82,7 +87,7 @@ public class RelationsTest extends TestBase{
         setUp();
         object = factory.getDigitalObject(victimProgram);
         for (Relation relation : object.getRelations()) {
-            if (relation.equals(newRel)){
+            if (relation.equals(newRel)) {
                 present = true;
                 fail("Relation should have been removed");
             }
@@ -94,47 +99,48 @@ public class RelationsTest extends TestBase{
     }
 
     @Test
-      public void testAddedRelationObject() throws Exception {
-          DigitalObject object = factory.getDigitalObject(victimProgram);
+    public void testAddedRelationObject() throws Exception {
+        DigitalObject object = factory.getDigitalObject(victimProgram);
 
-          object.setState(Constants.FedoraState.Inactive); //To open it up for changes
-          object.save();
+        object.setState(Constants.FedoraState.Inactive); //To open it up for changes
+        object.save();
 
-          Relation newRel = object.addObjectRelation("http://domclient.unittests/#testRelationPredicate", object.getType().get(0));
-          object.save();
+        Relation newRel = object.addObjectRelation(
+                "http://domclient.unittests/#testRelationPredicate",
+                object.getType().get(0));
+        object.save();
 
-          setUp();
-          object = factory.getDigitalObject(victimProgram);
-          boolean present = false;
-          for (Relation relation : object.getRelations()) {
-              if (relation.equals(newRel)){
-                  present = true;
-                  newRel = relation;
-                  break;
-              }
-          }
-          Assert.assertTrue(present);
-          newRel.remove();
-          present = false;
-          for (Relation relation : object.getRelations()) {
-              if (relation.equals(newRel)){
-                  present = true;
-                  fail("Relation should have been removed");
-              }
-          }
-          object.save();
+        setUp();
+        object = factory.getDigitalObject(victimProgram);
+        boolean present = false;
+        for (Relation relation : object.getRelations()) {
+            if (relation.equals(newRel)) {
+                present = true;
+                newRel = relation;
+                break;
+            }
+        }
+        Assert.assertTrue(present);
+        newRel.remove();
+        present = false;
+        for (Relation relation : object.getRelations()) {
+            if (relation.equals(newRel)) {
+                present = true;
+                fail("Relation should have been removed");
+            }
+        }
+        object.save();
 
-          setUp();
-          object = factory.getDigitalObject(victimProgram);
-          for (Relation relation : object.getRelations()) {
-              if (relation.equals(newRel)){
-                  present = true;
-                  fail("Relation should have been removed");
-              }
-          }
+        setUp();
+        object = factory.getDigitalObject(victimProgram);
+        for (Relation relation : object.getRelations()) {
+            if (relation.equals(newRel)) {
+                present = true;
+                fail("Relation should have been removed");
+            }
+        }
 
 
-
-      }
+    }
 
 }

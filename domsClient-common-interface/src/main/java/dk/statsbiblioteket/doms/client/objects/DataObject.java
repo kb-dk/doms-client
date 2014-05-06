@@ -1,9 +1,6 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.links.LinkPattern;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

@@ -27,7 +27,7 @@ import static org.junit.Assert.fail;
  * Time: 3:05 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SdoTest extends TestBase{
+public class SdoTest extends TestBase {
 
 
     public SdoTest() throws MalformedURLException {
@@ -35,8 +35,7 @@ public class SdoTest extends TestBase{
     }
 
     @Test
-    public void testSdoPBCore()
-            throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
+    public void testSdoPBCore() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         SDOParsedXmlDocument doc = program.getDatastream("PBCORE").getSDOParsedDocument();
 
@@ -174,7 +173,10 @@ public class SdoTest extends TestBase{
             @Override
             public String getContents() throws ServerOperationFailed {
                 try {
-                    return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xml"));
+                    return Strings.flush(
+                            Thread.currentThread()
+                                  .getContextClassLoader()
+                                  .getResourceAsStream("MODS.xml"));
                 } catch (IOException e) {
                     throw new ServerOperationFailed(e);
                 }
@@ -199,17 +201,16 @@ public class SdoTest extends TestBase{
 
 
     @Test
-     public void testDatastreamAdd() throws Exception {
-         DigitalObject program = factory.getDigitalObject(victimProgram);
-         Datastream testStream = program.addInternalDatastream("ANNOTATIONS");
-         parseDoc(testStream.getSDOParsedDocument());
+    public void testDatastreamAdd() throws Exception {
+        DigitalObject program = factory.getDigitalObject(victimProgram);
+        Datastream testStream = program.addInternalDatastream("ANNOTATIONS");
+        parseDoc(testStream.getSDOParsedDocument());
         System.out.println(testStream.getSDOParsedDocument().dumpToString());
-     }
+    }
 
 
     @Test
-    public void testSdoDC()
-            throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
+    public void testSdoDC() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
 
         SDOParsedXmlDocument doc = program.getDatastream("DC").getSDOParsedDocument();
@@ -221,8 +222,7 @@ public class SdoTest extends TestBase{
 
     @Test
     @Ignore("we do not have shards anymore")
-    public void testSdoSHARD()
-            throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
+    public void testSdoSHARD() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimShard);
 
         SDOParsedXmlDocument doc = program.getDatastream("SHARD_METADATA").getSDOParsedDocument();
@@ -234,14 +234,13 @@ public class SdoTest extends TestBase{
 
 
     @Test
-    public void testSdoRitzau()
-            throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
+    public void testSdoRitzau() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         try {
             SDOParsedXmlDocument doc = program.getDatastream("RITZAU_ORIGINAL").getSDOParsedDocument();
             // The ritzau schema is not serializable to SDO and expected to throw an exception.
             fail();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -249,18 +248,15 @@ public class SdoTest extends TestBase{
     }
 
     @Test
-    public void testSdoGallup()
-            throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
+    public void testSdoGallup() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         SDOParsedXmlDocument doc = program.getDatastream("GALLUP_ORIGINAL").getSDOParsedDocument();
         parseDoc(doc);
     }
 
 
-
     @Test
-    public void testSdoRelsExt()
-            throws ServerOperationFailed, NotFoundException, IOException,  XMLParseException {
+    public void testSdoRelsExt() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
 
 
@@ -269,14 +265,12 @@ public class SdoTest extends TestBase{
             //Note: Changes in reflection causes different behaviour in Java 6/7 (NPE or Null document). Both are okay,
             //the RELS-EXT schema is not supported.
             assertNull(doc);
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             //Expected. Current SDO implementation does not support the RELS-EXT schema.
         }
 
 
     }
-
-
 
 
 }

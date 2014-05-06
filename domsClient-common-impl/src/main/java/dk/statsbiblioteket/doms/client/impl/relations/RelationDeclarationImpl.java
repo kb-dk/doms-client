@@ -1,11 +1,11 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.impl.ontology.OWLObjectProperty;
 import dk.statsbiblioteket.doms.client.impl.ontology.OWLRestriction;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 
 import java.util.Collections;
@@ -34,15 +34,14 @@ public class RelationDeclarationImpl implements RelationDeclaration {
     private int min = -1;
 
 
-    public RelationDeclarationImpl(String predicate,
-                                   OWLObjectProperty owlObjectProperty, Set<String> viewAngles,
-                                   Set<String> inverseViewAngles,
-                                   DigitalObjectFactory factory) throws ServerOperationFailed {
+    public RelationDeclarationImpl(String predicate, OWLObjectProperty owlObjectProperty, Set<String> viewAngles,
+                                   Set<String> inverseViewAngles, DigitalObjectFactory factory) throws
+                                                                                                ServerOperationFailed {
         this.predicate = predicate;
-        if (viewAngles == null){
+        if (viewAngles == null) {
             viewAngles = new HashSet<String>();
         }
-        if (inverseViewAngles == null){
+        if (inverseViewAngles == null) {
             inverseViewAngles = new HashSet<String>();
         }
         this.viewAngles = viewAngles;
@@ -52,25 +51,25 @@ public class RelationDeclarationImpl implements RelationDeclaration {
         firstLevelModels = new HashSet<ContentModelObject>();
         for (OWLRestriction owlRestriction : owlObjectProperty.getOwlRestrictions()) {
             int tmp = owlRestriction.getMinCardinality();
-            if (tmp > min){
+            if (tmp > min) {
                 min = tmp;
             }
             tmp = owlRestriction.getMaxCardinality();
-            if (tmp > 0 && tmp < max){
+            if (tmp > 0 && tmp < max) {
                 max = tmp;
             }
 
             tmp = owlRestriction.getCardinality();
-            if (tmp >= 0){
-                if (exact < 0){
+            if (tmp >= 0) {
+                if (exact < 0) {
                     exact = tmp;
                 } else {
                     //TODO we have a problem, cannot be satisfied
                 }
             }
             String allValuesFrom = owlRestriction.getAllValuesFrom();
-            if (allValuesFrom != null){
-                allValuesFrom = allValuesFrom.replace("#class","");//Strip class decl
+            if (allValuesFrom != null) {
+                allValuesFrom = allValuesFrom.replace("#class", "");//Strip class decl
                 DigitalObject object = factory.getDigitalObject(allValuesFrom);
                 if (object instanceof ContentModelObject) {
                     ContentModelObject contentModelObject = (ContentModelObject) object;

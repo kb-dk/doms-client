@@ -1,6 +1,14 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.Checksum;
+import dk.statsbiblioteket.doms.central.DatastreamProfile;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.Link;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
+import dk.statsbiblioteket.doms.central.Relation;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
@@ -15,9 +23,9 @@ import dk.statsbiblioteket.doms.client.impl.methods.ParameterImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.LiteralRelationImpl;
 import dk.statsbiblioteket.doms.client.impl.relations.ObjectRelationImpl;
 import dk.statsbiblioteket.doms.client.links.LinkPattern;
-import dk.statsbiblioteket.doms.client.methods.*;
 import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.methods.Parameter;
+import dk.statsbiblioteket.doms.client.methods.ParameterType;
 import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
@@ -26,8 +34,14 @@ import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
-import java.lang.String;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The common functionality of a digital object is implemented here.
@@ -37,31 +51,23 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     protected ObjectProfile profile;
     protected CentralWebservice api;
-
-    private String pid;
     protected DigitalObjectFactory factory;
-
-    private List<ContentModelObject> type;
-
-    private String title;
-    private String titleOriginal;
-
-    private Constants.FedoraState state;
-    private Constants.FedoraState stateOriginal;
-
-    private Date lastModified;
-    private Date created;
-
     protected Set<SaveableDatastreamImpl> deletedDSs, addedDSs;
     protected Set<Datastream> datastreams;
-
-
     protected TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> relations;
+    protected HashSet<Method> dynamicMethods;
+    protected HashSet<Method> staticMethods;
+    private String pid;
+    private List<ContentModelObject> type;
+    private String title;
+    private String titleOriginal;
+    private Constants.FedoraState state;
+    private Constants.FedoraState stateOriginal;
+    private Date lastModified;
+    private Date created;
     private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> removedRelations;
     private TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> addedRelations;
-
     private List<ObjectRelation> inverseRelations;
-
     private boolean cmloaded = false;
     private boolean relsloaded = false;
     private boolean invrelsloaded = false;
@@ -69,15 +75,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     private boolean statePreSaved = false;
     private boolean methodsParsed = false;
     private boolean linksParsed = false;
-    protected HashSet<Method> dynamicMethods;
-    protected HashSet<Method> staticMethods;
     private List<LinkPattern> links;
 
 
-
-    public AbstractDigitalObject(String pid,
-                                 CentralWebservice api,
-                                 DigitalObjectFactory factory) throws ServerOperationFailed{
+    public AbstractDigitalObject(String pid, CentralWebservice api, DigitalObjectFactory factory) throws
+                                                                                                  ServerOperationFailed {
 
         this.pid = pid;
         this.api = api;
@@ -95,10 +97,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     }
 
-    public AbstractDigitalObject(ObjectProfile profile,
-                                 CentralWebservice api,
-                                 DigitalObjectFactory factory) throws ServerOperationFailed {
-        this(profile.getPid(),api,factory);
+    public AbstractDigitalObject(ObjectProfile profile, CentralWebservice api, DigitalObjectFactory factory) throws
+                                                                                                             ServerOperationFailed {
+        this(profile.getPid(), api, factory);
         this.profile = profile;
         loadProfile();
     }
@@ -170,9 +171,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     public Datastream getDatastream(String id) throws ServerOperationFailed, NotFoundException {
         loadProfile();
         for (Datastream datastream : datastreams) {
-            if (datastream.getId().equals(id)) return datastream;
+            if (datastream.getId().equals(id)) {
+                return datastream;
+            }
         }
-        throw new NotFoundException("Datastream not found. Id: "+ id);
+        throw new NotFoundException("Datastream not found. Id: " + id);
     }
 
     @Override
@@ -196,7 +199,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         dsProfile.setChecksum(checksum);
         dsProfile.setMimeType("text/xml");
         //TODO populate values
-        InternalDatastreamImpl newDs = new InternalDatastreamImpl(dsProfile, this, api,true);
+        InternalDatastreamImpl newDs = new InternalDatastreamImpl(dsProfile, this, api, true);
         datastreams.add(newDs);
         addedDSs.add(newDs);
         return newDs;
@@ -217,17 +220,18 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     @Override
     public List<dk.statsbiblioteket.doms.client.relations.Relation> getRelations() throws ServerOperationFailed {
         loadRelations();
-        TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> totalSet =
-                new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>(relations);
+        TreeSet<dk.statsbiblioteket.doms.client.relations.Relation> totalSet
+                = new TreeSet<dk.statsbiblioteket.doms.client.relations.Relation>(relations);
         totalSet.addAll(addedRelations);
         totalSet.removeAll(removedRelations);
         return Collections.unmodifiableList(new ArrayList<dk.statsbiblioteket.doms.client.relations.Relation>(totalSet));
     }
 
     @Override
-    public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) throws ServerOperationFailed {
+    public void removeRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) throws
+                                                                                            ServerOperationFailed {
         loadRelations();
-        if (relation.getSubjectPid().equals(this.getPid())){
+        if (relation.getSubjectPid().equals(this.getPid())) {
             privateRemoveRelation(relation);
         }
     }
@@ -242,16 +246,19 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     public List<ObjectRelation> getInverseRelations(String predicate) throws ServerOperationFailed {
         List<Relation> frelations;
         try {
-            frelations = api.getInverseRelationsWithPredicate(pid,predicate);
+            frelations = api.getInverseRelationsWithPredicate(pid, predicate);
         } catch (Exception e) {
             throw new ServerOperationFailed("Failed to load inverse relations", e);
         }
         List<ObjectRelation> result = new ArrayList<ObjectRelation>();
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
-            if (frelation.getPredicate().equals(predicate)){//TODO remove?
-                result.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
-                                                  frelation.getObject(),
-                                                  factory));
+            if (frelation.getPredicate().equals(predicate)) {//TODO remove?
+                result.add(
+                        new ObjectRelationImpl(
+                                frelation.getSubject(),
+                                frelation.getPredicate(),
+                                frelation.getObject(),
+                                factory));
             }
         }
         return result;
@@ -272,9 +279,19 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             if (frelation.isLiteral()) {
-                relations.add(new LiteralRelationImpl(this.getPid(), frelation.getPredicate(), frelation.getObject(),factory));
+                relations.add(
+                        new LiteralRelationImpl(
+                                this.getPid(),
+                                frelation.getPredicate(),
+                                frelation.getObject(),
+                                factory));
             } else {
-                relations.add(new ObjectRelationImpl(this.getPid(),frelation.getPredicate(),frelation.getObject(), factory));
+                relations.add(
+                        new ObjectRelationImpl(
+                                this.getPid(),
+                                frelation.getPredicate(),
+                                frelation.getObject(),
+                                factory));
             }
         }
     }
@@ -299,12 +316,14 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
 
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
-            inverseRelations.add(new ObjectRelationImpl(frelation.getSubject(), frelation.getPredicate(),
-                                                        frelation.getObject(),
-                                                        factory));
+            inverseRelations.add(
+                    new ObjectRelationImpl(
+                            frelation.getSubject(),
+                            frelation.getPredicate(),
+                            frelation.getObject(),
+                            factory));
         }
     }
-
 
 
     /**
@@ -325,21 +344,24 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 ContentModelObject object = (ContentModelObject) cm_object;
                 type.add(object);
             } else {
-                throw new ServerOperationFailed("Object '" + pid + "' has the content model '" + contentModel +
-                                                "' declared, but this is not a content model");
+                throw new ServerOperationFailed(
+                        "Object '" + pid + "' has the content model '" + contentModel +
+                        "' declared, but this is not a content model");
             }
         }
     }
 
     protected synchronized void loadProfile() throws ServerOperationFailed {
-        if (profileloaded) return;
+        if (profileloaded) {
+            return;
+        }
         profileloaded = true;
 
-        if (profile == null){
+        if (profile == null) {
             try {
                 profile = api.getObjectProfile(pid);
             } catch (Exception e) {
-                throw new ServerOperationFailed("Failed to retrieve Profile",e);
+                throw new ServerOperationFailed("Failed to retrieve Profile", e);
             }
         }
 
@@ -356,7 +378,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     protected void loadDatastreams() throws ServerOperationFailed {
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
-            if (datastreamProfile.isInternal()){
+            if (datastreamProfile.isInternal()) {
                 datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
             } else {
                 datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
@@ -371,15 +393,15 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         for (ContentModelObject contentModelObject : getType()) {
             try {
                 List<String> theseRels = contentModelObject.getRelationsWithViewAngle(viewAngle);
-                if (theseRels!= null){
+                if (theseRels != null) {
                     viewRelationNames.addAll(theseRels);
                 }
-            } catch (ServerOperationFailed e){
+            } catch (ServerOperationFailed e) {
                 //pass quietly
             }
         }
         for (dk.statsbiblioteket.doms.client.relations.Relation rel : getRelations()) {
-            if (viewRelationNames.contains(rel.getPredicate())){
+            if (viewRelationNames.contains(rel.getPredicate())) {
                 if (rel instanceof ObjectRelation) {
                     ObjectRelation objectRelation = (ObjectRelation) rel;
                     children.add(objectRelation.getObject());
@@ -390,10 +412,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-
-
-    private void preSaveDatastreams()
-            throws ServerOperationFailed, XMLParseException {
+    private void preSaveDatastreams() throws ServerOperationFailed, XMLParseException {
         for (SaveableDatastreamImpl deletedDS : deletedDSs) {
             deletedDS.markAsDeleted();
         }
@@ -409,71 +428,67 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-
-
-    private void preSaveState()
-            throws ServerOperationFailed {
-        if (state.equals(stateOriginal)){
+    private void preSaveState() throws ServerOperationFailed {
+        if (state.equals(stateOriginal)) {
             return;
         }
         try {
             List<String> pid_list = new ArrayList<String>(1);
             pid_list.add(pid);
-            switch (state){
+            switch (state) {
                 case Active:
                     api.markPublishedObject(pid_list, "Object '" + pid + "' marked as active");
                     break;
                 case Deleted:
-                    api.deleteObject(pid_list, "Object '"+pid+"' marked as deleted");
+                    api.deleteObject(pid_list, "Object '" + pid + "' marked as deleted");
                     break;
                 case Inactive:
-                    api.markInProgressObject(pid_list, "Object '"+pid+"' marked as inactive");
+                    api.markInProgressObject(pid_list, "Object '" + pid + "' marked as inactive");
             }
             statePreSaved = true;
-        } catch (Exception e){
+        } catch (Exception e) {
             String message = e.getMessage();
-            if (message.contains("dk.statsbiblioteket.doms.ecm.fedoravalidatorhook.ValidationFailedException")){
+            if (message.contains("dk.statsbiblioteket.doms.ecm.fedoravalidatorhook.ValidationFailedException")) {
                 int begin = message.indexOf("<validation");
                 int end = message.indexOf("</validation>");
-                if (end > begin  && begin > 0){
+                if (end > begin && begin > 0) {
                     end += "</validation>".length();
                     String xmlMessage = message.substring(begin, end);
-                    throw new ValidationFailed(xmlMessage,e);
+                    throw new ValidationFailed(xmlMessage, e);
                 }
             }
-            throw new ServerOperationFailed(e.getMessage(),e);
+            throw new ServerOperationFailed(e.getMessage(), e);
         }
 
     }
 
-    private void postSaveState(){
+    private void postSaveState() {
         stateOriginal = state;
         statePreSaved = false;
     }
 
 
-
     private void undoSaveState() throws ServerOperationFailed {
         try {
-            if (statePreSaved){
+            if (statePreSaved) {
                 List<String> pid_list = new ArrayList<String>(1);
                 pid_list.add(pid);
-                switch (stateOriginal){
+                switch (stateOriginal) {
                     case Active:
                         api.markPublishedObject(pid_list, "Object '" + pid + "' marked as active");
                         break;
                     case Deleted:
-                        api.deleteObject(pid_list, "Object '"+pid+"' marked as deleted");
+                        api.deleteObject(pid_list, "Object '" + pid + "' marked as deleted");
                         break;
                     case Inactive:
-                        api.markInProgressObject(pid_list, "Object '"+pid+"' marked as inactive");
+                        api.markInProgressObject(pid_list, "Object '" + pid + "' marked as inactive");
                 }
             }
             state = stateOriginal;
             statePreSaved = false;
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ServerOperationFailed(e);
         }
     }
@@ -490,7 +505,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                     abstractChild.preSave(viewAngle);
                 }
             }
-            if(!getState().equals(Constants.FedoraState.Active)){
+            if (!getState().equals(Constants.FedoraState.Active)) {
                 preSaveState();
                 preSaveTitle();
                 preSaveDatastreams();
@@ -502,37 +517,37 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 preSaveState();
             }
 
-        } catch (ServerOperationFailed e){
+        } catch (ServerOperationFailed e) {
             for (AbstractDigitalObject digitalObject : saved) {
                 digitalObject.undoSave(viewAngle);
             }
             try {
                 undoSave(viewAngle);
-            } catch (Exception e2){
+            } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            throw new ServerOperationFailed(e.getMessage(),e);
+            throw new ServerOperationFailed(e.getMessage(), e);
         } catch (XMLParseException e) {
             for (AbstractDigitalObject digitalObject : saved) {
                 digitalObject.undoSave(viewAngle);
             }
             try {
                 undoSave(viewAngle);
-            } catch (Exception e2){
+            } catch (Exception e2) {
                 e2.printStackTrace();//TODO log
             }
-            throw new XMLParseException(e.getMessage(),e);
+            throw new XMLParseException(e.getMessage(), e);
         }
 
 
     }
 
     private void preSaveTitle() throws ServerOperationFailed {
-        if (title.equals(titleOriginal)){
+        if (title.equals(titleOriginal)) {
             return;
         }
         try {
-            api.setObjectLabel(this.getPid(),title,"Changing the object label");
+            api.setObjectLabel(this.getPid(), title, "Changing the object label");
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);
         } catch (InvalidResourceException e) {
@@ -542,12 +557,12 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
     }
 
-    protected  void preSaveRelations() throws ServerOperationFailed {
+    protected void preSaveRelations() throws ServerOperationFailed {
         try {
 
             for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
                 Relation apiRelation = toApiRelation(addedRelation);
-                api.addRelation(this.getPid(),apiRelation,"Added a relation from the Doms Client");
+                api.addRelation(this.getPid(), apiRelation, "Added a relation from the Doms Client");
             }
             for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
                 Relation apiRelation = toApiRelation(removedRelation);
@@ -565,7 +580,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-    protected void postSave(String viewAngle) throws ServerOperationFailed{
+    protected void postSave(String viewAngle) throws ServerOperationFailed {
         Set<DigitalObject> children = getChildObjects(viewAngle);
         for (DigitalObject child : children) {
             if (child instanceof AbstractDigitalObject) {
@@ -594,7 +609,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         removedRelations.clear();
     }
 
-    protected void postSaveDatastreams(){
+    protected void postSaveDatastreams() {
         for (Datastream datastream : datastreams) {
             if (datastream instanceof SaveableDatastreamImpl) {
                 SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) datastream;
@@ -604,8 +619,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     }
 
-    protected void undoSave(String viewAngle)
-            throws ServerOperationFailed {
+    protected void undoSave(String viewAngle) throws ServerOperationFailed {
         Set<DigitalObject> children = getChildObjects(viewAngle);
         for (DigitalObject child : children) {
             if (child instanceof AbstractDigitalObject) {
@@ -613,7 +627,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 abstractChild.undoSave(viewAngle);
             }
         }
-        if (getState().equals(Constants.FedoraState.Active)){
+        if (getState().equals(Constants.FedoraState.Active)) {
             undoSaveState();
             undoSaveDatastreams();
             undoSaveRelations();
@@ -628,11 +642,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     private void undoSaveTitle() throws ServerOperationFailed {
-        if (title.equals(titleOriginal)){
+        if (title.equals(titleOriginal)) {
             return;
         }
         try {
-            api.setObjectLabel(this.getPid(),titleOriginal,"Undoing change of object label");
+            api.setObjectLabel(this.getPid(), titleOriginal, "Undoing change of object label");
             titleOriginal = title;
         } catch (InvalidCredentialsException e) {
             throw new ServerOperationFailed(e);
@@ -647,7 +661,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         try {
             for (dk.statsbiblioteket.doms.client.relations.Relation removedRelation : removedRelations) {
                 Relation apiRelation = toApiRelation(removedRelation);
-                api.addRelation(this.getPid(),apiRelation,"Added a relation from the Doms Client");
+                api.addRelation(this.getPid(), apiRelation, "Added a relation from the Doms Client");
             }
             for (dk.statsbiblioteket.doms.client.relations.Relation addedRelation : addedRelations) {
                 Relation apiRelation = toApiRelation(addedRelation);
@@ -699,7 +713,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
 
-
     public void save() throws ServerOperationFailed, XMLParseException {
         save("UNUSEDVIEWANGLE");
     }
@@ -711,7 +724,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public ObjectRelation addObjectRelation(String predicate, DigitalObject object) throws ServerOperationFailed {
-        ObjectRelation rel = new ObjectRelationImpl(this.getPid(),predicate,object.getPid(),  factory);
+        ObjectRelation rel = new ObjectRelationImpl(this.getPid(), predicate, object.getPid(), factory);
         privateAddRelation(rel);
         return rel;
 
@@ -719,7 +732,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public LiteralRelation addLiteralRelation(String predicate, String value) {
-        LiteralRelation rel = new LiteralRelationImpl(this.getPid(), predicate, value,factory);
+        LiteralRelation rel = new LiteralRelationImpl(this.getPid(), predicate, value, factory);
         privateAddRelation(rel);
         return rel;
     }
@@ -734,33 +747,33 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         collection.addObject(this);
     }
 
-    private void privateAddRelation(dk.statsbiblioteket.doms.client.relations.Relation relation){
+    private void privateAddRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) {
         boolean isOriginal = relations.contains(relation);
         boolean isAlreadyRemoved = removedRelations.contains(relation);
         boolean isAdded = addedRelations.contains(relation);
 
-        if (isAlreadyRemoved){
+        if (isAlreadyRemoved) {
             removedRelations.remove(relation);
             return;
         }
-        if (!isAdded && !isOriginal){
+        if (!isAdded && !isOriginal) {
             addedRelations.add(relation);
         }
     }
 
-    private void privateRemoveRelation(dk.statsbiblioteket.doms.client.relations.Relation relation){
+    private void privateRemoveRelation(dk.statsbiblioteket.doms.client.relations.Relation relation) {
         boolean isOriginal = relations.contains(relation);
         boolean isAlreadyRemoved = removedRelations.contains(relation);
         boolean isAdded = addedRelations.contains(relation);
-        if (!(isOriginal ||  isAdded)){//is this anywhere?
+        if (!(isOriginal || isAdded)) {//is this anywhere?
             return;//if not present, return
         }
 
-        if (isAdded){
+        if (isAdded) {
             addedRelations.remove(relation);
             return;
         }
-        if (!isAlreadyRemoved && isOriginal){
+        if (!isAlreadyRemoved && isOriginal) {
             removedRelations.add(relation);
         }
 
@@ -784,7 +797,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             for (dk.statsbiblioteket.doms.central.Parameter soapparameter : soapmethod.getParameters().getParameter()) {
                 String parameterTypeString = soapparameter.getType();
 
-                dk.statsbiblioteket.doms.client.methods.Parameter myparameter = new ParameterImpl(soapparameter.getName(),
+                dk.statsbiblioteket.doms.client.methods.Parameter myparameter = new ParameterImpl(
+                        soapparameter.getName(),
                         ParameterType.valueOf(parameterTypeString),
                         "",
                         soapparameter.isRequired(),
@@ -792,11 +806,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                         soapparameter.getConfig());
                 myparameters.add(myparameter);
             }
-            MethodImpl myMethod = new MethodImpl(api,this, soapmethod.getName(), myparameters);
-            if (soapmethod.getType().equals("dynamic")){
+            MethodImpl myMethod = new MethodImpl(api, this, soapmethod.getName(), myparameters);
+            if (soapmethod.getType().equals("dynamic")) {
                 dynamicMethods.add(myMethod);
             }
-            if (soapmethod.getType().equals("static")){
+            if (soapmethod.getType().equals("static")) {
                 staticMethods.add(myMethod);
             }
 
@@ -832,7 +846,10 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             throw new ServerOperationFailed("Failed to parse Object Links", e);
         }
         for (Link linkSoap : linksSoap) {
-            LinkPattern linkPattern = new LinkPatternImpl(linkSoap.getName(), linkSoap.getDescription(), linkSoap.getValue());
+            LinkPattern linkPattern = new LinkPatternImpl(
+                    linkSoap.getName(),
+                    linkSoap.getDescription(),
+                    linkSoap.getValue());
             links.add(linkPattern);
         }
 
@@ -840,12 +857,18 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AbstractDigitalObject)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractDigitalObject)) {
+            return false;
+        }
 
         AbstractDigitalObject that = (AbstractDigitalObject) o;
 
-        if (!pid.equals(that.pid)) return false;
+        if (!pid.equals(that.pid)) {
+            return false;
+        }
 
         return true;
     }

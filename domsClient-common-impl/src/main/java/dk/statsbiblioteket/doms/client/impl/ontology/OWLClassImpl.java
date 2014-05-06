@@ -12,10 +12,9 @@ import java.util.List;
 
 public class OWLClassImpl implements OWLClass {
 
-	private List<OWLRestriction> owlRestrictions = new ArrayList<OWLRestriction>();
+    private List<OWLRestriction> owlRestrictions = new ArrayList<OWLRestriction>();
 
     private String name;
-
 
 
     public OWLClassImpl(Node childNode) {
@@ -23,67 +22,65 @@ public class OWLClassImpl implements OWLClass {
     }
 
 
-	/**
-	 * @return the owlRestrictions
-	 */
-	@Override
+    /**
+     * @return the owlRestrictions
+     */
+    @Override
     public List<OWLRestriction> getOwlRestrictions() {
-		return Collections.unmodifiableList(owlRestrictions);
-	}
-	
-	/**
-	 * Reads a OWL Class from an XML DOM Node.
-	 *
-	 * @param node the XML DOM Node.
-	 */
-	private boolean parse(Node node) {
-		if (node == null)
-			return false;
+        return Collections.unmodifiableList(owlRestrictions);
+    }
 
-		if (node.getNodeType() != Node.ELEMENT_NODE)
-			return false;
+    /**
+     * Reads a OWL Class from an XML DOM Node.
+     *
+     * @param node the XML DOM Node.
+     */
+    private boolean parse(Node node) {
+        if (node == null) {
+            return false;
+        }
 
-		if (DOMSXMLUtils.doesNodeMatch(node, "Class", Constants.OWL_NAMESPACE))
-		{
+        if (node.getNodeType() != Node.ELEMENT_NODE) {
+            return false;
+        }
+
+        if (DOMSXMLUtils.doesNodeMatch(node, "Class", Constants.OWL_NAMESPACE)) {
             NamedNodeMap attrs = node.getAttributes();
             Node nameNode = attrs.getNamedItemNS(Constants.RDF_NAMESPACE, "about");
-            if (nameNode!= null){
+            if (nameNode != null) {
                 name = nameNode.getNodeValue();
             }
-			NodeList childNodes = node.getChildNodes();
+            NodeList childNodes = node.getChildNodes();
 
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				Node childNode = childNodes.item(i);
-				switch (childNode.getNodeType()) {
-				case Node.ELEMENT_NODE:
-					if (DOMSXMLUtils.doesNodeMatch(childNode, "subClassOf", Constants.RDFS_NAMESPACE))
-					{
-						parseRestrictions(childNode);
-					} 
-				}
-			}
-		}
-		
-		return true;
-	}
-	
-	private void parseRestrictions(Node node)
-	{
-		NodeList childNodes = node.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node childNode = childNodes.item(i);
+                switch (childNode.getNodeType()) {
+                    case Node.ELEMENT_NODE:
+                        if (DOMSXMLUtils.doesNodeMatch(childNode, "subClassOf", Constants.RDFS_NAMESPACE)) {
+                            parseRestrictions(childNode);
+                        }
+                }
+            }
+        }
 
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node childNode = childNodes.item(i);
-			switch (childNode.getNodeType()) {
-			case Node.ELEMENT_NODE:
-				if (DOMSXMLUtils.doesNodeMatch(childNode, "Restriction", Constants.OWL_NAMESPACE))
-				{
-					OWLRestriction owlRestriction = new OWLRestrictionImpl(childNode);
+        return true;
+    }
 
-					owlRestrictions.add(owlRestriction);
-				} 
-			}
-		}
-	}
+    private void parseRestrictions(Node node) {
+        NodeList childNodes = node.getChildNodes();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childNode = childNodes.item(i);
+            switch (childNode.getNodeType()) {
+                case Node.ELEMENT_NODE:
+                    if (DOMSXMLUtils.doesNodeMatch(childNode, "Restriction", Constants.OWL_NAMESPACE)) {
+                        OWLRestriction owlRestriction = new OWLRestrictionImpl(childNode);
+
+                        owlRestrictions.add(owlRestriction);
+                    }
+            }
+        }
+    }
 
     @Override
     public String getName() {

@@ -1,6 +1,10 @@
 package dk.statsbiblioteket.doms.client.impl.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.objects.CollectionObject;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
@@ -10,7 +14,6 @@ import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
-import java.lang.String;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,10 +25,10 @@ import java.util.Set;
  * Time: 11:32 AM
  * To change this template use File | Settings | File Templates.
  */
-public class CollectionObjectImpl extends DataObjectImpl implements CollectionObject{
+public class CollectionObjectImpl extends DataObjectImpl implements CollectionObject {
     public CollectionObjectImpl(ObjectProfile profile, CentralWebservice api,
                                 DigitalObjectFactoryImpl digitalObjectFactory) throws ServerOperationFailed {
-        super(profile,api,digitalObjectFactory);
+        super(profile, api, digitalObjectFactory);
     }
 
     @Override
@@ -33,7 +36,7 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
         Set<ContentModelObject> models = getContentModels();
         Set<TemplateObject> result = new HashSet<TemplateObject>();
         for (ContentModelObject model : models) {
-            if (model.getEntryViewAngles().contains(viewangle)){
+            if (model.getEntryViewAngles().contains(viewangle)) {
                 result.addAll(model.getTemplates());
             }
         }
@@ -63,28 +66,25 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
     }
 
     @Override
-   	public Set<ContentModelObject> getEntryContentModels(String viewangle)
-   			throws ServerOperationFailed {
+    public Set<ContentModelObject> getEntryContentModels(String viewangle) throws ServerOperationFailed {
         Set<ContentModelObject> models = getContentModels();
         Set<ContentModelObject> result = new HashSet<ContentModelObject>();
         for (ContentModelObject model : models) {
-            if (model.getEntryViewAngles().contains(viewangle)){
+            if (model.getEntryViewAngles().contains(viewangle)) {
                 result.add(model);
             }
         }
         return result;
-   	}
-
-
+    }
 
 
     @Override
     public void removeObject(DigitalObject object) throws ServerOperationFailed {
         for (Relation relation : object.getRelations()) {
-            if (relation.getPredicate().equals(Constants.IS_PART_OF_COLLECTION_PREDICATE)){
+            if (relation.getPredicate().equals(Constants.IS_PART_OF_COLLECTION_PREDICATE)) {
                 if (relation instanceof ObjectRelation) {
                     ObjectRelation objectRelation = (ObjectRelation) relation;
-                    if (objectRelation.getObjectPid().equals(this.getPid())){
+                    if (objectRelation.getObjectPid().equals(this.getPid())) {
                         relation.remove();
                     }
                 }
@@ -94,7 +94,7 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
 
     @Override
     public void addObject(DigitalObject object) throws ServerOperationFailed {
-        object.addObjectRelation(Constants.IS_PART_OF_COLLECTION_PREDICATE,this);
+        object.addObjectRelation(Constants.IS_PART_OF_COLLECTION_PREDICATE, this);
     }
 
 }

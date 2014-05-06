@@ -3,7 +3,6 @@ package dk.statsbiblioteket.doms.client.objects;
 import dk.statsbiblioteket.doms.client.datastreams.Datastream;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.DatastreamModel;
-import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
 import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
@@ -19,7 +18,9 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,21 +31,18 @@ import static org.junit.Assert.fail;
  * Time: 4:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DatastreamTest extends TestBase{
+public class DatastreamTest extends TestBase {
 
     public DatastreamTest() throws MalformedURLException {
         super();
     }
 
 
-
-
     @Test
     public void testDatastreamModel() throws Exception {
-        ContentModelObject cmProgram = (ContentModelObject)
-                factory.getDigitalObject("doms:ContentModel_Program");
+        ContentModelObject cmProgram = (ContentModelObject) factory.getDigitalObject("doms:ContentModel_Program");
         assertTrue(cmProgram instanceof ContentModelObject);
-        if (cmProgram instanceof ContentModelObject){
+        if (cmProgram instanceof ContentModelObject) {
             DatastreamModel dsModel = cmProgram.getDsModel();
             assertTrue(dsModel.getDatastreamDeclarations().size() > 0);
             assertNotNull(dsModel.getMimeType());
@@ -55,15 +53,14 @@ public class DatastreamTest extends TestBase{
 
     @Test
     public void testDatastreamModel2() throws Exception {
-        DigitalObject template =
-                factory.getDigitalObject("doms:Template_Program");
+        DigitalObject template = factory.getDigitalObject("doms:Template_Program");
         Set<DatastreamDeclaration> declarations = template.getDatastream("PBCORE").getDeclarations();
         assertTrue(declarations.size() > 0);
         for (DatastreamDeclaration declaration : declarations) {
-            assertEquals(declaration.getName(),"PBCORE");
+            assertEquals(declaration.getName(), "PBCORE");
             assertTrue(declaration.getPresentation() == Constants.GuiRepresentation.editable);
             Datastream pbcoreSchema = declaration.getSchema();
-            if (pbcoreSchema != null){
+            if (pbcoreSchema != null) {
                 assertNotNull(pbcoreSchema.getContents());
             } else {
                 fail();
@@ -72,11 +69,11 @@ public class DatastreamTest extends TestBase{
     }
 
 
-    private void changeField(SDOParsedXmlElement doc, String field, String newvalue){
+    private void changeField(SDOParsedXmlElement doc, String field, String newvalue) {
         ArrayList<SDOParsedXmlElement> children = doc.getChildren();
         for (SDOParsedXmlElement child : children) {
-            if (child.isLeaf()){
-                if (child.getLabel().equals(field)){
+            if (child.isLeaf()) {
+                if (child.getLabel().equals(field)) {
                     child.setValue(newvalue);
                 }
             } else {
@@ -98,14 +95,14 @@ public class DatastreamTest extends TestBase{
         object.save();
         String originaldoc = doc.dumpToString();
 
-        changeField(doc.getRootSDOParsedXmlElement(),"test", "testvalue");
+        changeField(doc.getRootSDOParsedXmlElement(), "test", "testvalue");
 
 
         String unchangeddoc = doc.dumpToString();
 
-        assertTrue(XMLUnit.compareXML(originaldoc,unchangeddoc).identical());
+        assertTrue(XMLUnit.compareXML(originaldoc, unchangeddoc).identical());
 
-        changeField(doc.getRootSDOParsedXmlElement(),"Subject", "test of change: "+Math.random());
+        changeField(doc.getRootSDOParsedXmlElement(), "Subject", "test of change: " + Math.random());
 
 
         String changeddoc = doc.dumpToString();
@@ -128,16 +125,15 @@ public class DatastreamTest extends TestBase{
 
 
         //TODO make this comparison work, they are xml alike
-        assertTrue(XMLUnit.compareXML(changeddoc,rereaddoc).identical());
+        assertTrue(XMLUnit.compareXML(changeddoc, rereaddoc).identical());
 
 
     }
 
     @Test
-    public void testXmlParseExceptions()
-            throws ServerOperationFailed, XMLParseException, NotFoundException {
+    public void testXmlParseExceptions() throws ServerOperationFailed, XMLParseException, NotFoundException {
         boolean createdProgram = false;
-        boolean  createdShard = false;
+        boolean createdShard = false;
         boolean createdRelation = false;
         boolean saved = false;
 
@@ -149,22 +145,22 @@ public class DatastreamTest extends TestBase{
             CollectionObject collectionObject = (CollectionObject) object;
             Set<TemplateObject> entryTemplates = collectionObject.getEntryTemplates("GUI");
             for (TemplateObject entryTemplate : entryTemplates) {
-                if (entryTemplate.getPid().equals("doms:Template_Program")){
+                if (entryTemplate.getPid().equals("doms:Template_Program")) {
 
                     newProgram = entryTemplate.clone();
                     createdProgram = true;
                     for (ContentModelObject contentModelObject : newProgram.getType()) {
                         RelationModel relModel = contentModelObject.getRelationModel();
                         for (RelationDeclaration relationDeclaration : relModel.getRelationDeclarations()) {
-                            if (relationDeclaration.getViewAngles().contains("GUI")){
+                            if (relationDeclaration.getViewAngles().contains("GUI")) {
                                 Set<ContentModelObject> firstLevelObjects = relationDeclaration.getFirstLevelModels();
                                 for (ContentModelObject firstLevelObject : firstLevelObjects) {
                                     Set<TemplateObject> templateDeep = firstLevelObject.getTemplates();
-                                    if (templateDeep.size() > 0){
+                                    if (templateDeep.size() > 0) {
 
                                         shard = templateDeep.iterator().next().clone();
                                         createdShard = true;
-                                        newProgram.addObjectRelation(relationDeclaration.getPredicate(),shard);
+                                        newProgram.addObjectRelation(relationDeclaration.getPredicate(), shard);
                                         createdRelation = true;
                                         newProgram.save("GUI");
                                         saved = true;
@@ -181,11 +177,11 @@ public class DatastreamTest extends TestBase{
 
             fail();
         }
-        if (newProgram != null){
+        if (newProgram != null) {
             newProgram.setState(Constants.FedoraState.Deleted);
             newProgram.save();
         }
-        if (shard != null){
+        if (shard != null) {
 
             //TODO test was according to old datamodel
             /*parseDoc(shard.getDatastream("SHARD_METADATA").getSDOParsedDocument());

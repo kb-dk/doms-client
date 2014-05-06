@@ -1,16 +1,15 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
 import java.lang.ref.SoftReference;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,7 @@ import java.util.Set;
 /**
  * Barebones relation, predicate and subject. No subject
  */
-public abstract class AbstractRelation implements Relation, Comparable<Relation>{
+public abstract class AbstractRelation implements Relation, Comparable<Relation> {
     private String predicate;   // relation name
     private SoftReference<DigitalObject> subject = new SoftReference<DigitalObject>(null);
     private String subjectPid;
@@ -28,6 +27,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     /**
      * This constructor must be extended to complete the notion of triples
      * representing connections in the subject graph.
+     *
      * @param subjectPid
      * @param predicate
      */
@@ -41,7 +41,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
     @Override
     public DigitalObject getSubject() throws ServerOperationFailed {
         DigitalObject result = subject.get();
-        if (result == null){
+        if (result == null) {
             result = factory.getDigitalObject(subjectPid);
             subject = new SoftReference<DigitalObject>(result);
         }
@@ -75,7 +75,7 @@ public abstract class AbstractRelation implements Relation, Comparable<Relation>
         for (ContentModelObject type : types) {
             RelationModel relModel = type.getRelationModel();
             for (RelationDeclaration relationDeclaration : relModel.getRelationDeclarations()) {
-                if (relationDeclaration.getPredicate().equals(this.getPredicate())){
+                if (relationDeclaration.getPredicate().equals(this.getPredicate())) {
                     result.add(relationDeclaration);
                 }
             }

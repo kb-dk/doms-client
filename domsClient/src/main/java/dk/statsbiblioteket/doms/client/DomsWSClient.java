@@ -1,7 +1,6 @@
 package dk.statsbiblioteket.doms.client;
 
 
-
 import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
 import dk.statsbiblioteket.doms.central.InvalidResourceException;
 import dk.statsbiblioteket.doms.central.MethodFailedException;
@@ -16,7 +15,6 @@ import dk.statsbiblioteket.doms.client.utils.FileInfo;
 import org.w3c.dom.Document;
 
 import java.io.InputStream;
-import java.lang.String;
 import java.net.URL;
 import java.util.List;
 
@@ -36,44 +34,47 @@ public interface DomsWSClient {
      * @param domsWSAPIEndpoint <code>URL</code> of the DOMS server web service end-point.
      * @param userName          Name of the user to use for identification.
      * @param password          Password of the user to use for identification.
+     *
      * @see #setCredentials(URL, String, String)
-     *      <p/>
-     *      Login to the DOMS web service, using the end-point <code>URL</code>
-     *      specified by <code>domsWSAPIEndpoint</code> and the credentials given by
-     *      <code>userName</code> and <code>password</code>.
+     * <p/>
+     * Login to the DOMS web service, using the end-point <code>URL</code>
+     * specified by <code>domsWSAPIEndpoint</code> and the credentials given by
+     * <code>userName</code> and <code>password</code>.
      * @deprecated please use setCredentials(URL, String, String)
      */
     @Deprecated
     void login(URL domsWSAPIEndpoint, String userName, String password);
 
     /**
-     *
      * @param uuids the list of uuid's for which to get the label
+     *
      * @return the labels of the given uuid's
      */
     List<String> getLabel(List<String> uuids);
 
     /**
      * Get the digital object factory.
+     *
      * @return the digital object factory
      */
     public DigitalObjectFactory getDigitalObjectFactory();
+
     /**
-     *
      * @param uuid the uuid for which to get the label
+     *
      * @return the label found for the uuid
      */
     String getLabel(String uuid);
+
     /**
+     * @param query      the search string.
+     * @param offset     the first result of the search
+     * @param pageLength the max number of results
      *
-     *
-     *
-     * @param   query       the search string.
-     * @param   offset      the first result of the search
-     * @param   pageLength  the max number of results
-     * @return  A list of SearchResult objects
+     * @return A list of SearchResult objects
      */
-    List<dk.statsbiblioteket.doms.central.SearchResult> search(String query, int offset, int pageLength) throws ServerOperationFailed;
+    List<dk.statsbiblioteket.doms.central.SearchResult> search(String query, int offset, int pageLength) throws
+                                                                                                         ServerOperationFailed;
 
     /**
      * User credentials to the DOMS web service, using the end-point <code>URL</code>
@@ -92,12 +93,11 @@ public interface DomsWSClient {
      *
      * @param templatePID PID identifying the template object to use.
      * @param comment     The message to store in Fedora
+     *
      * @return PID of the created object.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the object creation failed.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the object creation failed.
      */
-    String createObjectFromTemplate(String templatePID, String comment)
-            throws ServerOperationFailed;
+    String createObjectFromTemplate(String templatePID, String comment) throws ServerOperationFailed;
 
     /**
      * Create a new DOMS object from an object template already stored in the
@@ -107,13 +107,13 @@ public interface DomsWSClient {
      * @param templatePID    PID identifying the template object to use.
      * @param oldIdentifiers the old identifiers of the object
      * @param comment        The message to store in Fedora
+     *
      * @return PID of the created object.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the object creation failed.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the object creation failed.
      * @see #createObjectFromTemplate(String, String)
      */
-    String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers, String comment)
-            throws ServerOperationFailed;
+    String createObjectFromTemplate(String templatePID, List<String> oldIdentifiers, String comment) throws
+                                                                                                     ServerOperationFailed;
 
     /**
      * Create a new file object from an existing file object template, based on
@@ -124,13 +124,12 @@ public interface DomsWSClient {
      *                    new file object.
      * @param fileInfo    File location, checksum and so on for the physical file
      *                    associated with the object.
+     *
      * @return PID of the created file object in the DOMS.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the object creation failed.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the object creation failed.
      * @see dk.statsbiblioteket.doms.client.utils.FileInfo
      */
-    String createFileObject(String templatePID, FileInfo fileInfo, String comment)
-            throws ServerOperationFailed;
+    String createFileObject(String templatePID, FileInfo fileInfo, String comment) throws ServerOperationFailed;
 
     /**
      * Add a physical file to an existing file object in the DOMS.
@@ -145,46 +144,44 @@ public interface DomsWSClient {
      * @param fileInfo      File location, checksum and so on for the physical file
      *                      associated with the file object.
      * @param comment       The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the operation fails.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the operation fails.
      * @see dk.statsbiblioteket.doms.client.utils.FileInfo
      */
-    void addFileToFileObject(String fileObjectPID, FileInfo fileInfo, String comment)
-            throws ServerOperationFailed;
+    void addFileToFileObject(String fileObjectPID, FileInfo fileInfo, String comment) throws ServerOperationFailed;
 
     /**
      * Get the PID of an existing file object in the DOMS which is associated
      * with the physical file specified by <code>fileURL</code>.
      *
-     *
      * @param fileURL location of the physical file to find the corresponding DOMS
      *                file object for.
+     *
      * @return PID of the DOMS file object.
-     * @throws NoObjectFound
-     *          if there does not exist DOMS file object associated with
-     *          <code>fileURL</code>.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if any errors are encountered while looking up the file
-     *          object.
+     * @throws NoObjectFound                                                    if there does not exist DOMS file object
+     *                                                                          associated with
+     *                                                                          <code>fileURL</code>.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
+     *                                                                          looking up the file
+     *                                                                          object.
      */
-    String getFileObjectPID(URL fileURL) throws NoObjectFound,
-                                                ServerOperationFailed;
+    String getFileObjectPID(URL fileURL) throws NoObjectFound, ServerOperationFailed;
 
     /**
      * Get the PID of an existing file object in the DOMS which is associated
      * with the physical file specified by <code>fileURL</code>.
      *
      * @param oldIdentifier the old identifier of the object
+     *
      * @return PID of the DOMS file object.
-     * @throws NoObjectFound
-     *          if there does not exist DOMS file object associated with
-     *          <code>fileURL</code>.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if any errors are encountered while looking up the file
-     *          object.
+     * @throws NoObjectFound                                                    if there does not exist DOMS file object
+     *                                                                          associated with
+     *                                                                          <code>fileURL</code>.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
+     *                                                                          looking up the file
+     *                                                                          object.
      */
-    List<String> getPidFromOldIdentifier(String oldIdentifier) throws NoObjectFound,
-                                                                      ServerOperationFailed;
+    List<String> getPidFromOldIdentifier(String oldIdentifier) throws NoObjectFound, ServerOperationFailed;
 
 
     /**
@@ -194,12 +191,12 @@ public interface DomsWSClient {
      *
      * @param objectPID    ID of the DOMS object to retrieve the datastream contents of.
      * @param datastreamID ID of the datastream to get the contents of.
+     *
      * @return <code>Document</code> containing the datastream XML contents.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the datastream contents cannot be retrieved.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the datastream contents cannot be
+     *                                                                          retrieved.
      */
-    Document getDataStream(String objectPID, String datastreamID)
-            throws ServerOperationFailed;
+    Document getDataStream(String objectPID, String datastreamID) throws ServerOperationFailed;
 
     /**
      * Replace any existing datastream contents of the datastream, identified by
@@ -213,11 +210,12 @@ public interface DomsWSClient {
      * @param newDataStreamContents <code>Document</code> containing the new datastream XML
      *                              contents.
      * @param comment               The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the datastream contents cannot be updated.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the datastream contents cannot be
+     *                                                                          updated.
      */
-    void updateDataStream(String objectPID, String dataStreamID,
-                          Document newDataStreamContents, String comment) throws ServerOperationFailed;
+    void updateDataStream(String objectPID, String dataStreamID, Document newDataStreamContents, String comment) throws
+                                                                                                                 ServerOperationFailed;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -226,14 +224,15 @@ public interface DomsWSClient {
      * type specified by <code>relationType</code> must be valid according to
      * the content model for the object.
      *
-     *
      * @param pid
      * @param predicate
-     *@param objectPid
-     * @param comment  The message to store in Fedora  @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the relation cannot be added.
+     * @param objectPid
+     * @param comment   The message to store in Fedora  @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
+     *                  if the relation cannot be added.
      */
-    public void addObjectRelation(String pid, String predicate, String objectPid, String comment) throws ServerOperationFailed, XMLParseException;
+    public void addObjectRelation(String pid, String predicate, String objectPid, String comment) throws
+                                                                                                  ServerOperationFailed,
+                                                                                                  XMLParseException;
 
     /**
      * Add a relation between the objects identified by <code>sourcePID</code>
@@ -244,8 +243,8 @@ public interface DomsWSClient {
      *
      * @param relation the AbstractRelation to remove
      * @param comment  The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the relation cannot be added.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the relation cannot be added.
      */
     void removeObjectRelation(LiteralRelation relation, String comment) throws ServerOperationFailed;
 
@@ -259,12 +258,13 @@ public interface DomsWSClient {
      * @param objectPID    ID of the object housing the relation.
      * @param relationType AbstractRelation type ID which is valid according the the content
      *                     model for the source object.
+     *
      * @return a List of Relations matching the restrictions
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the relation cannot be added.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the relation cannot be added.
      */
-    List<dk.statsbiblioteket.doms.client.relations.Relation> listObjectRelations(String objectPID, String relationType
-    ) throws ServerOperationFailed;
+    List<dk.statsbiblioteket.doms.client.relations.Relation> listObjectRelations(String objectPID,
+                                                                                 String relationType) throws
+                                                                                                      ServerOperationFailed;
 
 
     /**
@@ -273,11 +273,11 @@ public interface DomsWSClient {
      *
      * @param comment       The message to store in Fedora
      * @param pidsToPublish <code>List</code> of PIDs for the objects to publish.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if any errors are encountered while publishing the objects.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
+     *                                                                          publishing the objects.
      */
-    void publishObjects(String comment, String... pidsToPublish)
-            throws ServerOperationFailed;
+    void publishObjects(String comment, String... pidsToPublish) throws ServerOperationFailed;
 
     /**
      * Mark the objects identified by the the PIDs in <code>pidsToPublish</code>
@@ -285,11 +285,11 @@ public interface DomsWSClient {
      *
      * @param comment         The message to store in Fedora
      * @param pidsToUnpublish <code>List</code> of PIDs for the objects to unpublish.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if any errors are encountered while publishing the objects.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
+     *                                                                          publishing the objects.
      */
-    void unpublishObjects(String comment, String... pidsToUnpublish)
-            throws ServerOperationFailed;
+    void unpublishObjects(String comment, String... pidsToUnpublish) throws ServerOperationFailed;
 
 
     /**
@@ -298,11 +298,11 @@ public interface DomsWSClient {
      *
      * @param comment      The message to store in Fedora
      * @param pidsToDelete <code>List</code> of PIDs for the objects to delete.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if any errors are encountered while deleting the objects.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
+     *                                                                          deleting the objects.
      */
-    void deleteObjects(String comment, String... pidsToDelete)
-            throws ServerOperationFailed;
+    void deleteObjects(String comment, String... pidsToDelete) throws ServerOperationFailed;
 
     /**
      * Get a time-stamp for when the latest change was made to any of the
@@ -316,12 +316,11 @@ public interface DomsWSClient {
      * @param viewID        ID of the view which any modified object must be a part of.
      * @param state         The state the objects must have in order to have its
      *                      modification time inspected.
+     *
      * @return the time-stamp in milliseconds for the latest modification.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the time-stamp cannot be retrieved.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the time-stamp cannot be retrieved.
      */
-    long getModificationTime(String collectionPID, String viewID,
-                             String state) throws ServerOperationFailed;
+    long getModificationTime(String collectionPID, String viewID, String state) throws ServerOperationFailed;
 
     /**
      * Get a <code>List</code> of <code>RecordDescription</code> instances
@@ -353,15 +352,14 @@ public interface DomsWSClient {
      * @param offsetIndex    The index in the sequence of modified records to start
      *                       retrieval from.
      * @param maxRecordCount The maximum number of records to retrieve.
+     *
      * @return A list of <code>RecordDescription</code> instances, containing
-     *         information about all entry objects matching the query.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the operation fails.
+     * information about all entry objects matching the query.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the operation fails.
      */
-    List<RecordDescription> getModifiedEntryObjects(
-            String collectionPID, String viewID, long timeStamp,
-            String objectState, long offsetIndex, long maxRecordCount)
-            throws ServerOperationFailed;
+    List<RecordDescription> getModifiedEntryObjects(String collectionPID, String viewID, long timeStamp,
+                                                    String objectState, long offsetIndex, long maxRecordCount) throws
+                                                                                                               ServerOperationFailed;
 
     /**
      * Get the view bundle for the view specified by <code>viewID</code> for the
@@ -373,14 +371,14 @@ public interface DomsWSClient {
      *                       for.
      * @param viewID         ID of the view which the DOMS must use when building the
      *                       bundle.
+     *
      * @return A <code>String</code> containing an XML document with all the
-     *         information from the object and its associated objects which is
-     *         relevant to the specified view.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the view bundle cannot be retrieved from the DOMS.
+     * information from the object and its associated objects which is
+     * relevant to the specified view.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the view bundle cannot be retrieved
+     *                                                                          from the DOMS.
      */
-    String getViewBundle(String entryObjectPID, String viewID)
-            throws ServerOperationFailed;
+    String getViewBundle(String entryObjectPID, String viewID) throws ServerOperationFailed;
 
     /**
      * Set the object label specified by <code>objectLabel</code> on the DOMS
@@ -389,19 +387,19 @@ public interface DomsWSClient {
      * @param objectPID   The PID identifying the object to set the label on.
      * @param objectLabel The label to set on the object.
      * @param comment     The message to store in Fedora
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          if the label could not be set on the object.
+     *
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the label could not be set on the
+     *                                                                          object.
      */
-    void setObjectLabel(String objectPID, String objectLabel, String comment)
-            throws ServerOperationFailed;
+    void setObjectLabel(String objectPID, String objectLabel, String comment) throws ServerOperationFailed;
 
     /**
      * Get the <code>FedoraState</code> for the DOMS object with the specified <code>PID</code>.
      *
-     * @param pid       The PID identifying the object of intrest.
+     * @param pid The PID identifying the object of intrest.
+     *
      * @return A FedoraState enum indicating the state of the object.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          If the object cannot be found.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed If the object cannot be found.
      */
     Constants.FedoraState getState(String pid) throws ServerOperationFailed;
 
@@ -409,12 +407,15 @@ public interface DomsWSClient {
      * Get the datastream <code>ds</code> from the object <code>pid</code>
      *
      * @param pid the persistent identifier of the object of intrest.
-     * @param ds identifies the datastream of intrest.
+     * @param ds  identifies the datastream of intrest.
+     *
      * @return MIMETypeStream containing the datastream.
-     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed
-     *          If the object or datastream cannot be found.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed If the object or datastream cannot be
+     *                                                                          found.
      */
-    InputStream getDatastreamContent(String pid, String ds)
-            throws ServerOperationFailed, InvalidCredentialsException,
-            MethodFailedException, InvalidResourceException;
+    InputStream getDatastreamContent(String pid, String ds) throws
+                                                            ServerOperationFailed,
+                                                            InvalidCredentialsException,
+                                                            MethodFailedException,
+                                                            InvalidResourceException;
 }

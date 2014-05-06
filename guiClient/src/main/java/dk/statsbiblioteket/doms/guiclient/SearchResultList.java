@@ -6,7 +6,8 @@ public class SearchResultList {
     private List<SearchResult> searchResults;
     private long hitCount;
 
-    public SearchResultList() {}
+    public SearchResultList() {
+    }
 
     public SearchResultList(List<SearchResult> searchResults, long hitCount) {
         this.searchResults = searchResults;

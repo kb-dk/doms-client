@@ -2,9 +2,9 @@ package dk.statsbiblioteket.doms.client.methods;
 
 public interface Parameter {
 
-	String getName();
-	
-	ParameterType getType();
+    String getName();
+
+    ParameterType getType();
 
     String getValue();
 
@@ -16,6 +16,7 @@ public interface Parameter {
 
     /**
      * Returns the config value, if any, for this parameter
+     *
      * @return
      */
     String getConfig();

@@ -1,19 +1,16 @@
 package dk.statsbiblioteket.doms.client.impl.methods;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.Pair;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.methods.Method;
 import dk.statsbiblioteket.doms.client.methods.Parameter;
-import dk.statsbiblioteket.doms.client.methods.ParameterType;
-import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
-import dk.statsbiblioteket.util.xml.DOM;
-import dk.statsbiblioteket.util.xml.XPathSelector;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
-import java.lang.String;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,13 +29,12 @@ public class MethodImpl implements Method {
     private Set<Parameter> parameters;
 
 
-    public MethodImpl(CentralWebservice api, DigitalObject bound,String name, Set<Parameter> parameters) {
+    public MethodImpl(CentralWebservice api, DigitalObject bound, String name, Set<Parameter> parameters) {
         this.api = api;
         this.name = name;
         this.parameters = parameters;
         boundToObject = bound;
     }
-
 
 
     @Override
@@ -84,13 +80,21 @@ public class MethodImpl implements Method {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MethodImpl)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MethodImpl)) {
+            return false;
+        }
 
         MethodImpl method = (MethodImpl) o;
 
-        if (!name.equals(method.name)) return false;
-        if (!parameters.equals(method.parameters)) return false;
+        if (!name.equals(method.name)) {
+            return false;
+        }
+        if (!parameters.equals(method.parameters)) {
+            return false;
+        }
 
         return true;
     }

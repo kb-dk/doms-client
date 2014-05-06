@@ -1,7 +1,6 @@
 package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
 /**
  * Created by IntelliJ IDEA.

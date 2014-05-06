@@ -9,19 +9,6 @@ import dk.statsbiblioteket.doms.client.relations.LiteralRelation;
 public class LiteralRelationImpl extends AbstractRelation implements LiteralRelation {
     private String object;
 
-    @Override
-    public String getObject() {
-        return object;
-    }
-
-
-    private void setObject(String object) {
-        if (object.startsWith("\"") && object.endsWith("\"")){
-            object = object.substring(1, object.length()-1);
-        }
-        this.object = object;
-    }
-
     /**
      * This constructor must be extended to complete the notion of triples
      * representing connections in the object graph.
@@ -32,6 +19,18 @@ public class LiteralRelationImpl extends AbstractRelation implements LiteralRela
     public LiteralRelationImpl(String subjectPid, String predicate, String object, DigitalObjectFactory factory) {
         super(subjectPid, predicate, factory);
         setObject(object);
+    }
+
+    @Override
+    public String getObject() {
+        return object;
+    }
+
+    private void setObject(String object) {
+        if (object.startsWith("\"") && object.endsWith("\"")) {
+            object = object.substring(1, object.length() - 1);
+        }
+        this.object = object;
     }
 
     @Override

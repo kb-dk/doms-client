@@ -8,7 +8,6 @@ import dk.statsbiblioteket.doms.client.utils.Constants;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * A search result, with links to the digital object system.
@@ -27,10 +26,8 @@ public class SearchResult {
     private DigitalObjectFactory factory;
 
 
-    public SearchResult(String pid, String type, String source, String title,
-                        String time, String description,
-                        Constants.FedoraState state, Date lastModified, Date created,
-                        DigitalObjectFactory factory) {
+    public SearchResult(String pid, String type, String source, String title, String time, String description,
+                        Constants.FedoraState state, Date lastModified, Date created, DigitalObjectFactory factory) {
         this.pid = pid;
         this.type = type;
         this.source = source;
@@ -79,7 +76,7 @@ public class SearchResult {
         return created;
     }
 
-    public String getTypeString(){
+    public String getTypeString() {
         return getType();
     }
 
@@ -90,6 +87,7 @@ public class SearchResult {
 
     /**
      * Retrieve the object and inflate it in the object system
+     *
      * @return a proper digital object.
      * @throws ServerOperationFailed
      */

@@ -18,34 +18,28 @@ import java.util.UUID;
 
 public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
+    static final String PLACEHOLDER = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0";
+    protected ArrayList<SDOParsedXmlElement> children = new ArrayList<SDOParsedXmlElement>();
     private SDOParsedXmlDocumentImpl myDocument;
     private Property property;
     private DataObject dataobject;
     private SDOParsedXmlElement parent;
-
     private String label;
     private Object value;
     private boolean originallySet;
-
     private int maxOccurence = -1;
     private int minOccurence = -1;
     /**
-     *  If the dataobject is sequenced this is the sequence index.
-     *  If the property is multivalued this is the index in the list.
+     * If the dataobject is sequenced this is the sequence index.
+     * If the property is multivalued this is the index in the list.
      */
     private int index = -1;
-    protected ArrayList<SDOParsedXmlElement> children = new ArrayList<SDOParsedXmlElement>();
-
     private String id = "_" + UUID.randomUUID().toString();
-
     private GuiType guiType = GuiType.NA;
-
     private List<String> valueEnum;
-    static final String PLACEHOLDER = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0";
 
     public SDOParsedXmlElementImpl(SDOParsedXmlDocumentImpl myDocument, SDOParsedXmlElement parent,
-                                   DataObject dataobject,
-                                   Property property) {
+                                   DataObject dataobject, Property property) {
         this.setDataobject(dataobject);
         this.setProperty(property);
         this.setParent(parent);
@@ -54,8 +48,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     public SDOParsedXmlElementImpl(SDOParsedXmlDocumentImpl myDocument, SDOParsedXmlElement parent,
-                                   DataObject dataobject,
-                                   Property property, int parentIndex) {
+                                   DataObject dataobject, Property property, int parentIndex) {
         this.setDataobject(dataobject);
         this.setProperty(property);
         this.setParent(parent);
@@ -66,6 +59,18 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             this.getParent().getChildren().add(parentIndex, this);
         }
         this.myDocument = myDocument;
+    }
+
+    public static String getAppInfo(Property property, String source) {
+        String appinfo = null;
+        org.eclipse.emf.ecore.EModelElement eModelElement;
+        org.eclipse.emf.ecore.EAnnotation annotation;
+        eModelElement = (org.eclipse.emf.ecore.EModelElement) property;
+        annotation = eModelElement.getEAnnotation(source);
+        if (annotation != null) {
+            appinfo = (String) annotation.getDetails().get("appinfo");
+        }
+        return appinfo;
     }
 
     /**
@@ -92,7 +97,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             if (propType.getProperties() != null) {
                 boolean test;
                 boolean onlyAttributes = true;
-                for (Iterator<Property> i = propType.getProperties().iterator(); i.hasNext();) {
+                for (Iterator<Property> i = propType.getProperties().iterator(); i.hasNext(); ) {
                     Property childProperty = (Property) i.next();
                     if (!getHelperContext().getXSDHelper().isAttribute(childProperty)) {
                         onlyAttributes = false;
@@ -103,8 +108,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 //return (propType.getProperties().size() == 0);
                 if ((propType.getProperties().size() > 0) && (!onlyAttributes)) {
                     test = false;
-                }
-                else {
+                } else {
                     test = true;
                 }
 
@@ -117,15 +121,15 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     @Override
-    public int getNumberOfOccurences(){
+    public int getNumberOfOccurences() {
 
-        if(parent == null) {
+        if (parent == null) {
             return 1;
         }
         int counter = 0;
         List<SDOParsedXmlElement> elems = parent.getChildren();
-        for(SDOParsedXmlElement ele : elems) {
-            if(ele.getProperty().equals(this.property)) {
+        for (SDOParsedXmlElement ele : elems) {
+            if (ele.getProperty().equals(this.property)) {
                 counter++;
             }
 
@@ -134,11 +138,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     @Override
-    public boolean getAddable(){
+    public boolean getAddable() {
         //You can create new elements of this type if your property specifies it,
         //and there are less occurences than the maximum specified.
         int amount = getNumberOfOccurences();
-        if(this.maxOccurence >=0 && amount >= this.maxOccurence) {
+        if (this.maxOccurence >= 0 && amount >= this.maxOccurence) {
             //We already have the maximum amount of elements
             return false;
         }
@@ -147,19 +151,18 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     @Override
-    public boolean getRemovable(){
+    public boolean getRemovable() {
         //You can be removed if you are not the only occurence of this type
         //and if there are more occurences than the minimumoccurence.
         //You can NOT be removed if you are the 'original' element
         int amount = getNumberOfOccurences();
-        if(amount > 1) {
-            if(amount > this.minOccurence) {
+        if (amount > 1) {
+            if (amount > this.minOccurence) {
                 return (!isOriginalElement());
             }
         }
         return false;
     }
-
 
     public boolean isOriginallySet() {
         return originallySet;
@@ -170,19 +173,18 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     @Override
-    public boolean isRequired(){
+    public boolean isRequired() {
         return this.minOccurence > 0;
     }
 
-
     @Override
     public boolean isOriginalElement() {
-        if(parent == null) {
+        if (parent == null) {
             return true;
         }
         List<SDOParsedXmlElement> elems = parent.getChildren();
-        for(SDOParsedXmlElement ele : elems) {
-            if(ele.getProperty().equals(this.property)) {
+        for (SDOParsedXmlElement ele : elems) {
+            if (ele.getProperty().equals(this.property)) {
                 return (ele.getId() == this.id);
 
             }
@@ -192,19 +194,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     @Override
-    public boolean isGuiType(String typeName){
-        if(getGuiTypeAsString().equals(typeName)){
+    public boolean isGuiType(String typeName) {
+        if (getGuiTypeAsString().equals(typeName)) {
             return true;
         }
         return false;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
     /**
@@ -216,50 +210,42 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     /**
-     * @param guiType the guiType to set
+     * @param id the id to set
      */
-    public void setGuiType(GuiType guiType) {
-        this.guiType = guiType;
+    public void setId(String id) {
+        this.id = id;
     }
-
 
     @Override
     public GuiType getGuiType() {
         if (guiType.equals(GuiType.NA)) {
-            String source = "http://doms.statsbiblioteket.dk/gui"; // FacesContext.getCurrentInstance().getExternalContext().getInitParameter("appInfoSource");
+            String source
+                    = "http://doms.statsbiblioteket.dk/gui"; // FacesContext.getCurrentInstance().getExternalContext().getInitParameter("appInfoSource");
             String appinfo = getAppInfo(property, source);
-            if (appinfo!=null) {
+            if (appinfo != null) {
                 if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.inputfield.toString())) {
                     guiType = SDOParsedXmlElementImpl.GuiType.inputfield;
-                }
-                else if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.textarea.toString())) {
+                } else if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.textarea.toString())) {
                     guiType = SDOParsedXmlElementImpl.GuiType.textarea;
-                }
-                else if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.uneditable.toString())) {
+                } else if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.uneditable.toString())) {
                     guiType = SDOParsedXmlElementImpl.GuiType.uneditable;
-                }
-                else if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.invisible.toString())) {
+                } else if (appinfo.equals(SDOParsedXmlElementImpl.GuiType.invisible.toString())) {
                     guiType = SDOParsedXmlElementImpl.GuiType.invisible;
                 }
 
             }
         }
-        if ((guiType.equals(GuiType.NA)) && (parent!=null)) {
+        if ((guiType.equals(GuiType.NA)) && (parent != null)) {
             setGuiType(parent.getGuiType());
         }
         return this.guiType;
     }
 
-    public static String getAppInfo(Property property, String source) {
-        String appinfo = null;
-        org.eclipse.emf.ecore.EModelElement eModelElement;
-        org.eclipse.emf.ecore.EAnnotation annotation;
-        eModelElement = (org.eclipse.emf.ecore.EModelElement)property;
-        annotation = eModelElement.getEAnnotation(source);
-        if (annotation!=null) {
-            appinfo = (String)annotation.getDetails().get("appinfo");
-        }
-        return appinfo;
+    /**
+     * @param guiType the guiType to set
+     */
+    public void setGuiType(GuiType guiType) {
+        this.guiType = guiType;
     }
 
     /**
@@ -271,24 +257,13 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         if (guiType.equals(GuiType.NA)) {
             getGuiType();
         }
-        if ((guiType.equals(GuiType.NA)) && (parent!=null)) {
+        if ((guiType.equals(GuiType.NA)) && (parent != null)) {
             setGuiType(parent.getGuiType());
         }
         if (guiType.equals(GuiType.NA)) {
             return GuiType.inputfield.toString();
         }
         return guiType.toString();
-    }
-
-    /**
-     * @param property
-     *            the property to set
-     */
-    public void setProperty(Property property) {
-        this.property = property;
-
-        this.minOccurence = SDOUtil.getLowerBound(property);
-        this.maxOccurence = SDOUtil.getUpperBound(property);
     }
 
     /**
@@ -300,11 +275,13 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     /**
-     * @param dataobject
-     *            the dataobject to set
+     * @param property the property to set
      */
-    public void setDataobject(DataObject dataobject) {
-        this.dataobject = dataobject;
+    public void setProperty(Property property) {
+        this.property = property;
+
+        this.minOccurence = SDOUtil.getLowerBound(property);
+        this.maxOccurence = SDOUtil.getUpperBound(property);
     }
 
     /**
@@ -316,11 +293,10 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     /**
-     * @param parent
-     *            the parent to set
+     * @param dataobject the dataobject to set
      */
-    public void setParent(SDOParsedXmlElement parent) {
-        this.parent = parent;
+    public void setDataobject(DataObject dataobject) {
+        this.dataobject = dataobject;
     }
 
     /**
@@ -331,22 +307,35 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         return parent;
     }
 
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(SDOParsedXmlElement parent) {
+        this.parent = parent;
+    }
+
     @Override
     public SDOParsedXmlElement create() {
         SDOParsedXmlElementImpl myElem;
-        if ((this.property.isMany()) && this.property.getType().isDataType())
-        {
+        if ((this.property.isMany()) && this.property.getType().isDataType()) {
             List values = this.getDataobject().getList(this.getProperty());
-            myElem = new SDOParsedXmlElementImpl(this.myDocument, this.parent, this.getDataobject(),
-                    this.property, parent.getChildren().indexOf(this) + 1);
+            myElem = new SDOParsedXmlElementImpl(
+                    this.myDocument,
+                    this.parent,
+                    this.getDataobject(),
+                    this.property,
+                    parent.getChildren().indexOf(this) + 1);
             myElem.setIndex(values.size());
             values.add(null);
-        }
-        else {
+        } else {
             DataObject myDo = getDataobject().getContainer().createDataObject(
                     getProperty().getName());
-            myElem = new SDOParsedXmlElementImpl(this.myDocument, this.parent, myDo,
-                    this.property, parent.getChildren().indexOf(this) + 1);
+            myElem = new SDOParsedXmlElementImpl(
+                    this.myDocument,
+                    this.parent,
+                    myDo,
+                    this.property,
+                    parent.getChildren().indexOf(this) + 1);
 
             if (!isLeaf()) {
                 createChildren(myElem);
@@ -378,29 +367,19 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
     @Override
     public void delete() {
-        if ((this.property.isMany()) && this.property.getType().isDataType())
-        {
+        if ((this.property.isMany()) && this.property.getType().isDataType()) {
             List values = this.getDataobject().getList(this.getProperty());
             values.remove(this.getIndex());
             parent.getChildren().remove(this);
-            for (SDOParsedXmlElement element : parent.getChildren())
-            {
-                if (element.getIndex()>this.getIndex()) {
-                    element.setIndex(element.getIndex()-1);
+            for (SDOParsedXmlElement element : parent.getChildren()) {
+                if (element.getIndex() > this.getIndex()) {
+                    element.setIndex(element.getIndex() - 1);
                 }
             }
-        }
-        else
-        {
+        } else {
             parent.getChildren().remove(this);
             dataobject.delete();
         }
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label.toLowerCase().replaceFirst(String.valueOf(label.charAt(0)), String.valueOf(label.charAt(0)).toUpperCase());
-
     }
 
     /**
@@ -415,16 +394,10 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         }
     }
 
-    /**
-     * @param value
-     *            the value to set
-     */
     @Override
-    public void setValue(Object value) {
-        this.value = value;
-        if (value == null){
-            originallySet = true;
-        }
+    public void setLabel(String label) {
+        this.label = label.toLowerCase()
+                          .replaceFirst(String.valueOf(label.charAt(0)), String.valueOf(label.charAt(0)).toUpperCase());
 
     }
 
@@ -434,6 +407,18 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     @Override
     public Object getValue() {
         return value;
+    }
+
+    /**
+     * @param value the value to set
+     */
+    @Override
+    public void setValue(Object value) {
+        this.value = value;
+        if (value == null) {
+            originallySet = true;
+        }
+
     }
 
     @Override
@@ -449,14 +434,6 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     /**
-     * @param index
-     *            the index to set
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    /**
      * @return the index
      */
     @Override
@@ -464,13 +441,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         return index;
     }
 
-
     /**
-     * @param children
-     *            the children to set
+     * @param index the index to set
      */
-    public void setChildren(ArrayList<SDOParsedXmlElement> children) {
-        this.children = children;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**
@@ -479,6 +454,13 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     @Override
     public ArrayList<SDOParsedXmlElement> getChildren() {
         return children;
+    }
+
+    /**
+     * @param children the children to set
+     */
+    public void setChildren(ArrayList<SDOParsedXmlElement> children) {
+        this.children = children;
     }
 
     @Override
@@ -495,10 +477,8 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         if (isLeaf()) {
             //System.out.println("LeafDOMSXmlElement.submit. property = " + getProperty().getName());
 
-            if (this.getValue() != null)
-            {
-                if (getProperty().getType().isSequenced())
-                {
+            if (this.getValue() != null) {
+                if (getProperty().getType().isSequenced()) {
                     if (context.getXSDHelper().isMixed(getProperty().getType())) {
                         Sequence seq = getDataobject().getSequence();
                         if (seq.size() == 0) {
@@ -514,9 +494,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     if (getProperty().getType().getInstanceClass() != null) {
 
                         Object value;
@@ -526,35 +504,43 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                             if (this.getValue().toString().isEmpty() && !isRequired()) {
                                 value = "";
                             } else {
-                                throw new XMLParseException("Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this.getProperty().getType().getName(), e);
+                                throw new XMLParseException(
+                                        "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
+                                                .getProperty()
+                                                .getType()
+                                                .getName(),
+                                        e);
                             }
                         }
-                        if (value.toString().isEmpty()){
-                            if (this.isOriginallySet()){
+                        if (value.toString().isEmpty()) {
+                            if (this.isOriginallySet()) {
                                 value = PLACEHOLDER;
                             }
                         }
 
-                        if (this.getProperty().isMany())
-                        {
+                        if (this.getProperty().isMany()) {
                             //TODO here is the list bug. Please find out how to correctly add to lists
                             getDataobject().getList(this.getProperty());
                             List values = this.getDataobject().getList(this.getProperty());
-                            if (getIndex() +1 > values.size()){
+                            if (getIndex() + 1 > values.size()) {
                                 values.add(value);
                             } else {
-                                values.set(getIndex(),value);
+                                values.set(getIndex(), value);
                             }
 
-                        }
-                        else {
+                        } else {
                             if (value.toString().isEmpty() && !isRequired()) {
                                 this.getDataobject().unset(this.getProperty());
                             } else {
                                 try {
                                     this.getDataobject().set(this.getProperty(), value);
                                 } catch (ClassCastException e) {
-                                    throw new XMLParseException("Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this.getProperty().getType().getName(), e);
+                                    throw new XMLParseException(
+                                            "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
+                                                    .getProperty()
+                                                    .getType()
+                                                    .getName(),
+                                            e);
                                 }
                             }
                         }
@@ -577,19 +563,16 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         return getLabel();
     }
 
-    private String valueToSDOType(HelperContext context)
-    {
+    private String valueToSDOType(HelperContext context) {
         String result = "";
         String typeName = this.property.getType().getName();
         if (typeName.equals("YearMonthDay")) {
             if (this.getValue() instanceof String) {
-                result = (String)this.getValue();
+                result = (String) this.getValue();
+            } else if (this.getValue() instanceof Date) {
+                result = context.getDataHelper().toYearMonthDay((Date) this.getValue());
             }
-            else if (this.getValue() instanceof Date) {
-                result = context.getDataHelper().toYearMonthDay((Date)this.getValue());
-            }
-        }
-        else {
+        } else {
             result = getValue().toString();
         }
 

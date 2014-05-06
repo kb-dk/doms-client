@@ -1,9 +1,7 @@
 package dk.statsbiblioteket.doms.client.relations;
 
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
-import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 
-import java.io.StringWriter;
 import java.util.Set;
 
 /**

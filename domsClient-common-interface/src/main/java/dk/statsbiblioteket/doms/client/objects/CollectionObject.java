@@ -11,12 +11,12 @@ import java.util.Set;
  * Time: 11:16 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface CollectionObject extends DataObject{
+public interface CollectionObject extends DataObject {
 
     public Set<TemplateObject> getEntryTemplates(String viewangle) throws ServerOperationFailed;
 
     public Set<ContentModelObject> getEntryContentModels(String viewangle) throws ServerOperationFailed;
-    
+
     public Set<ContentModelObject> getContentModels() throws ServerOperationFailed;
 
     public void removeObject(DigitalObject object) throws ServerOperationFailed;

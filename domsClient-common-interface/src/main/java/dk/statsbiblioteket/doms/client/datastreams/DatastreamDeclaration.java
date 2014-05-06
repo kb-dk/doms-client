@@ -3,7 +3,6 @@ package dk.statsbiblioteket.doms.client.datastreams;
 
 import dk.statsbiblioteket.doms.client.utils.Constants;
 
-
 import java.util.List;
 
 /**
@@ -26,7 +25,6 @@ public interface DatastreamDeclaration {
     Datastream getSchema();
 
     void setSchema(Datastream schema);
-
 
 
 }

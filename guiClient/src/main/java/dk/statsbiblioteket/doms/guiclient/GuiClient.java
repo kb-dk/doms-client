@@ -15,10 +15,11 @@ import java.util.List;
 public interface GuiClient extends DomsClient {
 
     /**
-     * @param   query       the search string.
-     * @param   offset      the first result of the search
-     * @param   pageLength  the max number of results
-     * @return  A list of SearchResult objects
+     * @param query      the search string.
+     * @param offset     the first result of the search
+     * @param pageLength the max number of results
+     *
+     * @return A list of SearchResult objects
      */
     SearchResultList search(String query, int offset, int pageLength) throws ServerOperationFailed;
 

@@ -1,14 +1,19 @@
 package dk.statsbiblioteket.doms.client.impl.relations;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
-import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.impl.ontology.OWLObjectProperty;
 import dk.statsbiblioteket.doms.client.impl.ontology.ParsedOwlOntology;
 import dk.statsbiblioteket.doms.client.objects.ContentModelObject;
+import dk.statsbiblioteket.doms.client.objects.DigitalObjectFactory;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,10 +25,9 @@ import java.util.*;
 public class RelationModelImpl implements RelationModel {
 
     ContentModelObject myModel;
+    Set<RelationDeclaration> declarations;
     private ParsedOwlOntology ontology;
     private DigitalObjectFactory factory;
-
-    Set<RelationDeclaration> declarations;
 
     public RelationModelImpl(ContentModelObject myModel, ParsedOwlOntology ontology, DigitalObjectFactory factory) {
         this.myModel = myModel;
@@ -38,7 +42,7 @@ public class RelationModelImpl implements RelationModel {
 
     @Override
     public synchronized Set<RelationDeclaration> getRelationDeclarations() throws ServerOperationFailed {
-        if (declarations != null){
+        if (declarations != null) {
             return Collections.unmodifiableSet(declarations);
         }
         Map<String, Set<String>> predicateToAngle = new HashMap<String, Set<String>>();
@@ -48,9 +52,9 @@ public class RelationModelImpl implements RelationModel {
             List<String> rels = myModel.getRelationsWithViewAngle(viewAngle);
             for (String rel : rels) {
                 Set<String> set = predicateToAngle.get(rel);
-                if (set == null){
+                if (set == null) {
                     set = new HashSet<String>();
-                    predicateToAngle.put(rel,set);
+                    predicateToAngle.put(rel, set);
                 }
                 set.add(viewAngle);
             }
@@ -58,9 +62,9 @@ public class RelationModelImpl implements RelationModel {
             List<String> invrels = myModel.getInverseRelationsWithViewAngle(viewAngle);
             for (String invrel : invrels) {
                 Set<String> set = predicateToAngle.get(invrel);
-                if (set == null){
+                if (set == null) {
                     set = new HashSet<String>();
-                    predicateToAngle.put(invrel,set);
+                    predicateToAngle.put(invrel, set);
                 }
                 set.add(viewAngle);
             }
@@ -69,11 +73,12 @@ public class RelationModelImpl implements RelationModel {
         declarations = new HashSet<RelationDeclaration>();
         for (OWLObjectProperty owlObjectProperty : ontology.getOwlObjectProperties()) {
             String predicate = owlObjectProperty.getMappingId();
-            RelationDeclaration declaration = new RelationDeclarationImpl(predicate,
-                                                                          owlObjectProperty,
-                                                                          predicateToAngle.get(predicate),
-                                                                          predicateToAngleInverse.get(predicate),
-                                                                          factory);
+            RelationDeclaration declaration = new RelationDeclarationImpl(
+                    predicate,
+                    owlObjectProperty,
+                    predicateToAngle.get(predicate),
+                    predicateToAngleInverse.get(predicate),
+                    factory);
             declarations.add(declaration);
         }
         return Collections.unmodifiableSet(declarations);
