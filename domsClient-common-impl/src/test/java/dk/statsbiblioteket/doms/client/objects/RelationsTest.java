@@ -59,8 +59,7 @@ public class RelationsTest extends TestBase {
         object.save();
 
         LiteralRelation newRel = object.addLiteralRelation(
-                "http://domclient.unittests/#testRelationPredicateLiteral",
-                "literalValue");
+                "http://domclient.unittests/#testRelationPredicateLiteral", "literalValue");
         object.save();
 
         setUp();
@@ -106,8 +105,7 @@ public class RelationsTest extends TestBase {
         object.save();
 
         Relation newRel = object.addObjectRelation(
-                "http://domclient.unittests/#testRelationPredicate",
-                object.getType().get(0));
+                "http://domclient.unittests/#testRelationPredicate", object.getType().get(0));
         object.save();
 
         setUp();

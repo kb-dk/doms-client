@@ -174,9 +174,8 @@ public class SdoTest extends TestBase {
             public String getContents() throws ServerOperationFailed {
                 try {
                     return Strings.flush(
-                            Thread.currentThread()
-                                  .getContextClassLoader()
-                                  .getResourceAsStream("MODS.xml"));
+                            Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xml")
+                                        );
                 } catch (IOException e) {
                     throw new ServerOperationFailed(e);
                 }

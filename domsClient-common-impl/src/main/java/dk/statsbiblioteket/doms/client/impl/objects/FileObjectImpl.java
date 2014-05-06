@@ -59,12 +59,7 @@ public class FileObjectImpl extends DataObjectImpl implements FileObject {
     public void setFileUrl(URL url, String checksum, String formatURI) throws ServerOperationFailed {
         try {
             api.addFileFromPermanentURL(
-                    this.getPid(),
-                    url.getFile(),
-                    checksum,
-                    url.toString(),
-                    formatURI,
-                    "Uploaded file from client");
+                    this.getPid(), url.getFile(), checksum, url.toString(), formatURI, "Uploaded file from client");
             if (getFileUrl() == null) {
                 profile = api.getObjectProfile(this.getPid());
                 DatastreamProfile contentDSprofile = null;

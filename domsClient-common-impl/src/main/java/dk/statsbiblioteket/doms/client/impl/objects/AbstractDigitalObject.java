@@ -255,10 +255,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             if (frelation.getPredicate().equals(predicate)) {//TODO remove?
                 result.add(
                         new ObjectRelationImpl(
-                                frelation.getSubject(),
-                                frelation.getPredicate(),
-                                frelation.getObject(),
-                                factory));
+                                frelation.getSubject(), frelation.getPredicate(), frelation.getObject(), factory)
+                          );
             }
         }
         return result;
@@ -281,17 +279,13 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             if (frelation.isLiteral()) {
                 relations.add(
                         new LiteralRelationImpl(
-                                this.getPid(),
-                                frelation.getPredicate(),
-                                frelation.getObject(),
-                                factory));
+                                this.getPid(), frelation.getPredicate(), frelation.getObject(), factory)
+                             );
             } else {
                 relations.add(
                         new ObjectRelationImpl(
-                                this.getPid(),
-                                frelation.getPredicate(),
-                                frelation.getObject(),
-                                factory));
+                                this.getPid(), frelation.getPredicate(), frelation.getObject(), factory)
+                             );
             }
         }
     }
@@ -318,10 +312,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         for (dk.statsbiblioteket.doms.central.Relation frelation : frelations) {
             inverseRelations.add(
                     new ObjectRelationImpl(
-                            frelation.getSubject(),
-                            frelation.getPredicate(),
-                            frelation.getObject(),
-                            factory));
+                            frelation.getSubject(), frelation.getPredicate(), frelation.getObject(), factory)
+                                );
         }
     }
 
@@ -346,7 +338,8 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             } else {
                 throw new ServerOperationFailed(
                         "Object '" + pid + "' has the content model '" + contentModel +
-                        "' declared, but this is not a content model");
+                        "' declared, but this is not a content model"
+                );
             }
         }
     }
@@ -847,9 +840,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
         for (Link linkSoap : linksSoap) {
             LinkPattern linkPattern = new LinkPatternImpl(
-                    linkSoap.getName(),
-                    linkSoap.getDescription(),
-                    linkSoap.getValue());
+                    linkSoap.getName(), linkSoap.getDescription(), linkSoap.getValue());
             links.add(linkPattern);
         }
 

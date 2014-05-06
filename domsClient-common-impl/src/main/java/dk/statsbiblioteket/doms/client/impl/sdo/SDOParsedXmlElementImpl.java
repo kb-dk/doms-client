@@ -331,11 +331,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             DataObject myDo = getDataobject().getContainer().createDataObject(
                     getProperty().getName());
             myElem = new SDOParsedXmlElementImpl(
-                    this.myDocument,
-                    this.parent,
-                    myDo,
-                    this.property,
-                    parent.getChildren().indexOf(this) + 1);
+                    this.myDocument, this.parent, myDo, this.property, parent.getChildren().indexOf(this) + 1);
 
             if (!isLeaf()) {
                 createChildren(myElem);
@@ -508,8 +504,8 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                                         "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
                                                 .getProperty()
                                                 .getType()
-                                                .getName(),
-                                        e);
+                                                .getName(), e
+                                );
                             }
                         }
                         if (value.toString().isEmpty()) {
@@ -539,8 +535,8 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                                             "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
                                                     .getProperty()
                                                     .getType()
-                                                    .getName(),
-                                            e);
+                                                    .getName(), e
+                                    );
                                 }
                             }
                         }

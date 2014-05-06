@@ -128,7 +128,7 @@ public class DOMSXMLUtils {
             for (int i = 0; i < attrs.getLength(); i++) {
                 Node attr = attrs.item(i);
                 /*
-				System.out.println("attr.getNodeName() = " + attr.getNodeName());
+                System.out.println("attr.getNodeName() = " + attr.getNodeName());
 				System.out.println("attr.getLocalName() = " + attr.getLocalName());
 				System.out.println("attr.getNodeValue() = " + attr.getNodeValue());
 				*/

@@ -101,7 +101,7 @@ public class XmlSchemaWithResolver extends AbstractXMLObject implements EntityRe
 		factory.setNamespaceAware(true);
 
 		*//*try
-		{
+        {
 			factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
 			factory.setValidating(true);
 		} 

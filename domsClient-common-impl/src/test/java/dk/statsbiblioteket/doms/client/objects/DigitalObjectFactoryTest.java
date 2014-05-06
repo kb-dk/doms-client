@@ -74,7 +74,8 @@ public class DigitalObjectFactoryTest extends TestBase {
         after = System.currentTimeMillis();
         System.out.println(
                 "Time to resolve all datastreams in object1=" + (after - before) + "ms, as there was " + object.getDatastreams()
-                                                                                                               .size() + " datastreams");
+                                                                                                               .size() + " datastreams"
+                          );
 
     }
 

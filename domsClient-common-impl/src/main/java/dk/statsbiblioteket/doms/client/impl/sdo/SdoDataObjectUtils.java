@@ -79,12 +79,7 @@ public class SdoDataObjectUtils {
                     isEmpty = (isEmpty && temp);
                 } else if (!xsdHelper.isAttribute(p)) {
                     temp = handlePropertyValuePair(
-                            helperContext,
-                            parent,
-                            dataObject,
-                            parentProperty,
-                            p,
-                            seq.getValue(i));
+                            helperContext, parent, dataObject, parentProperty, p, seq.getValue(i));
                     isEmpty = (isEmpty && temp);
                 }
             }

@@ -29,9 +29,7 @@ public class GuiClientImpl extends AbstractDomsClient implements GuiClient {
     public SearchResultList search(String query, int offset, int pageLength) throws ServerOperationFailed {
         try {
             dk.statsbiblioteket.doms.central.SearchResultList searchResultList = domsAPI.findObjects(
-                    query,
-                    offset,
-                    pageLength);
+                    query, offset, pageLength);
 
             List<SearchResult> cresults = new ArrayList<SearchResult>();
 

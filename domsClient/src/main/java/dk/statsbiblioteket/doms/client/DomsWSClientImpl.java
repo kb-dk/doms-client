@@ -116,8 +116,7 @@ public class DomsWSClientImpl implements DomsWSClient {
 
     public void setCredentials(URL domsWSAPIEndpoint, String userName, String password) {
         domsAPI = new CentralWebserviceService(
-                domsWSAPIEndpoint,
-                CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
+                domsWSAPIEndpoint, CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
         Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI).getRequestContext();
         domsAPILogin.put(BindingProvider.USERNAME_PROPERTY, userName);
@@ -130,8 +129,7 @@ public class DomsWSClientImpl implements DomsWSClient {
             return domsAPI.newObject(templatePID, new ArrayList<String>(), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed creating a new object from template: " + templatePID, exception
-            );
+                    "Failed creating a new object from template: " + templatePID, exception);
         }
     }
 
@@ -141,8 +139,7 @@ public class DomsWSClientImpl implements DomsWSClient {
             return domsAPI.newObject(templatePID, oldIdentifiers, comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed creating a new object from template: " + templatePID, exception
-            );
+                    "Failed creating a new object from template: " + templatePID, exception);
         }
     }
 
@@ -157,8 +154,7 @@ public class DomsWSClientImpl implements DomsWSClient {
         } catch (Exception e) {
             throw new ServerOperationFailed(
                     "Failed creating a new file object (template PID: " + templatePID + ") from this file information: " + fileInfo,
-                    e
-            );
+                    e);
         }
     }
 
@@ -176,8 +172,7 @@ public class DomsWSClientImpl implements DomsWSClient {
         } catch (Exception e) {
             throw new ServerOperationFailed(
                     "Failed adding a file to a file object (file object PID: " + fileObjectPID + ") from this file information: " + fileInfo,
-                    e
-            );
+                    e);
         }
     }
 
@@ -286,9 +281,8 @@ public class DomsWSClientImpl implements DomsWSClient {
             domsrel.setSubject(relation.getObject());
             domsrel.setPredicate(relation.getPredicate());
             domsrel.setObject(
-                    relation.getSubject()
-                            .getPid()
-                            .toString()); //TODO: Correct doms Central to new relation objects
+                    relation.getSubject().getPid().toString()
+                             ); //TODO: Correct doms Central to new relation objects
 
             domsAPI.deleteRelation(relation.getObject(), domsrel, comment);
         } catch (Exception exception) {
@@ -322,8 +316,7 @@ public class DomsWSClientImpl implements DomsWSClient {
             domsAPI.markPublishedObject(Arrays.asList(pidsToPublish), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed marking objects as published. PIDs: " + pidsToPublish, exception
-            );
+                    "Failed marking objects as published. PIDs: " + pidsToPublish, exception);
         }
     }
 
@@ -332,8 +325,7 @@ public class DomsWSClientImpl implements DomsWSClient {
             domsAPI.markInProgressObject(Arrays.asList(pidsToUnpublish), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed marking objects as unpublished. PIDs: " + pidsToUnpublish, exception
-            );
+                    "Failed marking objects as unpublished. PIDs: " + pidsToUnpublish, exception);
         }
 
     }
@@ -343,8 +335,7 @@ public class DomsWSClientImpl implements DomsWSClient {
             domsAPI.deleteObject(Arrays.asList(pidsToDelete), comment);
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed marking objects as deleted. PIDs: " + pidsToDelete, exception
-            );
+                    "Failed marking objects as deleted. PIDs: " + pidsToDelete, exception);
         }
     }
 
@@ -357,8 +348,7 @@ public class DomsWSClientImpl implements DomsWSClient {
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed retrieving the modification time-stamp for the " + "collection with this PID: '" + collectionPID + "' and this viewID: '" + viewID + "'.",
-                    exception
-            );
+                    exception);
         }
     }
 
@@ -367,19 +357,13 @@ public class DomsWSClientImpl implements DomsWSClient {
                                                            long maxRecordCount) throws ServerOperationFailed {
         try {
             return domsAPI.getIDsModified(
-                    timeStamp,
-                    collectionPID,
-                    viewID,
-                    objectState,
-                    (int) offsetIndex,
-                    (int) maxRecordCount);
+                    timeStamp, collectionPID, viewID, objectState, (int) offsetIndex, (int) maxRecordCount);
             // TODO: The casts to int should be removed once the DOMS web
             // service interface has been corrected to accept long!
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed retrieving objects (collectionPID = " + collectionPID + ") associated with the specified view " + "(viewID = " + viewID + ") and with the specified state (" + objectState + "), modified later than the " + "specified time-stamp (" + timeStamp + "). The specified offset index was " + offsetIndex + " and the requested max. amount of records was " + maxRecordCount + ".",
-                    exception
-            );
+                    exception);
         }
     }
 
@@ -390,8 +374,7 @@ public class DomsWSClientImpl implements DomsWSClient {
         } catch (Exception exception) {
             throw new ServerOperationFailed(
                     "Failed retrieving the view record (viewID=" + viewID + ") containing the specified object (objectPID = " + entryObjectPID + ").",
-                    exception
-            );
+                    exception);
         }
     }
 
@@ -419,8 +402,7 @@ public class DomsWSClientImpl implements DomsWSClient {
             return new ByteArrayInputStream(domsAPI.getDatastreamContents(pid, ds).getBytes());
         } catch (Exception exception) {
             throw new ServerOperationFailed(
-                    "Failed getting datastream ('" + ds + "') on DOMS object (PID = " + pid + ").",
-                    exception);
+                    "Failed getting datastream ('" + ds + "') on DOMS object (PID = " + pid + ").", exception);
         }
     }
 

@@ -158,7 +158,8 @@ public interface DomsWSClient {
      *                file object for.
      *
      * @return PID of the DOMS file object.
-     * @throws NoObjectFound                                                    if there does not exist DOMS file object
+     * @throws NoObjectFound                                                    if there does not exist DOMS file
+     *                                                                          object
      *                                                                          associated with
      *                                                                          <code>fileURL</code>.
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
@@ -174,7 +175,8 @@ public interface DomsWSClient {
      * @param oldIdentifier the old identifier of the object
      *
      * @return PID of the DOMS file object.
-     * @throws NoObjectFound                                                    if there does not exist DOMS file object
+     * @throws NoObjectFound                                                    if there does not exist DOMS file
+     *                                                                          object
      *                                                                          associated with
      *                                                                          <code>fileURL</code>.
      * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if any errors are encountered while
