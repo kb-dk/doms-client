@@ -549,11 +549,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     private void addLeaf(SDOParsedXmlElement currentElement, final DataObject currentDataObject,
                          final Property currentProperty, Object value, int sequenceIndex) {
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(
-                this,
-                currentElement,
-                currentDataObject,
-                currentProperty);
-        newLeaf.setValue(value);
+                this, currentElement, currentDataObject, currentProperty);
+        if (value != null) {
+            newLeaf.setValue(value.toString());
+        }
         newLeaf.setOriginallySet(value != null);
         newLeaf.setLabel(currentProperty.getName());
         newLeaf.setIndex(sequenceIndex);
