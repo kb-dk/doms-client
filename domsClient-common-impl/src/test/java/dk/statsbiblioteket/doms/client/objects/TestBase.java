@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class TestBase {
 
-    public static final String victimProgram = "uuid:068e1e5f-8cdb-4389-9a9d-0bc116d370f2";
-    public static final String victimShard = "uuid:9cd7763a-e95a-45b6-af2b-c87ae28e10f8";
+    public static final String victimProgram = "uuid:fafda919-cd27-4f7b-bc6d-cdedb95e85a7";
+    public static final String victimShard = "uuid:f077bb15-19e5-457a-a98b-980d1ecb1daa";
     private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
             "http://central.doms.statsbiblioteket.dk/", "CentralWebserviceService");
     public DigitalObjectFactory factory;
@@ -80,13 +80,14 @@ public class TestBase {
     }
 
     protected void parseDoc(SDOParsedXmlDocument doc) {
+        System.out.println("'" + doc.getRootSDOParsedXmlElement().getLabel() + "'");
         parseTree(doc.getRootSDOParsedXmlElement(), "");
     }
 
 
     protected void parseTree(SDOParsedXmlElement doc, String indryk) {
 
-        System.out.println(indryk + "'" + doc.getLabel() + "'");
+
         indryk = indryk + "   ";
         ArrayList<SDOParsedXmlElement> children = doc.getChildren();
         for (SDOParsedXmlElement child : children) {
@@ -122,32 +123,6 @@ public class TestBase {
                 parseTree(child, indryk + "    ");
             }
         }
-    }
-
-    private Object getCrapValue(SDOParsedXmlElement child) {
-        ArrayList<SDOParsedXmlElement> children = child.getChildren();
-        if (children != null && children.size() > 0) {
-            SDOParsedXmlElement firstChild = children.get(0);
-            if (firstChild != null && firstChild.getChildren().size() == 0) {
-                if (firstChild.getLabel().equals("Value")) {
-                    return firstChild.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    private boolean isValueCrap(SDOParsedXmlElement child) {
-        ArrayList<SDOParsedXmlElement> children = child.getChildren();
-        if (children != null && children.size() > 0) {
-            SDOParsedXmlElement firstChild = children.get(0);
-            if (firstChild != null && firstChild.getChildren().size() == 0) {
-                if (firstChild.getLabel().equals("Value")) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 }
