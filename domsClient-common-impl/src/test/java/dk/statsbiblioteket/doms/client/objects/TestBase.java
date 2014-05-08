@@ -27,12 +27,12 @@ public class TestBase {
 
     private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
             "http://central.doms.statsbiblioteket.dk/", "CentralWebserviceService");
-    public DigitalObjectFactory factory;
+
     private URL domsWSAPIEndpoint;
     private String userName = "fedoraAdmin";
     private String password = "fedoraAdminPass";
     public DigitalObjectFactory factory;
-    public static final String victimProgram = "uuid:5936b1f1-21fc-47c8-b215-aaac1dc1d778";
+    public static final String victimProgram = "uuid:fafda919-cd27-4f7b-bc6d-cdedb95e85a7";
 
     public static  final String victimShard = "uuid:c171df65-9ffb-4011-9fae-4f6dccad9b9c";
 
