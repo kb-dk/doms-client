@@ -9,14 +9,20 @@ import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.Strings;
+import dk.statsbiblioteket.util.xml.DOM;
+import dk.statsbiblioteket.util.xml.XMLUtil;
+import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -194,6 +200,18 @@ public class SdoTest extends TestBase {
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsDecl, modsStream);
 
+        String xmlOriginal = modsStream.getContents();
+        String xmlFinal = sdodoc.dumpToString();
+
+
+        Document originalDocument = DOM.stringToDOM(xmlOriginal, true);
+        Document finalDocument = DOM.stringToDOM(xmlFinal, true);
+        XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
+
+        String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:relatedItem/mods:identifier[@type='reel number']/@invalid");
+        assertEquals("", invalidAttributeValue);
+
+        System.out.println(xmlFinal);
         parseDoc(sdodoc);
 
     }

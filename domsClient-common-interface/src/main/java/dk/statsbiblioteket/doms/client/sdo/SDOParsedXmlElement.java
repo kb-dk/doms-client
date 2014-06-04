@@ -68,6 +68,9 @@ public interface SDOParsedXmlElement {
 
     void remove(SDOParsedXmlElement xmlElement);
 
+    boolean hasNonEmptyDescendant();
+    void setHasNonEmptyDescendant(boolean b);
+
     String toString();
 
     public static enum GuiType {

@@ -27,6 +27,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     private String label;
     private Object value;
     private boolean originallySet;
+    private boolean hasNonEmptyDescendant;
     private int maxOccurence = -1;
     private int minOccurence = -1;
     /**
@@ -469,6 +470,16 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         children.remove(xmlElement);
     }
 
+    @Override
+    public boolean hasNonEmptyDescendant() {
+        return hasNonEmptyDescendant;
+    }
+
+    @Override
+    public void setHasNonEmptyDescendant(boolean b) {
+        hasNonEmptyDescendant = b;
+    }
+
     public void submit(HelperContext context) throws XMLParseException {
         if (isLeaf()) {
             //System.out.println("LeafDOMSXmlElement.submit. property = " + getProperty().getName());
@@ -477,15 +488,17 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 if (getProperty().getType().isSequenced()) {
                     if (context.getXSDHelper().isMixed(getProperty().getType())) {
                         Sequence seq = getDataobject().getSequence();
-                        if (seq.size() == 0) {
-                            if (getValue() != null) {
-                                seq.addText((String) getValue());
-                            }
-                        } else {
-                            for (int i = 0; i < seq.size(); i++) {
-                                Property p = seq.getProperty(i);
-                                if (p == null) {
-                                    seq.setValue(i, valueToSDOType(context));
+                        if (seq != null) {
+                            if (seq.size() == 0) {
+                                if (getValue() != null) {
+                                    seq.addText((String) getValue());
+                                }
+                            } else {
+                                for (int i = 0; i < seq.size(); i++) {
+                                    Property p = seq.getProperty(i);
+                                    if (p == null) {
+                                        seq.setValue(i, valueToSDOType(context));
+                                    }
                                 }
                             }
                         }

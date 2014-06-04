@@ -353,8 +353,11 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
         if (grandChildProperties.isEmpty()) {//no grand children so add all children as leafs here
-            for (DataObject childDataObject : childDataObjects) {
-                handleLeafElement(currentElement, currentDataObject, childProperty, childDataObject);
+            for (int i = 0; i < childDataObjects.size(); i++) {
+                DataObject childDataObject = childDataObjects.get(i);
+                addLeaf(currentElement, childDataObject, childProperty, childDataObject.get(i), i);
+
+               // handleLeafElement(currentElement, currentDataObject, childProperty, childDataObject);
             }
         } else {
             //if there is grand child property, this is a node in the tree, not a leaf
@@ -465,7 +468,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
      *
      * @param currentElement
      * @param currentDataObject
-     * @param currentProperty
+     * @param currentProperty the child property we are handling
      * @param childObject
      */
     private void handleLeafElement(SDOParsedXmlElement currentElement, DataObject currentDataObject,
@@ -474,6 +477,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         Object value = null;
         int sequenceIndex = 0;
         if (currentDataObject.isSet(currentProperty)) { //if the property is set
+
             if (currentProperty.getType().isSequenced()) { // and is of sequenced type
                 if (getXsdHelper().isMixed(currentProperty.getType())) { //if the type is mixed, the order matters
                     Sequence seq = childObject.getSequence();
@@ -550,13 +554,25 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                          final Property currentProperty, Object value, int sequenceIndex) {
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(
                 this, currentElement, currentDataObject, currentProperty);
-        if (value != null) {
+
+
+        if (value != null && currentDataObject.isSet(currentProperty)) {
+            //if (value!=null) {
             newLeaf.setValue(value.toString());
+            newLeaf.setOriginallySet(true);
+            SDOParsedXmlElement parent = newLeaf.getParent();
+            while (parent != null) {
+                parent.setHasNonEmptyDescendant(true);
+                parent = parent.getParent();
+            }
+        } else {
+            newLeaf.setOriginallySet(false);
         }
-        newLeaf.setOriginallySet(value != null);
         newLeaf.setLabel(currentProperty.getName());
         newLeaf.setIndex(sequenceIndex);
         currentElement.add(newLeaf);
+
+        //           String[] allowedValues = new String[] {"", value.toString()};
 
         try {
             List<String> valueEnum = (List<String>) SDOUtil.getEnumerationFacet(currentProperty.getType());

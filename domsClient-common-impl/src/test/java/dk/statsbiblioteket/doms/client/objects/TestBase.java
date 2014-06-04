@@ -103,6 +103,9 @@ public class TestBase {
                     if (child.getRemovable()) {
                         System.out.print("(-)");
                     }
+                    if (child.hasNonEmptyDescendant()) {
+                        System.out.print("(d)");
+                    }
                 }
                 System.out.print("  type=" + child.getGuiTypeAsString());
                 System.out.println();
@@ -118,6 +121,9 @@ public class TestBase {
                     }
                     if (child.getRemovable()) {
                         System.out.print("(-)");
+                    }
+                    if (child.hasNonEmptyDescendant()) {
+                        System.out.print(" (c) ");
                     }
                 }
                 System.out.println();
