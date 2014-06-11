@@ -18,7 +18,9 @@ import java.util.UUID;
 
 public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
-    static final String PLACEHOLDER = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0";
+    static final String PLACEHOLDER_FOR_EMPTY_STRING = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0";
+    static final String PLACEHOLDER_FOR_NOW_EMPTY_STRING = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0@NOW";
+
     protected ArrayList<SDOParsedXmlElement> children = new ArrayList<SDOParsedXmlElement>();
     private SDOParsedXmlDocumentImpl myDocument;
     private Property property;
@@ -27,6 +29,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     private String label;
     private Object value;
     private boolean originallySet;
+    private boolean originallySetNonEmpty;
     private boolean hasNonEmptyDescendant;
     private int maxOccurence = -1;
     private int minOccurence = -1;
@@ -171,6 +174,14 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
     public void setOriginallySet(boolean originallySet) {
         this.originallySet = originallySet;
+    }
+
+    public boolean isOriginallySetNonEmpty() {
+        return originallySetNonEmpty;
+    }
+
+    public void setOriginallySetNonEmpty(boolean originallySetNonEmpty) {
+        this.originallySetNonEmpty = originallySetNonEmpty;
     }
 
     @Override
@@ -523,7 +534,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                         }
                         if (value.toString().isEmpty()) {
                             if (this.isOriginallySet()) {
-                                value = PLACEHOLDER;
+                                if (this.isOriginallySetNonEmpty()) {
+                                    value = PLACEHOLDER_FOR_NOW_EMPTY_STRING;
+                                } else {
+                                    value = PLACEHOLDER_FOR_EMPTY_STRING;
+                                }
                             }
                         }
 
