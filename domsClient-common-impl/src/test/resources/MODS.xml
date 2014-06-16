@@ -1,4 +1,7 @@
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+    <mods:titleInfo type="uniform" authority="Statens Avissamling">
+        <mods:title>adresseavisen1759</mods:title>
+    </mods:titleInfo>
     <mods:part>
         <mods:detail type="sectionLabel">
             <mods:number>Sektion 1</mods:number>

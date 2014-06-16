@@ -353,11 +353,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
         if (grandChildProperties.isEmpty()) {//no grand children so add all children as leafs here
-            for (int i = 0; i < childDataObjects.size(); i++) {
-                DataObject childDataObject = childDataObjects.get(i);
-                addLeaf(currentElement, childDataObject, childProperty, childDataObject.get(i), i);
-
-               // handleLeafElement(currentElement, currentDataObject, childProperty, childDataObject);
+            for (DataObject childDataObject : childDataObjects) {
+                handleLeafElement(currentElement, currentDataObject, childProperty, childDataObject);
             }
         } else {
             //if there is grand child property, this is a node in the tree, not a leaf
@@ -474,45 +471,57 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     private void handleLeafElement(SDOParsedXmlElement currentElement, DataObject currentDataObject,
                                    Property currentProperty, DataObject childObject) {
 
-        Object value = null;
-        int sequenceIndex = 0;
+        Object value;
         if (currentDataObject.isSet(currentProperty)) { //if the property is set
 
             if (currentProperty.getType().isSequenced()) { // and is of sequenced type
                 if (getXsdHelper().isMixed(currentProperty.getType())) { //if the type is mixed, the order matters
-                    Sequence seq = childObject.getSequence();
-                    if (seq != null) {
-                        if (seq.size() > 1) {
-                            throw new RuntimeException(
-                                    "We have a sequenced with more than one value. What to do? Container currentProperty = " + currentProperty
-                                            .getName()
-                            );
-                        }
-                        for (int i = 0; i < seq.size(); i++) {
-
-                            Property p = seq.getProperty(i);
-                            if (p == null) {
-                                value = seq.getValue(i);
-                                sequenceIndex = i;
-                            } else {
-                                throw new RuntimeException(
-                                        "We have a sequenced dataobject with internal properties. What to do? Container currentProperty = " + currentProperty
-                                                .getName() + ". Internal currentProperty = " + p.getName() + ". Value = " + seq
-                                                .getValue(
-                                                        i)
-                                );
-
-                            }
-                        }
-                    }
+                    handleLeafSequence(currentElement, currentProperty, childObject);
+                } else {
+                    // TODO Not mixed, what to do? Currently throws away value, I think?
+                    value = null;//currentDataObject.get(currentProperty);
+                    addLeaf(currentElement, childObject, currentProperty, value, 0);
                 }
-            } else {
+            } else if (currentProperty.getType().isAbstract()) { // and is of sequenced type or abstract
+                handleLeafSequence(currentElement, currentProperty, childObject);
+            } else {  // The property is not sequenced
                 value = currentDataObject.get(currentProperty);
+                addLeaf(currentElement, childObject, currentProperty, value, 0);
             }
+        } else {
+            addLeaf(currentElement, childObject, currentProperty, null, 0);
         }
-        addLeaf(currentElement, childObject, currentProperty, value, sequenceIndex);
     }
 
+    private void handleLeafSequence(SDOParsedXmlElement currentElement, Property currentProperty,
+                                    DataObject childObject) {
+        Object value;Sequence seq = childObject.getSequence();
+        if (seq != null) {
+            for (int i = 0; i < seq.size(); i++) {
+                Property p = seq.getProperty(i);
+                if (p == null) {
+                    value = seq.getValue(i);
+                    addLeaf(currentElement, childObject, currentProperty, value, i);
+                } else {
+                    value = seq.getValue(i);
+                    addLeaf(currentElement, childObject, p, value, i);
+
+/*
+                    throw new RuntimeException(
+                            "We have a sequenced dataobject with internal properties. What to do? "
+                                    + "Container currentProperty = "
+                                    + currentProperty.getName()
+                                    + ". Internal currentProperty = "
+                                    + p.getName()
+                                    + ". Value = "
+                                    + seq.getValue(i)
+                    );
+*/
+
+                }
+            }
+        }
+    }
 
     /**
      * Attempt to check if the property denote an xml element or an xml attribute
@@ -556,7 +565,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 this, currentElement, currentDataObject, currentProperty);
 
 
-        if (value != null && currentDataObject.isSet(currentProperty)) {
+        if (value != null && (currentDataObject.isSet(currentProperty)))  {
             //if (value!=null) {
             newLeaf.setValue(value.toString());
             newLeaf.setOriginallySet(true);
