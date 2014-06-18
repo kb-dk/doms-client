@@ -360,7 +360,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //Get all types contained in this type
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
-       /* System.out.print(
+       System.out.print(
                 "Current element: " + currentElement.getLabel() + "|" + currentElement.hashCode()
                         + "|Child property: " + childProperty.getName() + "|" + childProperty.hashCode()
         );
@@ -370,7 +370,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         for (Property grandChildProperty: grandChildProperties) {
             System.out.print("|Grandchild Property: " + grandChildProperty.getName());
         }
-        System.out.print("\n");*/
+        System.out.print("\n");
 
         if (grandChildProperties.isEmpty()) {//no grand children so add all children as leafs here
             for (DataObject childDataObject : childDataObjects) {

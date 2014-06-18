@@ -1,0 +1,330 @@
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Ray Denenberg  (Library of Congress) -->
+<xsd:schema xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.loc.gov/mods/v3" targetNamespace="http://www.loc.gov/mods/v3" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+	<xsd:import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://www.loc.gov/standards/mods/xlink.xsd"/>
+	<!-- 
+	
+MODS version 3.1  July  27, 2005
+
+
+*****  An instance of this schema is 
+
+ (1) a single MODS record:  
+	 -->
+	<xsd:element name="mods" type="modsType"/>
+	<!--  
+or 
+
+(2) a collection of MODS records:  -->
+	<xsd:element name="modsCollection">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="mods" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!--  
+
+*****  End of "instance" definition
+
+******* Group definition. Forms the basis of the mods record definintion, and also relatedItem. Difference is that mods requires at least one element and relatedItem does not.
+
+-->
+	<xsd:group name="modsGroup">
+		<xsd:choice>
+			<xsd:element name="titleInfo" type="titleInfoType"/>
+			<xsd:element name="relatedItem" type="relatedItemType"/>
+		</xsd:choice>
+	</xsd:group>
+	<!--
+*****  Definition of a single MODS record
+-->
+	<xsd:complexType name="modsType">
+		<xsd:group ref="modsGroup" maxOccurs="unbounded"/>
+		<xsd:attribute name="ID" type="xsd:ID" use="optional"/>
+		<xsd:attribute name="version" type="versionType"/>
+	</xsd:complexType>
+	<!--
+*****  End of definition of a MODS record.
+ 
+***** Data type definitions for top level elements follow
+
+ ********** titleInfoType definition **********
+ -->
+	<xsd:complexType name="titleInfoType">
+		<xsd:complexContent>
+			<xsd:extension base="baseTitleInfoType">
+				<xsd:attribute name="type" use="optional">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>if this attribute is omitted, then title relates to 245$a  $b  $n  and $p</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="abbreviated">
+								<xsd:annotation>
+									<xsd:documentation>210</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+							<xsd:enumeration value="translated">
+								<xsd:annotation>
+									<xsd:documentation>242</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+							<xsd:enumeration value="alternative">
+								<xsd:annotation>
+									<xsd:documentation>246</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+							<xsd:enumeration value="uniform">
+								<xsd:annotation>
+									<xsd:documentation>240, 130</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="baseTitleInfoType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="title"/>
+			<!--<xsd:element name="subTitle"/>
+			<xsd:element name="partNumber"/>
+			<xsd:element name="partName"/>
+			<xsd:element name="nonSort">
+				<xsd:annotation>
+					<xsd:documentation>All characters, including space, up to the first sort character.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>-->
+		</xsd:choice>
+	<!--	<xsd:attribute name="ID" type="xsd:ID" use="optional"/>
+		<xsd:attributeGroup ref="xlink:simpleLink"/>
+		<xsd:attributeGroup ref="language"/>-->
+		<xsd:attribute name="authority" use="optional"/>
+		<xsd:attribute name="displayLabel" use="optional"/>
+	</xsd:complexType>
+
+
+
+	<!-- 
+**********   relatedItemType definition **********  
+-->
+	<xsd:complexType name="relatedItemType">
+		<xsd:group ref="modsGroup" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:attribute name="type" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>if 787; or 700, 710, 711, 730 with $t and ind2 = blank; then omit type.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="preceding">
+						<xsd:annotation>
+							<xsd:documentation>780</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="succeeding">
+						<xsd:annotation>
+							<xsd:documentation>785</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="original">
+						<xsd:annotation>
+							<xsd:documentation>534, 786</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="host">
+						<xsd:annotation>
+							<xsd:documentation>772, 773</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="constituent">
+						<xsd:annotation>
+							<xsd:documentation>770, 774, 700, 710, 711 with $t and ind2 = 2</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="series">
+						<xsd:annotation>
+							<xsd:documentation>490, 440, 760, 800, 810, 811, 830</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="otherVersion">
+						<xsd:annotation>
+							<xsd:documentation>775</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="otherFormat">
+						<xsd:annotation>
+							<xsd:documentation>776</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="isReferencedBy">
+						<xsd:annotation>
+							<xsd:documentation>510</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<!--<xsd:attribute name="displayLabel" use="optional"/>
+		<xsd:attributeGroup ref="xlink:simpleLink"/>-->
+	</xsd:complexType>
+<!--
+***** Begin global definitions. 
+-->
+	<!--
+********** unstructuredText Definition  ********** 
+-->
+	<xsd:complexType name="unstructuredText">
+		<xsd:annotation>
+			<xsd:documentation>If the link  is supplied it is in lieu of or in addition to the content.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="xlink:simpleLink"/>
+				<xsd:attributeGroup ref="language"/>
+				<xsd:attribute name="displayLabel" use="optional"/>
+				<xsd:attribute name="type" type="xsd:string" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!--  
+********** dateType definition  **********  
+-->
+	<xsd:complexType name="baseDateType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="encoding" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>if omitted, free text is assumed</xsd:documentation>
+					</xsd:annotation>
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="w3cdtf"/>
+							<xsd:enumeration value="iso8601"/>
+							<xsd:enumeration value="marc"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute name="qualifier" use="optional">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="approximate"/>
+							<xsd:enumeration value="inferred"/>
+							<xsd:enumeration value="questionable"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute name="point" use="optional">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="start"/>
+							<xsd:enumeration value="end"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="dateType">
+		<xsd:simpleContent>
+			<xsd:extension base="baseDateType">
+				<xsd:attribute name="keyDate" use="optional">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>So that a particular date may be distinguished among several dates. Thus for example when sorting MODS records by date, a date with keyDate="yes" would be the date to sort on. It should occur only for one date at most in a given record.</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="yes"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="dateOtherType">
+		<xsd:simpleContent>
+			<xsd:extension base="dateType">
+				<xsd:attribute name="type" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!--  
+********** sourceType definition  **********  	                       	  
+-->
+	<xsd:complexType name="sourceType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="authority" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Value of this attribute is from list at: http://www.loc.gov/marc/sourcecode/organization/organizationsource.html.  If the value is "marcorg", see: http://www.loc.gov/marc/organizations</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attributeGroup ref="language"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!--  
+ ********** language attribute group definition  **********  	                       	  
+-->
+	<xsd:attributeGroup name="language">
+		<xsd:attribute name="lang" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>ISO 639-2b</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute ref="xml:lang" use="optional"/>
+		<xsd:attribute name="script" use="optional"/>
+		<xsd:attribute name="transliteration" use="optional"/>
+	</xsd:attributeGroup>
+	<!--  
+   ********** definition of codeOrText type used by type attribute 
+   for elements that distinguish code from text  **********  	                       	  
+ -->
+	<xsd:simpleType name="codeOrText">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="code"/>
+			<xsd:enumeration value="text"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--  
+    ********** definition of placeAuthority type used by authority attribute
+      for  placeType and geographic  **********  	                       	  
+ -->
+	<xsd:simpleType name="placeAuthority">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="marcgac"/>
+			<xsd:enumeration value="marccountry"/>
+			<xsd:enumeration value="iso3166"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--  
+    ********** definition of nameTypeAttribute used by name attribute
+      "type"  **********  	                       	  
+ -->
+	<xsd:simpleType name="nameTypeAttribute">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="personal">
+				<xsd:annotation>
+					<xsd:documentation>100, 700</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="corporate">
+				<xsd:annotation>
+					<xsd:documentation>110, 710.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="conference">
+				<xsd:annotation>
+					<xsd:documentation>111, 711</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="versionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="3.1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

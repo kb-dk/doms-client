@@ -1,0 +1,10 @@
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+    <mods:titleInfo type="uniform" authority="Statens Avissamling">
+        <mods:title>adresseavisen1759</mods:title>
+    </mods:titleInfo>
+    <mods:relatedItem type="host">
+        <mods:titleInfo type="uniform" authority="Statens Avissamling">
+            <mods:title>adresseavisen1759</mods:title>
+        </mods:titleInfo>
+    </mods:relatedItem>
+</mods:mods>

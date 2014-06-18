@@ -116,7 +116,7 @@ public class SdoTest extends TestBase {
      * @throws XMLParseException
      */
     @Test
-    public void testSdoModsFromFile() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+    public void testSdoMods31FromFile() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
 
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
@@ -125,7 +125,7 @@ public class SdoTest extends TestBase {
                     @Override
                     public String getContents() throws ServerOperationFailed {
                         try {
-                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31.xsd"));
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xsd"));
                         } catch (IOException e) {
                             fail(e.getMessage());
                             return null;
@@ -135,7 +135,7 @@ public class SdoTest extends TestBase {
             }
         };
 
-        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xml"));
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xml"));
         final Datastream modsDatastream = new DatastreamStub() {
             @Override
             public String getContents() throws ServerOperationFailed {
