@@ -6,6 +6,9 @@ import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
+import dk.statsbiblioteket.doms.client.objects.stubs.DatastreamDeclarationStub;
+import dk.statsbiblioteket.doms.client.objects.stubs.DatastreamStub;
+import dk.statsbiblioteket.doms.client.objects.stubs.ModsHelper;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.Strings;
@@ -23,7 +26,9 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -49,172 +54,163 @@ public class SdoTest extends TestBase {
 
     }
 
+    /**
+     * Tests that parsing works correctly when the "INVALID" attribute is absent - ie it remains absent.
+     * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     */
     @Test
     public void testSdoMods() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
 
-
-        DatastreamDeclaration modsDecl = new DatastreamDeclaration() {
-
-            @Override
-            public List<String> getDsMimeTypes() {
-                return null;
-            }
-
-            @Override
-            public List<String> getDsFormatUris() {
-                return null;
-            }
-
-            @Override
-            public Constants.GuiRepresentation getPresentation() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-
-            @Override
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
-                return new Datastream() {
-                    @Override
-                    public DigitalObject getDigitalObject() {
-                        return null;
-                    }
-
-                    @Override
-                    public String getId() {
-                        return null;
-                    }
-
-                    @Override
-                    public String getChecksumType() {
-                        return null;
-                    }
-
-                    @Override
-                    public String getChecksumValue() {
-                        return null;
-                    }
-
-                    @Override
-                    public String getFormatURI() {
-                        return null;
-                    }
-
-                    @Override
-                    public String getMimeType() {
-                        return null;
-                    }
-
-                    @Override
-                    public String getLabel() {
-                        return null;
-                    }
+                return new DatastreamStub() {
 
                     @Override
                     public String getContents() throws ServerOperationFailed {
                         try {
-                            return Strings.flush(
-                                    Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xsd"));
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xsd"));
                         } catch (IOException e) {
-                            throw new ServerOperationFailed(e);
+                            fail(e.getMessage());
+                            return null;
                         }
-                    }
-
-                    @Override
-                    public Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed {
-                        return null;
-                    }
-
-                    @Override
-                    public SDOParsedXmlDocument getSDOParsedDocument() throws ServerOperationFailed, XMLParseException {
-                        return null;
                     }
                 };
             }
-
-            @Override
-            public void setSchema(Datastream schema) {
-
-            }
         };
-        Datastream modsStream = new Datastream() {
-            @Override
-            public DigitalObject getDigitalObject() {
-                return null;
-            }
 
-            @Override
-            public String getId() {
-                return null;
-            }
-
-            @Override
-            public String getChecksumType() {
-                return null;
-            }
-
-            @Override
-            public String getChecksumValue() {
-                return null;
-            }
-
-            @Override
-            public String getFormatURI() {
-                return null;
-            }
-
-            @Override
-            public String getMimeType() {
-                return null;
-            }
-
-            @Override
-            public String getLabel() {
-                return null;
-            }
-
+        ModsHelper modsHelper = new ModsHelper();
+        modsHelper.setInvalidAttributeString("");
+        final String modsDatastreamContent = modsHelper.getModsString();
+        final Datastream modsDatastream = new DatastreamStub() {
             @Override
             public String getContents() throws ServerOperationFailed {
-                try {
-                    return Strings.flush(
-                            Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xml")
-                                        );
-                } catch (IOException e) {
-                    throw new ServerOperationFailed(e);
-                }
-            }
-
-            @Override
-            public Set<DatastreamDeclaration> getDeclarations() throws ServerOperationFailed {
-                return null;
-            }
-
-            @Override
-            public SDOParsedXmlDocument getSDOParsedDocument() throws ServerOperationFailed, XMLParseException {
-                return null;
+                return modsDatastreamContent;
             }
         };
-        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
-                modsDecl, modsStream);
 
-        String xmlOriginal = modsStream.getContents();
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+
+        String xmlOriginal = modsDatastream.getContents();
         String xmlFinal = sdodoc.dumpToString();
 
+        Document finalDocument = DOM.stringToDOM(xmlFinal, true);
+        XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
 
-        Document originalDocument = DOM.stringToDOM(xmlOriginal, true);
+        //Unfortunately this util code cannot distinguish between the case of an absent attribute and an
+        //empty string so an extra assert is needed aftwerwards
+        String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:relatedItem/mods:identifier[@type='reel number']/@invalid");
+        assertEquals("", invalidAttributeValue);
+        assertFalse(xmlFinal.contains("invalid"));
+    }
+
+    /**
+     * Tests that parsing works correctly when the "INVALID" attribute is present but empty. (This is not actually
+     * consistent with the schema, but we aren't worried about that here.)
+     * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     */
+    @Test
+    public void testSdoModsEmptyAttribute() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        try {
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xsd"));
+                        } catch (IOException e) {
+                            fail(e.getMessage());
+                            return null;
+                        }
+                    }
+                };
+            }
+        };
+
+        ModsHelper modsHelper = new ModsHelper();
+        modsHelper.setInvalidAttributeString("invalid=\"\"");
+        final String modsDatastreamContent = modsHelper.getModsString();
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+
+        String xmlOriginal = modsDatastream.getContents();
+        String xmlFinal = sdodoc.dumpToString();
+
+        Document finalDocument = DOM.stringToDOM(xmlFinal, true);
+        XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
+
+        //Unfortunately this util code cannot distinguish between the case of an absent attribute and an
+        //empty string so an extra assert is needed aftwerwards
+        String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:relatedItem/mods:identifier[@type='reel number']/@invalid");
+        assertEquals("", invalidAttributeValue);
+        assertTrue(xmlFinal.contains("invalid"));
+    }
+
+    /**
+     * Tests that parsing works correctly when the "inavlid" attribute is present and non-empty.
+     * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     */
+    @Test
+    public void testSdoModsWithAttribute() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        try {
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xsd"));
+                        } catch (IOException e) {
+                            fail(e.getMessage());
+                            return null;
+                        }
+                    }
+                };
+            }
+        };
+
+        ModsHelper modsHelper = new ModsHelper();
+        modsHelper.setInvalidAttributeString("invalid=\"yes\"");
+        final String modsDatastreamContent = modsHelper.getModsString();
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+
+        String xmlOriginal = modsDatastream.getContents();
+        String xmlFinal = sdodoc.dumpToString();
+
         Document finalDocument = DOM.stringToDOM(xmlFinal, true);
         XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
 
         String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:relatedItem/mods:identifier[@type='reel number']/@invalid");
-        assertEquals("", invalidAttributeValue);
-
-        System.out.println(xmlFinal);
-        parseDoc(sdodoc);
-
+        assertEquals("yes", invalidAttributeValue);
     }
+
 
 
     @Test

@@ -5,6 +5,7 @@ import commonj.sdo.Property;
 import commonj.sdo.Sequence;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
+import org.apache.tuscany.sdo.api.SDOUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -131,6 +132,7 @@ public class SdoDataObjectUtils {
                     isEmpty = handleSimpleValue(helperContext, parent, dataObject, p, dataObject.get(p));
                 }
             } else {
+
                 if (p.isContainment()) {
                     if (p.isMany()) {
                         isEmpty = handleDataObjects(helperContext, dataObject, dataObject.getList(p), p);
@@ -165,9 +167,11 @@ public class SdoDataObjectUtils {
                                       Property property, Object value) {
         boolean isEmpty = true;
         if (value != null) {
-            if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER)) {
+            if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER_FOR_EMPTY_STRING)) {
                 isEmpty = false;
                 dataObject.set(property, "");
+            } else if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER_FOR_NOW_EMPTY_STRING)) {
+                isEmpty = true;
             } else if (!value.toString().isEmpty()) {
                 isEmpty = false;
             }

@@ -561,21 +561,22 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
      */
     private void addLeaf(SDOParsedXmlElement currentElement, final DataObject currentDataObject,
                          final Property currentProperty, Object value, int sequenceIndex) {
+
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(
                 this, currentElement, currentDataObject, currentProperty);
-
-
-        if (value != null && (currentDataObject.isSet(currentProperty)))  {
-            //if (value!=null) {
-            newLeaf.setValue(value.toString());
+        if (value != null && currentDataObject.isSet(currentProperty)) {
+            final String newLeafValue = value.toString();
+            newLeaf.setValue(newLeafValue);
             newLeaf.setOriginallySet(true);
-            SDOParsedXmlElement parent = newLeaf.getParent();
-            while (parent != null) {
-                parent.setHasNonEmptyDescendant(true);
-                parent = parent.getParent();
+            if (newLeafValue.isEmpty()) {
+                newLeaf.setOriginallySetNonEmpty(false);
+            } else {
+                newLeaf.setOriginallySetNonEmpty(true);
             }
+            decorateParents(newLeaf);
         } else {
             newLeaf.setOriginallySet(false);
+            newLeaf.setOriginallySetNonEmpty(false);
         }
         newLeaf.setLabel(currentProperty.getName());
         newLeaf.setIndex(sequenceIndex);
@@ -591,6 +592,14 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 * There is an issue with SDO, were it will generate a nullpointer exception
                 * if there is no enumeration for the currentProperty.
                */
+        }
+    }
+
+    private void decorateParents(SDOParsedXmlElementImpl newLeaf) {
+        SDOParsedXmlElement parent = newLeaf.getParent();
+        while (parent != null) {
+            parent.setHasNonEmptyDescendant(true);
+            parent = parent.getParent();
         }
     }
 
