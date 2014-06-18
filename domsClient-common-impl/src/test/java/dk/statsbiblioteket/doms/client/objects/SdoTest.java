@@ -125,7 +125,7 @@ public class SdoTest extends TestBase {
                     @Override
                     public String getContents() throws ServerOperationFailed {
                         try {
-                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xsd"));
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xsd"));
                         } catch (IOException e) {
                             fail(e.getMessage());
                             return null;
