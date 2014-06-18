@@ -123,7 +123,7 @@ public class TestBase {
                         System.out.print("(-)");
                     }
                     if (child.hasNonEmptyDescendant()) {
-                        System.out.print(" (c) ");
+                        System.out.print(" (d) ");
                     }
                 }
                 System.out.println();
