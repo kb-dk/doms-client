@@ -31,6 +31,17 @@ public class ModsHelper {
             "    </mods:relatedItem>\n" +
             "</mods:mods>";
 
+     public String modsSimpleString = "<mods:mods xmlns:mods=\"http://www.loc.gov/mods/v3\">\n" +
+            "    <mods:part>\n" +
+            "        <mods:detail type=\"sectionLabel\">\n" +
+            "            <mods:number>Sektion 1</mods:number>\n" +
+            "        </mods:detail>\n" +
+            "        <mods:extent unit=\"pages\">\n" +
+            "            <mods:start>1</mods:start>\n" +
+            "        </mods:extent>\n" +
+            "    </mods:part>\n" +
+            "</mods:mods>";
+
     public void setInvalidAttributeString(String attributeString) {
         modsString = modsString.replaceAll(INVALID_ATTRIBUTE_STRING, attributeString);
     }
@@ -38,6 +49,10 @@ public class ModsHelper {
     public String getModsString() {
         setInvalidAttributeString("");
         return modsString;
+    }
+
+    public String getModsSimpleString() {
+        return modsSimpleString;
     }
 
 }

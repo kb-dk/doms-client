@@ -15,11 +15,14 @@ import dk.statsbiblioteket.doms.client.datastreams.DatastreamDeclaration;
 import dk.statsbiblioteket.doms.client.datastreams.InternalDatastream;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
+import dk.statsbiblioteket.doms.client.impl.util.CycleDetector;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.apache.tuscany.sdo.api.SDOUtil;
+import org.apache.tuscany.sdo.impl.AttributeImpl;
 import org.apache.tuscany.sdo.impl.ClassImpl;
+import org.apache.tuscany.sdo.impl.ReferenceImpl;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EReference;
@@ -41,7 +44,7 @@ import java.util.List;
  */
 public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
-
+    private List<Property> visitedProperties;
     private XMLDocument sdoXmlDocument = null;
     private SDOParsedXmlElementImpl rootSDOParsedXmlElement = null;
     private boolean isValid = false;
@@ -67,13 +70,13 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     public SDOParsedXmlDocumentImpl(DatastreamDeclaration datastreamDeclaration, Datastream datastream) throws
                                                                                                         ServerOperationFailed,
                                                                                                         XMLParseException {
+        this.visitedProperties = new ArrayList<Property>() ;
         if (sdoContext == null) {
             sdoContext = SDOUtil.createHelperContext(true);
         }
         loadDatastreamDeclaration(datastreamDeclaration);
         loadDatastream(datastream);
         this.datastream = datastream;
-
     }
 
     /**
@@ -304,8 +307,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     private void handleProperty(final SDOParsedXmlElement currentElement, final DataObject currentDataObject,
                                 final Property childProperty) {
 
-
-
+        visitedProperties.add(childProperty);
         //Simple type
         if (isSimpleType(childProperty)) {
             handleSimpleType(currentElement, currentDataObject, childProperty);
@@ -337,6 +339,12 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     private void handleComplexType(SDOParsedXmlElement currentElement, DataObject currentDataObject,
                                    Property childProperty) {
+        boolean isCycling = (new CycleDetector()).isCycling(visitedProperties.toArray(), 0);
+        if (isCycling) {
+            //TODO by annotating the currentElement with a nesting depth we can actually make
+            //the allowed nesting parametrisable.
+            return;
+        }
         List<DataObject> childDataObjects = getChildObjects(currentDataObject, childProperty);
 
         final Type currentPropertyType = childProperty.getType();
@@ -351,6 +359,18 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
         //Get all types contained in this type
         List<Property> grandChildProperties = currentPropertyType.getProperties();
+
+       /* System.out.print(
+                "Current element: " + currentElement.getLabel() + "|" + currentElement.hashCode()
+                        + "|Child property: " + childProperty.getName() + "|" + childProperty.hashCode()
+        );
+        for (DataObject childDataObject:childDataObjects) {
+            System.out.print("|Child object: " + childDataObject.getType().getName());
+        }
+        for (Property grandChildProperty: grandChildProperties) {
+            System.out.print("|Grandchild Property: " + grandChildProperty.getName());
+        }
+        System.out.print("\n");*/
 
         if (grandChildProperties.isEmpty()) {//no grand children so add all children as leafs here
             for (DataObject childDataObject : childDataObjects) {
@@ -377,7 +397,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                                 i);
                     }  else {
                         //otherwise evaluate them recursively
-                        handleProperty(childElement, childDataObject, grandChildProperty);
+                            handleProperty(childElement, childDataObject, grandChildProperty);
                     }
                 }
             }
@@ -529,10 +549,27 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
      * @return true if the property denote an attribute
      */
     private boolean isAttribute(Property childProperty) {
+       /* if (childProperty instanceof AttributeImpl) {
+            AttributeImpl childAttribute =  (AttributeImpl) childProperty;
+            System.out.println(
+                    "Attribute " +
+               childAttribute.getName() +
+                       " econtained by " +
+                       childAttribute.getEContainingClass().getName()
+            );
+        } else {
+            ReferenceImpl childReference = (ReferenceImpl) childProperty;
+            System.out.println(
+                    "Reference " +
+                            childReference.getName() +
+                            " econtained by " +
+                            childReference.getEContainingClass().getName()
+            );
+        }*/
         if (getXsdHelper().isAttribute(childProperty)) {
             return true;
         }
-        if (childProperty instanceof EReference) {
+       /* if (childProperty instanceof EReference) {
             EReference eReference = (EReference) childProperty;
             EClassifier childPropertyType = eReference.getEType();
             if (childPropertyType instanceof ClassImpl) {
@@ -545,7 +582,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
         if (childProperty instanceof EAttribute) {
             return true;
-        }
+        }*/
 
         return false;
     }

@@ -105,6 +105,7 @@ public class SdoTest extends TestBase {
         String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:relatedItem/mods:identifier[@type='reel number']/@invalid");
         assertEquals("", invalidAttributeValue);
         assertFalse(xmlFinal.contains("invalid"));
+        parseDoc(sdodoc);
     }
 
     /**
@@ -209,8 +210,50 @@ public class SdoTest extends TestBase {
 
         String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:relatedItem/mods:identifier[@type='reel number']/@invalid");
         assertEquals("yes", invalidAttributeValue);
+        parseDoc(sdodoc);
     }
 
+    @Test
+    public void testSimpleMods() throws XMLParseException, ServerOperationFailed {
+
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        try {
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS_SIMPLE.xsd"));
+                        } catch (IOException e) {
+                            fail(e.getMessage());
+                            return null;
+                        }
+                    }
+                };
+            }
+        };
+
+        ModsHelper modsHelper = new ModsHelper();
+        final String modsDatastreamContent = modsHelper.getModsSimpleString();
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+
+        String xmlOriginal = modsDatastream.getContents();
+        String xmlFinal = sdodoc.dumpToString();
+
+        Document finalDocument = DOM.stringToDOM(xmlFinal, true);
+        XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
+
+        parseDoc(sdodoc);
+        System.out.println(xmlFinal);
+    }
 
 
     @Test
