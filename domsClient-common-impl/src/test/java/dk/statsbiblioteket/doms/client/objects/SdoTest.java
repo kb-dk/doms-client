@@ -109,6 +109,47 @@ public class SdoTest extends TestBase {
     }
 
     /**
+     * Tests that parsing mods works correctly
+     * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     */
+    @Test
+    public void testSdoModsFromFile() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        try {
+                            return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31.xsd"));
+                        } catch (IOException e) {
+                            fail(e.getMessage());
+                            return null;
+                        }
+                    }
+                };
+            }
+        };
+
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS.xml"));
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+
+        parseDoc(sdodoc);
+    }
+
+    /**
      * Tests that parsing works correctly when the "INVALID" attribute is present but empty. (This is not actually
      * consistent with the schema, but we aren't worried about that here.)
      * @throws ServerOperationFailed

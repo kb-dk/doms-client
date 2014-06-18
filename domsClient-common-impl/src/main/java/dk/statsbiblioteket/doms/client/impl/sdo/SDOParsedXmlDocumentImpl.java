@@ -492,7 +492,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                                    Property currentProperty, DataObject childObject) {
 
         Object value;
-        if (currentDataObject.isSet(currentProperty)) { //if the property is set
+        //if (currentDataObject.isSet(currentProperty)) { //if the property is set
 
             if (currentProperty.getType().isSequenced()) { // and is of sequenced type
                 if (getXsdHelper().isMixed(currentProperty.getType())) { //if the type is mixed, the order matters
@@ -508,9 +508,9 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 value = currentDataObject.get(currentProperty);
                 addLeaf(currentElement, childObject, currentProperty, value, 0);
             }
-        } else {
-            addLeaf(currentElement, childObject, currentProperty, null, 0);
-        }
+        //} else {
+        //    addLeaf(currentElement, childObject, currentProperty, null, 0);
+        //}
     }
 
     private void handleLeafSequence(SDOParsedXmlElement currentElement, Property currentProperty,
@@ -601,7 +601,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(
                 this, currentElement, currentDataObject, currentProperty);
-        if (value != null && currentDataObject.isSet(currentProperty)) {
+        if (value != null && (currentDataObject.isSet(currentProperty) || (currentDataObject.getSequence() != null && currentDataObject.getSequence().size() > 0))) {
             final String newLeafValue = value.toString();
             newLeaf.setValue(newLeafValue);
             newLeaf.setOriginallySet(true);
