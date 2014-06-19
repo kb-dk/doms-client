@@ -81,56 +81,5 @@ public class TestBase {
 
     }
 
-    protected void parseDoc(SDOParsedXmlDocument doc) {
-        System.out.println("'" + doc.getRootSDOParsedXmlElement().getLabel() + "'");
-        parseTree(doc.getRootSDOParsedXmlElement(), "");
-    }
-
-
-    protected void parseTree(SDOParsedXmlElement doc, String indryk) {
-
-
-        indryk = indryk + "   ";
-        ArrayList<SDOParsedXmlElement> children = doc.getChildren();
-        for (SDOParsedXmlElement child : children) {
-            if (child.isLeaf()) {
-
-                System.out.print(indryk + "'" + child.getLabel() + "': '" + child.getValue() + "'");
-                if (child.getProperty().isMany()) {
-                    if (child.getAddable()) {
-                        System.out.print(" (+)");
-                    }
-                    if (child.getRemovable()) {
-                        System.out.print("(-)");
-                    }
-                    if (child.hasNonEmptyDescendant()) {
-                        System.out.print("(d)");
-                    }
-                }
-                System.out.print("  type=" + child.getGuiTypeAsString());
-                System.out.println();
-
-
-            } else {
-
-
-                System.out.print(indryk + "'" + child.getLabel() + "'");
-                if (child.getProperty().isMany()) {
-                    if (child.getAddable()) {
-                        System.out.print(" (+)");
-                    }
-                    if (child.getRemovable()) {
-                        System.out.print("(-)");
-                    }
-                    if (child.hasNonEmptyDescendant()) {
-                        System.out.print(" (d) ");
-                    }
-                }
-                System.out.println();
-
-                parseTree(child, indryk + "    ");
-            }
-        }
-    }
 
 }
