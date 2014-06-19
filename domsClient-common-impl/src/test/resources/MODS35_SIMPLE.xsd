@@ -44,6 +44,7 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
         <xs:choice>
             <xs:element ref="part"/>
             <xs:element ref="relatedItem"/>
+            <xs:element ref="titleInfo"/>
         </xs:choice>
     </xs:group>
 
@@ -70,7 +71,7 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
             <xs:element ref="caption"/>
         </xs:choice>
         <xs:attribute name="type" type="xs:string"/>
-        <xs:attribute name="level" type="xs:positiveInteger"/>
+        <!--<xs:attribute name="level" type="xs:positiveInteger"/>-->
     </xs:complexType>
     <!-- -->
     <xs:element name="number" type="stringPlusLanguage"/>
@@ -81,9 +82,9 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
     <xs:complexType name="extentDefinition">
         <xs:sequence>
             <xs:element ref="start" minOccurs="0"/>
-            <xs:element ref="end" minOccurs="0"/>
+            <!--<xs:element ref="end" minOccurs="0"/>
             <xs:element ref="total" minOccurs="0"/>
-            <xs:element ref="list" minOccurs="0"/>
+            <xs:element ref="list" minOccurs="0"/>-->
         </xs:sequence>
         <xs:attribute name="unit" type="xs:string"/>
         <xs:attribute name="foobarFixedValueIsBar" fixed="bar"/>
@@ -91,9 +92,9 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
     </xs:complexType>
     <!-- -->
     <xs:element name="start" type="stringPlusLanguage"/>
-    <xs:element name="end" type="stringPlusLanguage"/>
+ <!--   <xs:element name="end" type="stringPlusLanguage"/>
     <xs:element name="total" type="xs:positiveInteger"/>
-    <xs:element name="list" type="stringPlusLanguage"/>
+    <xs:element name="list" type="stringPlusLanguage"/>-->
 
     <xs:attributeGroup name="myGroup">
         <xs:attribute name="foo" type="xs:string" />
@@ -140,11 +141,61 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="displayLabel" type="xs:string"/>
+     <!--   <xs:attribute name="displayLabel" type="xs:string"/>
         <xs:attribute name="ID" type="xs:ID"/>
-        <xs:attributeGroup ref="xlink:simpleLink"/>
+        <xs:attributeGroup ref="xlink:simpleLink"/>-->
     </xs:complexType>
 
+  <!--
+    ****************************************************
+    *   Top Level Element <titleInfo>                   *
+    *****************************************************
+    -->
+    <xs:element name="titleInfo" type="titleInfoDefinition"/>
+    <!-- -->
+    <xs:complexType name="titleInfoDefinition">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="title"/>
+            <xs:element ref="subTitle"/>
+            <!--<xs:element ref="partNumber"/>
+            <xs:element ref="partName"/>
+            <xs:element ref="nonSort"/>-->
+        </xs:choice>
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="abbreviated"/>
+                    <xs:enumeration value="translated"/>
+                    <xs:enumeration value="alternative"/>
+                    <xs:enumeration value="uniform"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="otherType"/>
+        <xs:attribute name="supplied" fixed="yes"/>
+       <!-- <xs:attribute name="altRepGroup" type="xs:string"/>
+        <xs:attributeGroup ref="altFormatAttributeGroup"/>
+        <xs:attribute name="nameTitleGroup" type="xs:string"/>
+        <xs:attribute name="usage" fixed="primary"/>
+        <xs:attribute name="ID" type="xs:ID"/>
+        <xs:attributeGroup ref="authorityAttributeGroup"/>
+        <xs:attributeGroup ref="xlink:simpleLink"/>
+        <xs:attributeGroup ref="languageAttributeGroup"/>
+        <xs:attribute name="displayLabel" type="xs:string"/>-->
+        <!--  -->
+        <!-- otherType new in version 3.5 -->
+        <!-- -->
+        <!-- altFormat new in version 3.5 -->
+    </xs:complexType>
+    <!--
+
+********   Subordinate Elements for <titleInfo>
+ -->
+    <xs:element name="title" type="stringPlusLanguage"/>
+    <xs:element name="subTitle" type="stringPlusLanguage"/>
+    <xs:element name="partNumber" type="stringPlusLanguage"/>
+    <xs:element name="partName" type="stringPlusLanguage"/>
+    <xs:element name="nonSort" type="stringPlusLanguage"/>
 
 **********************************
 String Definitions

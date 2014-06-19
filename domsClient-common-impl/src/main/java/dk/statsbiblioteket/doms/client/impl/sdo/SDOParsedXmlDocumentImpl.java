@@ -360,6 +360,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //Get all types contained in this type
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
+        //TODO these are useful so keep as log.debug statements
        System.out.print(
                 "Current element: " + currentElement.getLabel() + "|" + currentElement.hashCode()
                         + "|Child property: " + childProperty.getName() + "|" + childProperty.hashCode()
