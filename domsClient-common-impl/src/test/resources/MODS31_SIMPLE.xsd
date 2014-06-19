@@ -89,7 +89,7 @@ or
 
 	<xsd:complexType name="baseTitleInfoType">
 		<xsd:choice minOccurs="0" maxOccurs="unbounded">
-			<xsd:element name="title"/>
+			<xsd:element name="title" />
 			<!--<xsd:element name="subTitle"/>
 			<xsd:element name="partNumber"/>
 			<xsd:element name="partName"/>

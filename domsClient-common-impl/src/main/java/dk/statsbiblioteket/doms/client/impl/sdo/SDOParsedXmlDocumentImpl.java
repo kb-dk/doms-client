@@ -34,6 +34,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -353,6 +355,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             // we create an empty placeholder
             if (!currentPropertyType.isAbstract()) {
                 childDataObjects.add(currentDataObject.createDataObject(childProperty));
+            } else {
+               //TODO ????
             }
         }
 
