@@ -165,11 +165,18 @@ public class SdoDataObjectUtils {
 
     private boolean handleSimpleValue(HelperContext helperContext, final DataObject parent, DataObject dataObject,
                                       Property property, Object value) {
+        boolean manyValued = property.isMany();
+        List emptyStringlList = new ArrayList();
+        emptyStringlList.add("");
         boolean isEmpty = true;
         if (value != null) {
             if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER_FOR_EMPTY_STRING)) {
                 isEmpty = false;
-                dataObject.set(property, "");
+                if (!manyValued) {
+                    dataObject.set(property, "");
+                } else {
+                    dataObject.set(property, emptyStringlList);
+                }
             } else if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER_FOR_NOW_EMPTY_STRING)) {
                 isEmpty = true;
             } else if (!value.toString().isEmpty()) {
