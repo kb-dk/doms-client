@@ -8,17 +8,14 @@ import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
 import dk.statsbiblioteket.doms.client.objects.stubs.DatastreamDeclarationStub;
 import dk.statsbiblioteket.doms.client.objects.stubs.DatastreamStub;
-import dk.statsbiblioteket.doms.client.objects.stubs.ModsHelper;
+import dk.statsbiblioteket.doms.client.objects.stubs.ModsTestHelper;
 import dk.statsbiblioteket.util.Strings;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
-import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tuscany.sdo.api.SDOUtil;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -59,8 +56,8 @@ public class SdoTest  {
                 };
             }
         };
-        ModsHelper modsHelper = new ModsHelper();
-        final String modsDatastreamContent = modsHelper.getModsSimpleString();
+        ModsTestHelper modsTestHelper = new ModsTestHelper();
+        final String modsDatastreamContent = modsTestHelper.getModsSimpleString();
         final Datastream modsDatastream = new DatastreamStub() {
             @Override
             public String getContents() throws ServerOperationFailed {
@@ -107,9 +104,9 @@ public class SdoTest  {
                 };
             }
         };
-        ModsHelper modsHelper = new ModsHelper();
-        modsHelper.setAdditionalAttributeString("foobarFixedValueIsBar=\"bar\"");
-        final String modsDatastreamContent = modsHelper.getModsSimpleString();
+        ModsTestHelper modsTestHelper = new ModsTestHelper();
+        modsTestHelper.setAdditionalAttributeString("foobarFixedValueIsBar=\"bar\"");
+        final String modsDatastreamContent = modsTestHelper.getModsSimpleString();
         final Datastream modsDatastream = new DatastreamStub() {
             @Override
             public String getContents() throws ServerOperationFailed {
@@ -127,7 +124,7 @@ public class SdoTest  {
         assertTrue(xmlFinal, xmlFinal.contains("foobarFixedValueIsBar"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
-        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal, diff.similar());
         log.info(sdodocString + "\n" + xmlFinal);
     }
 
@@ -150,9 +147,9 @@ public class SdoTest  {
                 };
             }
         };
-        ModsHelper modsHelper = new ModsHelper();
-        modsHelper.setAdditionalAttributeString("foobarFixedValueIsBar=\"\"");
-        final String modsDatastreamContent = modsHelper.getModsSimpleString();
+        ModsTestHelper modsTestHelper = new ModsTestHelper();
+        modsTestHelper.setAdditionalAttributeString("foobarFixedValueIsBar=\"\"");
+        final String modsDatastreamContent = modsTestHelper.getModsSimpleString();
         final Datastream modsDatastream = new DatastreamStub() {
             @Override
             public String getContents() throws ServerOperationFailed {
@@ -170,7 +167,7 @@ public class SdoTest  {
         assertTrue(xmlFinal, xmlFinal.contains("foobarFixedValueIsBar"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
-        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal, diff.similar());
         log.info(sdodocString + "\n" + xmlFinal);
     }
 
@@ -269,8 +266,8 @@ public class SdoTest  {
                 };
             }
         };
-        ModsHelper modsHelper = new ModsHelper();
-        final String modsDatastreamContent = modsHelper.getModsSimpleString();
+        ModsTestHelper modsTestHelper = new ModsTestHelper();
+        final String modsDatastreamContent = modsTestHelper.getModsSimpleString();
         final Datastream modsDatastream = new DatastreamStub() {
             @Override
             public String getContents() throws ServerOperationFailed {
@@ -288,6 +285,42 @@ public class SdoTest  {
         log.info(doc + "\n" + xmlFinal);
     }
 
+    /**
+     * Test with the real MODS 3.5 schema and a realistic metadata document. The test simply confirms that the XML
+     * returned by the sdo processing is equivalent to that put in.
+     * @throws XMLParseException
+     * @throws ServerOperationFailed
+     * @throws IOException
+     * @throws SAXException
+     */
+    @Test
+    public void testRealisticSchema() throws XMLParseException, ServerOperationFailed, IOException, SAXException {
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                       return SdoUtils.getStringFromFileOnClasspath("MODS.xsd");
+                    }
+                };
+            }
+        };
+        ModsTestHelper modsTestHelper = new ModsTestHelper();
+        final String modsDatastreamContent = modsTestHelper.getModsString();
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        String xmlFinal = sdodoc.dumpToString();
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(SdoUtils.parseDoc(sdodoc) + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+    }
 
 
 }

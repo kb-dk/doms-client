@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.doms.client.objects.stubs;
 
 
-public class ModsHelper {
+public class ModsTestHelper {
 
     private static final String ADDITIONAL_ATTRIBUTE_STRING = "---INVALID-ATTRIBUTE-PLACEHOLDER---";
 

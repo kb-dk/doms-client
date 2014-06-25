@@ -2,9 +2,7 @@ package dk.statsbiblioteket.doms.client.impl.sdo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
-import commonj.sdo.Sequence;
 import commonj.sdo.helper.HelperContext;
-import commonj.sdo.helper.XSDHelper;
 import org.apache.tuscany.sdo.impl.AnyTypeDataObjectImpl;
 
 import java.util.ArrayList;
@@ -16,11 +14,11 @@ import java.util.Map;
 /**
  * Utility class that is used to remove empty DataObjects from a XMLDocument.
  */
-public class SdoDataObjectUtils {
+public class SdoDataObjectRemovalUtil {
 
     private ArrayList<DataObject> dataObjectsToDelete;
 
-    public SdoDataObjectUtils() {
+    public SdoDataObjectRemovalUtil() {
         dataObjectsToDelete = new ArrayList<DataObject>();
     }
 
@@ -54,23 +52,20 @@ public class SdoDataObjectUtils {
      * @param helperContext
      * @param parent
      * @param dataObject
-     * @param parentProperty
-     *
      * @return true if dataObject is empty.
      */
-    public boolean handleDataObject(HelperContext helperContext, final DataObject parent, final DataObject dataObject,
-                                    final Property parentProperty) {
+    public boolean handleDataObject(HelperContext helperContext, final DataObject parent, final DataObject dataObject) {
         boolean isEmpty = true;
         boolean temp = false;
+        boolean isSequenced = dataObject.getType().isSequenced();
+        //Determine if the current object is mixed. Mixed data objects are not removed.
+        boolean isMixed = dataObject instanceof AnyTypeDataObjectImpl && ((AnyTypeDataObjectImpl) dataObject).getMixed().size() > 0;
 
-        if (dataObject.getType().isSequenced() &&  (dataObject instanceof  AnyTypeDataObjectImpl && ((AnyTypeDataObjectImpl) dataObject).getMixed().size() > 0)) {
-            XSDHelper xsdHelper = helperContext.getXSDHelper();
-
+        if (isSequenced) {
             List seq = dataObject.getType().getProperties();
-            //Sequence seq = dadattaObject.getSequence();
-
             //We make a copy of this data because changing it while we iterate through it
-            //causes surprising side-effects.
+            //causes surprising side-effects - specifically it can reorder the sequence
+            //so we the iteration gets screwed up.
             Map<Property, Object> sequenceMapCopy = new HashMap<Property, Object>();
             for (int i = 0; i < seq.size(); i++) {
                 sequenceMapCopy.put((Property) seq.get(i), dataObject.get((Property) seq.get(i)));
@@ -85,7 +80,7 @@ public class SdoDataObjectUtils {
                     } else {
                         temp = (v.toString().length() == 0);
                     }
-                    if (temp) {
+                    if (temp && !isMixed) {
                         addObjectToDelete(dataObject);
                     }
                     isEmpty = (isEmpty && temp);
@@ -97,7 +92,6 @@ public class SdoDataObjectUtils {
             }
         } else {
             for (int i = 0; i < dataObject.getInstanceProperties().size(); i++) {
-
                 Property p = (Property) dataObject.getInstanceProperties().get(i);
                 temp = handleValueOfProperty(helperContext, parent, dataObject, p);
                 isEmpty = (isEmpty && temp);
@@ -106,27 +100,9 @@ public class SdoDataObjectUtils {
                 }
             }
         }
-        if (isEmpty) {
+        if (isEmpty && !isMixed) {
             if (parent != null) {
                 addObjectToDelete(dataObject);
-            }
-        }
-        return isEmpty;
-    }
-
-
-    private boolean handlePropertyValuePair(HelperContext helperContext, final DataObject parent, DataObject dataObject,
-                                            Property p, Object value) {
-        boolean isEmpty = false;
-
-        if (p.getType().isDataType()) {
-            isEmpty = handleSimpleValue(helperContext, parent, dataObject, p, value);
-        } else {
-            if (p.isContainment()) {
-                isEmpty = handleDataObject(helperContext, dataObject, (DataObject) value, p);
-                if (isEmpty) {
-                    addObjectToDelete((DataObject) value);
-                }
             }
         }
         return isEmpty;
@@ -146,9 +122,9 @@ public class SdoDataObjectUtils {
 
                 if (p.isContainment()) {
                     if (p.isMany()) {
-                        isEmpty = handleDataObjects(helperContext, dataObject, dataObject.getList(p), p);
+                        isEmpty = handleDataObjects(helperContext, dataObject, dataObject.getList(p));
                     } else {
-                        isEmpty = handleDataObject(helperContext, dataObject, dataObject.getDataObject(p), p);
+                        isEmpty = handleDataObject(helperContext, dataObject, dataObject.getDataObject(p));
                     }
                 }
             }
@@ -158,8 +134,7 @@ public class SdoDataObjectUtils {
         return isEmpty;
     }
 
-    private boolean handleDataObjects(HelperContext helperContext, final DataObject parent, List list,
-                                      final Property parentProperty) {
+    private boolean handleDataObjects(HelperContext helperContext, final DataObject parent, List list) {
         /*
            * "Traversing a list of DataObjects which represent the values of a
            * multi-valued containment Property"
@@ -167,7 +142,7 @@ public class SdoDataObjectUtils {
         boolean isEmpty = true;
         boolean temp;
         for (Iterator i = list.iterator(); i.hasNext(); ) {
-            temp = handleDataObject(helperContext, parent, (DataObject) i.next(), parentProperty);
+            temp = handleDataObject(helperContext, parent, (DataObject) i.next());
             isEmpty = (isEmpty && temp);
         }
 

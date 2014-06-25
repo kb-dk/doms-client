@@ -19,14 +19,7 @@ import dk.statsbiblioteket.doms.client.impl.util.CycleDetector;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.util.xml.DOM;
-import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.sdo.api.SDOUtil;
-import org.apache.tuscany.sdo.impl.AttributeImpl;
-import org.apache.tuscany.sdo.impl.ClassImpl;
-import org.apache.tuscany.sdo.impl.ReferenceImpl;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EReference;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -35,8 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,8 +233,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             Property rootProperty = getRootProperty(sdoTypes, rootType, rootType.getURI(), getXsdHelper());
 
 
-            SdoDataObjectUtils utils = new SdoDataObjectUtils();
-            utils.handleDataObject(sdoContext, null, rootCopy, rootProperty);
+            SdoDataObjectRemovalUtil utils = new SdoDataObjectRemovalUtil();
+            utils.handleDataObject(sdoContext, null, rootCopy);
             utils.doDelete();
 
 
