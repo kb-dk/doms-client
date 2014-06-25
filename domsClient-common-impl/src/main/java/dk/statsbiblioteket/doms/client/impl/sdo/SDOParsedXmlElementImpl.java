@@ -3,13 +3,11 @@ package dk.statsbiblioteket.doms.client.impl.sdo;
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.Sequence;
-import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.apache.tuscany.sdo.api.SDOUtil;
-import org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,6 +18,20 @@ import java.util.UUID;
 
 public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
+    /**
+     * Generally, we remove empty elements and attributes from the SDO tree before we write them back to DOMS. We
+     * also, however, need to be able to remove attributes by setting previously non-empty values to empty in the
+     * GUI. These two placeholders enable this behaviour as follows.
+     *
+     * When an instance of this class is created, it is flagged with "originallySetNonEmpty" and with "originallySet".
+     * This occurs in SDOParsedXmlDocumentImpl.addLeaf() .
+     * When the element comes back from the GUI, if it is empty and was originally empty then it is set to
+     * PLACEHOLDER_FOR_EMPTY_STRING . If it is empty having previously been non-empty, then it is set to
+     * PLACEHOLDER_FOR_NOW_EMPTY_STRING. If it empty having originally been absent then it is left empty.
+     *
+     * The logic in SdoDataObjectRemovalUtil.handleSimpleValue() has then sufficient information as to whether
+     * the object is to be removed.
+     */
     static final String PLACEHOLDER_FOR_EMPTY_STRING = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0";
     static final String PLACEHOLDER_FOR_NOW_EMPTY_STRING = "@UNIQUE_VALUE@92d2bd82bb836e0fc21a44b3cee7bcc0@NOW";
 
@@ -32,7 +44,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     private Object value;
     private boolean originallySet;
     private boolean originallySetNonEmpty;
-    private boolean hasNonEmptyDescendant;
+    private boolean isHasNonEmptyDescendant;
     private int maxOccurence = -1;
     private int minOccurence = -1;
     /**
@@ -101,23 +113,14 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         if (property.isContainment() && !property.getType().isDataType()) {
             commonj.sdo.Type propType = property.getType();
             if (propType.getProperties() != null) {
-                boolean test;
                 boolean onlyAttributes = true;
                 for (Iterator<Property> i = propType.getProperties().iterator(); i.hasNext(); ) {
-                    Property childProperty = (Property) i.next();
+                    Property childProperty = i.next();
                     if (!getHelperContext().getXSDHelper().isAttribute(childProperty)) {
                         onlyAttributes = false;
                         break;
                     }
                 }
-
-                //return (propType.getProperties().size() == 0);
-                if ((propType.getProperties().size() > 0) && (!onlyAttributes)) {
-                    test = false;
-                } else {
-                    test = true;
-                }
-
                 return !((propType.getProperties().size() > 0) && (!onlyAttributes));
             } else {
                 return true;
@@ -484,19 +487,23 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     @Override
-    public boolean hasNonEmptyDescendant() {
-        return hasNonEmptyDescendant;
+    public boolean isHasNonEmptyDescendant() {
+        return isHasNonEmptyDescendant;
     }
 
     @Override
-    public void setHasNonEmptyDescendant(boolean b) {
-        hasNonEmptyDescendant = b;
+    public void setIsHasNonEmptyDescendant(boolean b) {
+        isHasNonEmptyDescendant = b;
     }
 
+    /**
+     * ??? Recursively traverses the tree of sdo elements starting with the current element, filling in the
+     * values of all the lead elements. ???
+     * @param context
+     * @throws XMLParseException
+     */
     public void submit(HelperContext context) throws XMLParseException {
         if (isLeaf()) {
-            //System.out.println("LeafDOMSXmlElement.submit. property = " + getProperty().getName());
-
             if (this.getValue() != null) {
                 if (getProperty().getType().isSequenced()) {
                     if (context.getXSDHelper().isMixed(getProperty().getType())) {
@@ -522,11 +529,6 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                         try {
                             if (this.property.getType().isAbstract()) {
                                 value = null;
-                                //Type stringType = SDOUtil.createType(getHelperContext(),"http://www.w3.org/2001/XMLSchema", "string", true);
-                                //value = getDataobject().createDataObject(getProperty(), stringType);
-                                //value = getDataobject().createDataObject(getProperty().getName(), "http://www.w3.org/2001/XMLSchema", "string");
-                                //value = SDOUtil.createFromString(SDOUtil.getXSDSDOType("string"), valueToSDOType(context));
-                                //value = SDOUtil.createFromString(SDOUtil.getXSDSDOType("anyType"), valueToSDOType(context));
                             } else  {
                                 value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
                             }
@@ -562,7 +564,6 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                             } else {
                                 values.set(getIndex(), value);
                             }
-
                         } else {
                             if (value.toString().isEmpty() && !isRequired()) {
                                 this.getDataobject().unset(this.getProperty());
