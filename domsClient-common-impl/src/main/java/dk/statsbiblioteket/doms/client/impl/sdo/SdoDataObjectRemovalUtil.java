@@ -65,7 +65,7 @@ public class SdoDataObjectRemovalUtil {
             List seq = dataObject.getType().getProperties();
             //We make a copy of this data because changing it while we iterate through it
             //causes surprising side-effects - specifically it can reorder the sequence
-            //so we the iteration gets screwed up.
+            //so the iteration gets screwed up.
             Map<Property, Object> sequenceMapCopy = new HashMap<Property, Object>();
             for (int i = 0; i < seq.size(); i++) {
                 sequenceMapCopy.put((Property) seq.get(i), dataObject.get((Property) seq.get(i)));
