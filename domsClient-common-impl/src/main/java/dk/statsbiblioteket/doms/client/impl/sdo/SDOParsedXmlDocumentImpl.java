@@ -19,6 +19,7 @@ import dk.statsbiblioteket.doms.client.impl.util.CycleDetector;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.util.xml.DOM;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.sdo.api.SDOUtil;
 import org.apache.tuscany.sdo.impl.AttributeImpl;
 import org.apache.tuscany.sdo.impl.ClassImpl;
@@ -45,6 +46,8 @@ import java.util.List;
  * structure by "reversing" the associated schema
  */
 public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
+
+
 
     private List<Property> visitedProperties;
     private XMLDocument sdoXmlDocument = null;
@@ -247,6 +250,9 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             try {
                 XMLDocument docCopy = getXmlHelper().createDocument(
                         rootCopy, rootType.getURI(), rootType.getName());
+
+                docCopy = getXmlHelper().createDocument(
+                                        rootCopy, rootType.getURI(), rootProperty.getName() );
                 getXmlHelper().save(docCopy, writer, null);
                 writer.flush();
             } catch (IOException e) {
@@ -364,7 +370,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //Get all types contained in this type
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
-        //TODO these are useful so keep as log.debug statements
+     /*   //TODO these are useful so keep as log.debug statements
        System.out.print(
                 "Current element: " + currentElement.getLabel() + "|" + currentElement.hashCode()
                         + "|Child property: " + childProperty.getName() + "|" + childProperty.hashCode()
@@ -376,7 +382,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             System.out.print("|Grandchild Property: " + grandChildProperty.getName());
         }
         System.out.print("\n");
-
+*/
         if (grandChildProperties.isEmpty()) {//no grand children so add all children as leafs here
             for (DataObject childDataObject : childDataObjects) {
                 handleLeafElement(currentElement, currentDataObject, childProperty, childDataObject);
@@ -592,6 +598,21 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         return false;
     }
 
+    private boolean currentSequenceContains(final DataObject dataObject, final Property property) {
+        Sequence sequence = dataObject.getSequence();
+        if (sequence == null || property == null) {
+            return false;
+        } else {
+            for (int index = 0; index < sequence.size(); index++) {
+                final Property property1 = sequence.getProperty(index);
+                if (property1 != null && property.getName().equals(property1.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Create a new leaf and add it to the parent
      *
@@ -606,10 +627,18 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
         SDOParsedXmlElementImpl newLeaf = new SDOParsedXmlElementImpl(
                 this, currentElement, currentDataObject, currentProperty);
-        if (value != null && (currentDataObject.isSet(currentProperty) || (currentDataObject.getSequence() != null && currentDataObject.getSequence().size() > 0))) {
+        if (value != null &&
+                (currentDataObject.isSet(currentProperty) || currentDataObject.toString().contains("xml.type:text"))) {
+            //|| currentDataObject.getSequence() != null )
+            //) {
+            //        || currentSequenceContains(currentDataObject, currentProperty))) {
+            //    boolean gotHere = !(currentDataObject.isSet(currentProperty)) && currentSequenceContains(currentDataObject, currentProperty);
             final String newLeafValue = value.toString();
             newLeaf.setValue(newLeafValue);
             newLeaf.setOriginallySet(true);
+          /*  if ("".equals(value)) {                  //??????
+                newLeaf.setOriginallySet(false);
+            }*/
             if (newLeafValue.isEmpty()) {
                 newLeaf.setOriginallySetNonEmpty(false);
             } else {

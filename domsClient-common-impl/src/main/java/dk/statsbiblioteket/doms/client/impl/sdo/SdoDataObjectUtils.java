@@ -5,11 +5,13 @@ import commonj.sdo.Property;
 import commonj.sdo.Sequence;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
-import org.apache.tuscany.sdo.api.SDOUtil;
+import org.apache.tuscany.sdo.impl.AnyTypeDataObjectImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class that is used to remove empty DataObjects from a XMLDocument.
@@ -61,26 +63,35 @@ public class SdoDataObjectUtils {
         boolean isEmpty = true;
         boolean temp = false;
 
-        if (dataObject.getType().isSequenced()) {
+        if (dataObject.getType().isSequenced() &&  (dataObject instanceof  AnyTypeDataObjectImpl && ((AnyTypeDataObjectImpl) dataObject).getMixed().size() > 0)) {
             XSDHelper xsdHelper = helperContext.getXSDHelper();
 
-            Sequence seq = dataObject.getSequence();
+            List seq = dataObject.getType().getProperties();
+            //Sequence seq = dadattaObject.getSequence();
 
+            //We make a copy of this data because changing it while we iterate through it
+            //causes surprising side-effects.
+            Map<Property, Object> sequenceMapCopy = new HashMap<Property, Object>();
             for (int i = 0; i < seq.size(); i++) {
-                Property p = seq.getProperty(i);
+                sequenceMapCopy.put((Property) seq.get(i), dataObject.get((Property) seq.get(i)));
+            }
+
+            for (Map.Entry<Property, Object> entry: sequenceMapCopy.entrySet()) {
+                Property p = entry.getKey();
+                Object v = entry.getValue();
                 if (p == null) {
-                    if (seq.getValue(i) == null) {
+                    if (v == null) {
                         temp = true;
                     } else {
-                        temp = (seq.getValue(i).toString().length() == 0);
+                        temp = (v.toString().length() == 0);
                     }
                     if (temp) {
                         addObjectToDelete(dataObject);
                     }
                     isEmpty = (isEmpty && temp);
-                } else if (!xsdHelper.isAttribute(p)) {
-                    temp = handlePropertyValuePair(
-                            helperContext, parent, dataObject, parentProperty, p, seq.getValue(i));
+                } else  {
+                    temp = handleValueOfProperty(
+                            helperContext, parent, dataObject, p);
                     isEmpty = (isEmpty && temp);
                 }
             }
@@ -105,7 +116,7 @@ public class SdoDataObjectUtils {
 
 
     private boolean handlePropertyValuePair(HelperContext helperContext, final DataObject parent, DataObject dataObject,
-                                            Property parentProperty, Property p, Object value) {
+                                            Property p, Object value) {
         boolean isEmpty = false;
 
         if (p.getType().isDataType()) {

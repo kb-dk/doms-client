@@ -12,11 +12,20 @@ import dk.statsbiblioteket.doms.client.objects.stubs.ModsHelper;
 import dk.statsbiblioteket.util.Strings;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
+import junit.framework.Assert;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tuscany.sdo.api.SDOUtil;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -28,6 +37,9 @@ import static org.junit.Assert.fail;
  */
 public class SdoTest  {
 
+    private Log log = LogFactory.getLog(SdoTest.class);
+
+
     /**
      * Tests that parsing works correctly when a fixed-value attribute is absent - it remains absent.
      * @throws ServerOperationFailed
@@ -36,7 +48,7 @@ public class SdoTest  {
      * @throws XMLParseException
      */
     @Test
-    public void testSdoFixedValueAbsent() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+    public void testSdoFixedValueAbsent() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
                 return new DatastreamStub() {
@@ -61,8 +73,19 @@ public class SdoTest  {
         Document finalDocument = DOM.stringToDOM(xmlFinal, true);
         XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
         String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:part/mods:extent/@foobarFixedValueIsBar");
-        assertEquals("", invalidAttributeValue);
-        assertFalse(xmlFinal.contains("foobarFixedValueIsBar"));
+
+        final String sdoDocString = SdoUtils.parseDoc(sdodoc);
+        String output = sdoDocString + "\n" + xmlFinal;
+        assertEquals(output, "", invalidAttributeValue);
+        assertTrue(output, sdoDocString.matches("(?s)^.*'Title'.*adresseavisen.*inputfield.*$"));
+        assertFalse(output, sdoDocString.matches("(?s)^.*'Supplied':\\s'yes'.*$"));
+        assertFalse(output, xmlFinal.contains("foobarFixedValueIsBar"));
+        assertFalse(output, xmlFinal.contains("foobarFixedValueIsFoo"));
+
+       XMLUnit.setIgnoreWhitespace(true);
+       Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+       assertTrue(sdoDocString + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+       log.info(output);
     }
 
     /**
@@ -73,7 +96,7 @@ public class SdoTest  {
      * @throws XMLParseException
      */
     @Test
-    public void testSdoFixedValuePresent() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+    public void testSdoFixedValuePresent() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
                 return new DatastreamStub() {
@@ -96,11 +119,16 @@ public class SdoTest  {
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
         String xmlFinal = sdodoc.dumpToString();
+        String sdodocString = SdoUtils.parseDoc(sdodoc);
         Document finalDocument = DOM.stringToDOM(xmlFinal, true);
         XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
-        String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:part/mods:extent/@foobarFixedValueIsBar");
-        assertEquals("bar", invalidAttributeValue);
-        assertTrue(xmlFinal.contains("foobarFixedValueIsBar"));
+        String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:mods/mods:part/mods:extent/@foobarFixedValueIsBar");
+        assertEquals(xmlFinal, "bar", invalidAttributeValue);
+        assertTrue(xmlFinal, xmlFinal.contains("foobarFixedValueIsBar"));
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        log.info(sdodocString + "\n" + xmlFinal);
     }
 
     /**
@@ -111,7 +139,7 @@ public class SdoTest  {
      * @throws XMLParseException
      */
     @Test
-    public void testSdoFixedValueEmpty() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+    public void testSdoFixedValueEmpty() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
                 return new DatastreamStub() {
@@ -134,11 +162,16 @@ public class SdoTest  {
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
         String xmlFinal = sdodoc.dumpToString();
+        String sdodocString = SdoUtils.parseDoc(sdodoc);
         Document finalDocument = DOM.stringToDOM(xmlFinal, true);
         XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
         String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:part/mods:extent/@foobarFixedValueIsBar");
-        assertEquals("", invalidAttributeValue);
-        assertTrue(xmlFinal.contains("foobarFixedValueIsBar"));
+        assertEquals(xmlFinal, "", invalidAttributeValue);
+        assertTrue(xmlFinal, xmlFinal.contains("foobarFixedValueIsBar"));
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        log.info(sdodocString + "\n" + xmlFinal);
     }
 
     /**
@@ -150,7 +183,7 @@ public class SdoTest  {
      * @throws XMLParseException
      */
     @Test
-    public void testLeafWithNoAttributes() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+    public void testLeafWithNoAttributes() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
                 return new DatastreamStub() {
@@ -171,20 +204,24 @@ public class SdoTest  {
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
         String doc = SdoUtils.parseDoc(sdodoc);
-        assertTrue(doc.matches("(?s)^.*'Title':.*inputfield.*$"));
+        String xmlFinal = sdodoc.dumpToString();
+        assertTrue(doc, doc.matches("(?s)^.*'Title':.*adresseavisen.*inputfield.*$"));
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(doc + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        log.info(doc + "\n" + xmlFinal);
     }
 
     /**
-     * A leaf element with no attributes is presented as an input field. This example is based on the Title field
-     * in Mods 3.1. In this case there is no "Title" element in the input field so an empty one is created in the
-     * sdo tree. This checks that it is created and has an input field where we can enter its value.
+     * If the type of a lead cannot be determined then it must simply be omitted. This example is based on Mods 3.1
+     * where the type of a Title element is not specified.
      * @throws ServerOperationFailed
      * @throws NotFoundException
      * @throws IOException
      * @throws XMLParseException
      */
     @Test
-    public void testNewLeafWithNoAttributes() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
+    public void testAbstractLeaf() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
                 return new DatastreamStub() {
@@ -205,7 +242,12 @@ public class SdoTest  {
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
         String doc = SdoUtils.parseDoc(sdodoc);
-        assertTrue(doc, doc.matches("(?s)^.*'Title':.*inputfield.*$"));
+        String xmlFinal = sdodoc.dumpToString();
+        assertFalse(doc, doc.matches("(?s)^.*'Title':.*inputfield.*$"));
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(doc + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        log.info(doc + "\n" + xmlFinal);
     }
 
     /**
@@ -216,7 +258,7 @@ public class SdoTest  {
      * @throws ServerOperationFailed
      */
     @Test
-    public void testLeafWithAttributes() throws XMLParseException, ServerOperationFailed {
+    public void testLeafWithAttributes() throws XMLParseException, ServerOperationFailed, IOException, SAXException {
         final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
             public Datastream getSchema() {
                 return new DatastreamStub() {
@@ -238,7 +280,12 @@ public class SdoTest  {
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
         String doc = SdoUtils.parseDoc(sdodoc);
-        assertTrue(doc.matches("(?s).*'Title'[\\s+()]*\\n\\s*'Value'.*"));
+        String xmlFinal = sdodoc.dumpToString();
+        assertTrue(doc, doc.matches("(?s).*'Title'[\\s+()]*\\n\\s*'Value'.*"));
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(doc + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+        log.info(doc + "\n" + xmlFinal);
     }
 
 

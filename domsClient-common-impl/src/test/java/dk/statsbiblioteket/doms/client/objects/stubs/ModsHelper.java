@@ -35,12 +35,17 @@ public class ModsHelper {
             "    <mods:part>\n" +
             "        <mods:detail type=\"sectionLabel\">\n" +
             "            <mods:number>Sektion 1</mods:number>\n" +
-            "        </mods:detail>\n" +
-            "        <mods:extent unit=\"pages\" " + ADDITIONAL_ATTRIBUTE_STRING +" >\n" +
-            "            <mods:start>1</mods:start>\n" +
-            "        </mods:extent>\n" +
-            "    </mods:part>\n" +
-            "</mods:mods>";
+             "           <mods:myType></mods:myType>\n" +
+             "        </mods:detail>\n" +
+             "        <mods:extent unit=\"pages\" " + ADDITIONAL_ATTRIBUTE_STRING +" >\n" +
+             "            <mods:start>1</mods:start>\n" +
+             "           <mods:end>2</mods:end>\n" +
+             "        </mods:extent>\n" +
+             "    </mods:part>\n" +
+             "        <mods:titleInfo type=\"uniform\" >\n" +
+             "            <mods:title>adresseavisen1759</mods:title>\n" +
+             "        </mods:titleInfo>\n" +
+             "</mods:mods>";
 
     public void setAdditionalAttributeString(String attributeString) {
         modsString = modsString.replaceAll(ADDITIONAL_ATTRIBUTE_STRING, attributeString);

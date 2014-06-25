@@ -69,21 +69,26 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
         <xs:choice maxOccurs="unbounded">
             <xs:element ref="number"/>
             <xs:element ref="caption"/>
+            <xs:element ref="myType"/>
         </xs:choice>
         <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="foobarFixedValueIsFoo" fixed="foo"/>
         <!--<xs:attribute name="level" type="xs:positiveInteger"/>-->
     </xs:complexType>
     <!-- -->
     <xs:element name="number" type="stringPlusLanguage"/>
     <xs:element name="caption" type="stringPlusLanguage"/>
+    <xs:element name="myType" type="xs:string">
+        <xs:attribute name="fixedValueIsbarfoo" fixed="barfoo"/>
+    </xs:element>
     <!--
 ********** extent **********
 -->
     <xs:complexType name="extentDefinition">
         <xs:sequence>
             <xs:element ref="start" minOccurs="0"/>
-            <!--<xs:element ref="end" minOccurs="0"/>
-            <xs:element ref="total" minOccurs="0"/>
+            <xs:element ref="end" minOccurs="0"/>
+            <!--<xs:element ref="total" minOccurs="0"/>
             <xs:element ref="list" minOccurs="0"/>-->
         </xs:sequence>
         <xs:attribute name="unit" type="xs:string"/>
@@ -92,8 +97,9 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
     </xs:complexType>
     <!-- -->
     <xs:element name="start" type="stringPlusLanguage"/>
- <!--   <xs:element name="end" type="stringPlusLanguage"/>
-    <xs:element name="total" type="xs:positiveInteger"/>
+    <xs:element name="end" type="stringPlusLanguage"/>
+
+    <!--<xs:element name="total" type="xs:positiveInteger"/>
     <xs:element name="list" type="stringPlusLanguage"/>-->
 
     <xs:attributeGroup name="myGroup">

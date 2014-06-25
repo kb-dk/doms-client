@@ -3,11 +3,13 @@ package dk.statsbiblioteket.doms.client.impl.sdo;
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.Sequence;
+import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.apache.tuscany.sdo.api.SDOUtil;
+import org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -515,11 +517,20 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                         }
                     }
                 } else {
-                    if (getProperty().getType().getInstanceClass() != null) {
-
+                    if (getProperty().getType().getInstanceClass() != null && !getProperty().getType().isAbstract()) {
                         Object value;
                         try {
-                            value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
+                            if (this.property.getType().isAbstract()) {
+                                value = null;
+                                //Type stringType = SDOUtil.createType(getHelperContext(),"http://www.w3.org/2001/XMLSchema", "string", true);
+                                //value = getDataobject().createDataObject(getProperty(), stringType);
+                                //value = getDataobject().createDataObject(getProperty().getName(), "http://www.w3.org/2001/XMLSchema", "string");
+                                //value = SDOUtil.createFromString(SDOUtil.getXSDSDOType("string"), valueToSDOType(context));
+                                //value = SDOUtil.createFromString(SDOUtil.getXSDSDOType("anyType"), valueToSDOType(context));
+                            } else  {
+                                value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
+                            }
+
                         } catch (IllegalArgumentException e) {
                             if (this.getValue().toString().isEmpty() && !isRequired()) {
                                 value = "";
