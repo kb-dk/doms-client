@@ -68,8 +68,8 @@ public interface SDOParsedXmlElement {
 
     void remove(SDOParsedXmlElement xmlElement);
 
-    boolean hasNonEmptyDescendant();
-    void setHasNonEmptyDescendant(boolean b);
+    boolean isHasNonEmptyDescendant();
+    void setIsHasNonEmptyDescendant(boolean b);
 
     String toString();
 

@@ -34,7 +34,7 @@ public class SdoUtils {
                     if (child.getRemovable()) {
                         stringBuilder.append("(-)");
                     }
-                    if (child.hasNonEmptyDescendant()) {
+                    if (child.isHasNonEmptyDescendant()) {
                         stringBuilder.append("(d)");
                     }
                 }
@@ -49,7 +49,7 @@ public class SdoUtils {
                     if (child.getRemovable()) {
                         stringBuilder.append("(-)");
                     }
-                    if (child.hasNonEmptyDescendant()) {
+                    if (child.isHasNonEmptyDescendant()) {
                         stringBuilder.append(" (d) ");
                     }
                 }
