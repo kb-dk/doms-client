@@ -3,11 +3,17 @@ package dk.statsbiblioteket.doms.client.impl.sdo;
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.Sequence;
+import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.apache.tuscany.sdo.api.SDOUtil;
+import org.apache.tuscany.sdo.util.DataObjectUtil;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -331,6 +337,10 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         this.parent = parent;
     }
 
+    /**
+     * This method would probably be better called something like "createSibling()"
+     * @return
+     */
     @Override
     public SDOParsedXmlElement create() {
         SDOParsedXmlElementImpl myElem;
@@ -345,13 +355,16 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             myElem.setIndex(values.size());
             values.add(null);
         } else {
+
+            //Problem here if property is abstract ...
             DataObject myDo = getDataobject().getContainer().createDataObject(
                     getProperty().getName());
             myElem = new SDOParsedXmlElementImpl(
                     this.myDocument, this.parent, myDo, this.property, parent.getChildren().indexOf(this) + 1);
 
             if (!isLeaf()) {
-                createChildren(myElem);
+                //createChildren(myElem);
+                createChildrenNew(myElem, this);
             }
         }
 
@@ -365,18 +378,78 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 DataObject childDo;
                 if (!p.isContainment()) {
                     childDo = element.getDataobject();
-                } else {
+                } else  {
+                    //This fails if p is abstract.
                     childDo = element.getDataobject().createDataObject(p);
                 }
                 SDOParsedXmlElement childElement = new SDOParsedXmlElementImpl(this.myDocument, element, childDo, p);
                 element.add(childElement);
                 if (!childElement.isLeaf()) {
+                    //What we really want to do here is DataObjectUtil.createDataObject(DataObject dataObject, Property property, Type type)
+                    //Where the type is taken from the original object we are copying
                     createChildren(childElement);
                 }
             }
         }
 
     }
+
+    private void createChildrenNew(SDOParsedXmlElement element, SDOParsedXmlElement original) {
+        for (Object o : element.getDataobject().getType().getProperties()) {
+            Property p = (Property) o;
+            SDOParsedXmlElement childOriginal = null;
+            for (SDOParsedXmlElement child: original.getChildren()) {
+                if (child.getProperty().getName().equals(p.getName())) {
+                    childOriginal = child;
+                }
+            }
+            //if (!getHelperContext().getXSDHelper().isAttribute(p)) {
+            DataObject childDo = null;
+            if (!p.isContainment()) {
+                childDo = element.getDataobject();
+            } else  {
+                if (!p.getType().isAbstract()) {
+                    childDo = element.getDataobject().createDataObject(p);
+                } else {
+                    if (childOriginal != null) {
+                        final Type newType = childOriginal.getDataobject().getType();
+                        if (!newType.isAbstract()) {
+                            childDo = DataObjectUtil.createDataObject(element.getDataobject(), p, newType);
+                        }
+                    }
+                }
+            }
+            if (childDo != null) {
+                SDOParsedXmlElementImpl childElement = new SDOParsedXmlElementImpl(this.myDocument, element, childDo, p);
+                element.add(childElement);
+                if (getHelperContext().getXSDHelper().isAttribute(p)) {
+                    childElement.getDataobject().set(p, "");
+                    childElement.setGuiType(childOriginal.getGuiType());
+                }
+                if (!childElement.isLeaf()) {
+                    //What we really want to do here is DataObjectUtil.createDataObject(DataObject dataObject, Property property, Type type)
+                    //Where the type is taken from the original object we are copying
+                    createChildrenNew(childElement, childOriginal);
+                }
+            }
+
+              /* else {
+                   final Property originalProperty = original.getDataobject().getProperty(p.getName());
+                   String value = DataObjectUtil.getString(original.getDataobject(), originalProperty);
+                   element.getDataobject().set(p, value);*/
+               /*   if (p.isMany()) {
+                     List<String> emptyStringList = new ArrayList<String>();
+                      emptyStringList.add("");
+                      element.getDataobject().set(p, "");
+                  } else {
+                      element.getDataobject().set(p, "");
+                  }*/
+
+        }
+
+       }
+
+
 
     @Override
     public void delete() {

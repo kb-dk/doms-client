@@ -6,12 +6,15 @@ import dk.statsbiblioteket.doms.client.exceptions.NotFoundException;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlDocumentImpl;
+import dk.statsbiblioteket.doms.client.impl.sdo.SDOParsedXmlElementImpl;
 import dk.statsbiblioteket.doms.client.objects.stubs.DatastreamDeclarationStub;
 import dk.statsbiblioteket.doms.client.objects.stubs.DatastreamStub;
 import dk.statsbiblioteket.doms.client.objects.stubs.ModsTestHelper;
+import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import dk.statsbiblioteket.util.Strings;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
+import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.custommonkey.xmlunit.Diff;
@@ -22,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -210,7 +214,56 @@ public class SdoTest  {
     }
 
     /**
-     * If the type of a lead cannot be determined then it must simply be omitted. This example is based on Mods 3.1
+     * Test that we can create a sibling element for an element of abstract type.
+     * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     * @throws SAXException
+     */
+    @Test
+    public void testCreateAbstractElement() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        return SdoUtils.getStringFromFileOnClasspath("MODS31_SIMPLE.xsd");
+                    }
+                };
+            }
+        };
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xml"));
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        SDOParsedXmlElement element =  sdodoc.getRootSDOParsedXmlElement().getChildren().get(0);
+        assertEquals("Expected a titleinfo element here.", "Titleinfo", element.getLabel());
+        String originalSdodocString = SdoUtils.parseDoc(sdodoc);
+        SDOParsedXmlElement newElement =  element.create();
+
+        //Create new Title element. This doesn't work yet.
+        element.getChildren().get(0).create();
+
+        String newSdodocString = SdoUtils.parseDoc(sdodoc);
+        System.out.printf(SdoUtils.parseDoc(sdodoc));
+        int oldCount = countMatches(originalSdodocString, "Titleinfo");
+        int newCount = countMatches(newSdodocString, "Titleinfo");
+        assertEquals(oldCount+1, newCount);
+        String xmlFinal = sdodoc.dumpToString();
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+    }
+
+    /**
+     * If the type of a leaf cannot be determined then it must simply be omitted. This example is based on Mods 3.1
      * where the type of a Title element is not specified.
      * @throws ServerOperationFailed
      * @throws NotFoundException

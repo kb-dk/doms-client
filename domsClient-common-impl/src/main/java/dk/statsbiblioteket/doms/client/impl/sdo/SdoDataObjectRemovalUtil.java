@@ -4,6 +4,10 @@ import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.helper.HelperContext;
 import org.apache.tuscany.sdo.impl.AnyTypeDataObjectImpl;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +31,35 @@ public class SdoDataObjectRemovalUtil {
      */
     public void doDelete() {
         for (DataObject dob : dataObjectsToDelete) {
-            dob.delete();
+            //dob.delete();
+            delete(dob);
+        }
+    }
+
+
+    /**
+     * This is a slightly more robust version of DataObjectUtil.delete()
+     * @param dataObject
+     */
+    public static void delete(DataObject dataObject)
+    {
+        EObject eDataObject = (EObject)dataObject;
+        EcoreUtil.remove(eDataObject);
+        List contents = new ArrayList((eDataObject).eContents());
+        for (int i = 0, size = contents.size(); i < size; ++i)
+        {
+            ((DataObject)contents.get(i)).delete();
+        }
+        EClass eClass = eDataObject.eClass();
+        for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i)
+        {
+            EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(i);
+            if (eStructuralFeature instanceof Property && eStructuralFeature.isChangeable() && !eStructuralFeature.isDerived() && !((Property)eStructuralFeature).isReadOnly())
+            {
+                eDataObject.eUnset(eStructuralFeature);
+            } else if (!(eStructuralFeature instanceof Property)) {
+                eDataObject.eUnset(eStructuralFeature);
+            }
         }
     }
 
