@@ -176,6 +176,9 @@ public class SdoDataObjectRemovalUtil {
                 }
             } else if (value.equals(SDOParsedXmlElementImpl.PLACEHOLDER_FOR_NOW_EMPTY_STRING)) {
                 isEmpty = true;
+                if (isEmpty && helperContext.getXSDHelper().isAttribute(property)) {
+                    dataObject.unset(property);
+                }
             } else if (!value.toString().isEmpty()) {
                 isEmpty = false;
             }

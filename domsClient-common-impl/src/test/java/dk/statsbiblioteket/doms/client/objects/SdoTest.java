@@ -341,6 +341,7 @@ public class SdoTest  {
         assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle"));
         assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle2"));
         assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle2"));
+        assertFalse(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("\"\""));
     }
 
 

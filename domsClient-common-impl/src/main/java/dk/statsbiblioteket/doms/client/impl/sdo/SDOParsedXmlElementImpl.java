@@ -365,6 +365,10 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             DataObject myDo = getDataobject().getContainer().createDataObject(getProperty(), requiredType);
             myElem = new SDOParsedXmlElementImpl(
                     this.myDocument, this.parent, myDo, this.property, parent.getChildren().indexOf(this) + 1);
+           /* if (getHelperContext().getXSDHelper().isAttribute(this.property)) {
+                myElem.setOriginallySet(true);
+                myElem.setOriginallySetNonEmpty(true);
+            }*/
             if (myDo.getSequence() != null) {
                 copySequence(this.getDataobject(), myDo);
             }
@@ -450,13 +454,16 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             }
             if (childDo != null) {
                 SDOParsedXmlElementImpl childElement = new SDOParsedXmlElementImpl(this.myDocument, element, childDo, p);
+                /*if (getHelperContext().getXSDHelper().isAttribute(p)) {
+                    childElement.setOriginallySet(true);
+                    childElement.setOriginallySetNonEmpty(true);
+                }*/
                 element.add(childElement);
                 if (childDo.getSequence() != null) {
                     copySequence(childOriginal.getDataobject(), childDo);
                 }
                 if (getHelperContext().getXSDHelper().isAttribute(p)) {
-
-                    childElement.getDataobject().set(p, "");
+                    childElement.getDataobject().set(p, "wrong");
                     final GuiType guiType = childOriginal.getGuiType();
                     childElement.setGuiType(guiType);
                     if (guiType.equals(GuiType.enumeration)) {
