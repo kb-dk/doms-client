@@ -2,8 +2,8 @@ package dk.statsbiblioteket.doms.client.impl.sdo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
+import commonj.sdo.Sequence;
 import commonj.sdo.helper.HelperContext;
-import org.apache.tuscany.sdo.impl.AnyTypeDataObjectImpl;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -48,7 +48,7 @@ public class SdoDataObjectRemovalUtil {
         List contents = new ArrayList((eDataObject).eContents());
         for (int i = 0, size = contents.size(); i < size; ++i)
         {
-            ((DataObject)contents.get(i)).delete();
+            delete((DataObject) contents.get(i));
         }
         EClass eClass = eDataObject.eClass();
         for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i)
@@ -87,57 +87,36 @@ public class SdoDataObjectRemovalUtil {
      * @return true if dataObject is empty.
      */
     public boolean handleDataObject(HelperContext helperContext, final DataObject parent, final DataObject dataObject) {
-        boolean isEmpty = true;
-        boolean temp = false;
-        boolean isSequenced = dataObject.getType().isSequenced();
-        //Determine if the current object is mixed. Mixed data objects are not removed.
-        boolean isMixed = dataObject instanceof AnyTypeDataObjectImpl && ((AnyTypeDataObjectImpl) dataObject).getMixed().size() > 0;
 
-        if (isSequenced) {
-            List seq = dataObject.getType().getProperties();
-            //We make a copy of this data because changing it while we iterate through it
-            //causes surprising side-effects - specifically it can reorder the sequence
-            //so the iteration gets screwed up.
-            Map<Property, Object> sequenceMapCopy = new HashMap<Property, Object>();
-            for (int i = 0; i < seq.size(); i++) {
-                sequenceMapCopy.put((Property) seq.get(i), dataObject.get((Property) seq.get(i)));
-            }
+        boolean sequencePropertiesAreEmpty = true;
+        boolean instancePropertiesAreEmpty = true;
 
-            for (Map.Entry<Property, Object> entry: sequenceMapCopy.entrySet()) {
-                Property p = entry.getKey();
-                Object v = entry.getValue();
-                if (p == null) {
-                    if (v == null) {
-                        temp = true;
-                    } else {
-                        temp = (v.toString().length() == 0);
-                    }
-                    if (temp && !isMixed) {
-                        addObjectToDelete(dataObject);
-                    }
-                    isEmpty = (isEmpty && temp);
-                } else  {
-                    temp = handleValueOfProperty(
-                            helperContext, parent, dataObject, p);
-                    isEmpty = (isEmpty && temp);
+        if (dataObject.getType().isSequenced()) {
+            Sequence sequence = dataObject.getSequence();
+            for (int i = 0; i < sequence.size(); i++) {
+                boolean thisSequenceElementIsEmpty = true;
+                Object value = sequence.getValue(i);
+                if (value instanceof DataObject) {
+                    thisSequenceElementIsEmpty = handleDataObject(helperContext, dataObject, (DataObject) value);
+                } else if (value != null && value instanceof String) {
+                    thisSequenceElementIsEmpty =  ("".equals(value));
                 }
+                sequencePropertiesAreEmpty = sequencePropertiesAreEmpty && thisSequenceElementIsEmpty;
             }
+        }
+
+        for (int i = 0; i < dataObject.getInstanceProperties().size(); i++) {
+            Property p = (Property) dataObject.getInstanceProperties().get(i);
+            boolean thisInstancePropertyIsEmpty = handleValueOfProperty(helperContext, parent, dataObject, p);
+            instancePropertiesAreEmpty = thisInstancePropertyIsEmpty && instancePropertiesAreEmpty;
+        }
+
+        if (sequencePropertiesAreEmpty && instancePropertiesAreEmpty && parent != null) {
+            addObjectToDelete(dataObject);
+            return true;
         } else {
-            for (int i = 0; i < dataObject.getInstanceProperties().size(); i++) {
-                Property p = (Property) dataObject.getInstanceProperties().get(i);
-                temp = handleValueOfProperty(helperContext, parent, dataObject, p);
-                isEmpty = (isEmpty && temp);
-                if (temp) {
-                    dataObject.unset(p);
-                }
-            }
+            return false;
         }
-        if (isEmpty && !isMixed) {
-            if (parent != null) {
-                addObjectToDelete(dataObject);
-            }
-        }
-        return isEmpty;
     }
 
     private boolean handleValueOfProperty(HelperContext helperContext, final DataObject parent, DataObject dataObject,

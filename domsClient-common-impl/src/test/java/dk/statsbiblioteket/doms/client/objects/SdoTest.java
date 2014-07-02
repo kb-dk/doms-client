@@ -168,7 +168,7 @@ public class SdoTest  {
         XPathSelector MODS_XPATH_SELECTOR = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
         String invalidAttributeValue = MODS_XPATH_SELECTOR.selectString(finalDocument, "mods:modsDefinition/mods:part/mods:extent/@foobarFixedValueIsBar");
         assertEquals(xmlFinal, "", invalidAttributeValue);
-        assertTrue(xmlFinal, xmlFinal.contains("foobarFixedValueIsBar"));
+        assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal, xmlFinal.contains("foobarFixedValueIsBar"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
         assertTrue(sdodocString + "\n" + modsDatastreamContent + "\n" + xmlFinal, diff.similar());
@@ -214,7 +214,8 @@ public class SdoTest  {
     }
 
     /**
-     * Test that we can create a sibling element for an element of abstract type.
+     * Test that we can create a sibling element for an element of abstract type. The tests creates two new elements:
+     * one complex, one leaf.
      * @throws ServerOperationFailed
      * @throws NotFoundException
      * @throws IOException
@@ -242,25 +243,103 @@ public class SdoTest  {
         };
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
-        SDOParsedXmlElement element =  sdodoc.getRootSDOParsedXmlElement().getChildren().get(0);
-        assertEquals("Expected a titleinfo element here.", "Titleinfo", element.getLabel());
         String originalSdodocString = SdoUtils.parseDoc(sdodoc);
-        SDOParsedXmlElement newElement =  element.create();
+        SDOParsedXmlElement titleInfoElement =  sdodoc.getRootSDOParsedXmlElement().getChildren().get(0);
+        assertEquals("Expected a titleinfo titleInfoElement here.", "Titleinfo", titleInfoElement.getLabel());
+        SDOParsedXmlElement newElement =  titleInfoElement.create();
 
         //Create new Title element. This doesn't work yet.
-        element.getChildren().get(0).create();
+        titleInfoElement.getChildren().get(0).create();
 
         String newSdodocString = SdoUtils.parseDoc(sdodoc);
         System.out.printf(SdoUtils.parseDoc(sdodoc));
         int oldCount = countMatches(originalSdodocString, "Titleinfo");
         int newCount = countMatches(newSdodocString, "Titleinfo");
-        assertEquals(oldCount+1, newCount);
+        assertEquals("Should have one extra TitleInfo element.", oldCount+1, newCount);
+        oldCount = countMatches(originalSdodocString, "'Title'");
+        newCount = countMatches(newSdodocString, "'Title'");
+        assertEquals("Should have two extra Title elements (one in an existing TitleInfo, one in the new TitleInfo).", oldCount+2, newCount);
         String xmlFinal = sdodoc.dumpToString();
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreAttributeOrder(true);
         Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
         assertTrue(modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
     }
+
+    /**
+     * Very basic test that just creating an empty element has no effect on the final document.
+      * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     * @throws SAXException
+     */
+    @Test
+    public void testJustCreateAbstractElement() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        return SdoUtils.getStringFromFileOnClasspath("MODS31_SIMPLE.xsd");
+                    }
+                };
+            }
+        };
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xml"));
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        sdodoc.getRootSDOParsedXmlElement().getChildren().get(0).create();
+        String xmlFinal = sdodoc.dumpToString();
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        assertTrue(SdoUtils.parseDoc(sdodoc) + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
+    }
+
+
+    @Test
+       public void testCreateAndSaveAbstractElement() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
+           final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+               public Datastream getSchema() {
+                   return new DatastreamStub() {
+                       @Override
+                       public String getContents() throws ServerOperationFailed {
+                           return SdoUtils.getStringFromFileOnClasspath("MODS31_SIMPLE.xsd");
+                       }
+                   };
+               }
+           };
+           final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xml"));
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        String originalSdodocString = SdoUtils.parseDoc(sdodoc);
+        SDOParsedXmlElement titleInfoElement =  sdodoc.getRootSDOParsedXmlElement().getChildren().get(0);
+        assertEquals("Expected a titleinfo titleInfoElement here.", "Titleinfo", titleInfoElement.getLabel());
+        SDOParsedXmlElement newElement =  titleInfoElement.create();
+
+        SDOParsedXmlElement newTitleElement = titleInfoElement.getChildren().get(0).create();
+        newTitleElement.setValue("thenewtitle");
+        newTitleElement.getDataobject().getSequence().setValue(0, "thenewtitle");
+
+        final String sdodocString = SdoUtils.parseDoc(sdodoc);
+        String xmlFinal = sdodoc.dumpToString();
+        assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle"));
+        assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle"));
+    }
+
 
     /**
      * If the type of a leaf cannot be determined then it must simply be omitted. This example is based on Mods 3.1

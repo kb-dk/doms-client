@@ -250,6 +250,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             } catch (IOException e) {
                 throw new RuntimeException("String writer failed to write...", e);
             }
+            System.out.println("Created writable output:\n" + writer.toString());
             return writer.toString();
         }
         return null;

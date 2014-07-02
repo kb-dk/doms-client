@@ -5,6 +5,8 @@ import dk.statsbiblioteket.doms.central.DatastreamProfile;
 import dk.statsbiblioteket.doms.client.datastreams.ExternalDatastream;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
+import java.util.logging.Logger;
+
 /**
  * Created by IntelliJ IDEA.
  * User: abr
@@ -14,6 +16,7 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  */
 public class ExternalDatastreamImpl extends SaveableDatastreamImpl implements ExternalDatastream {
     private String url;
+    Logger logger = Logger.getLogger(ExternalDatastreamImpl.class.getName());
 
     private String originalURL;
     private CentralWebservice api;
@@ -38,6 +41,7 @@ public class ExternalDatastreamImpl extends SaveableDatastreamImpl implements Ex
 
     @Override
     public void preSave() {
+        logger.warning("Not implemented: Cannot save external datastream " + getId());
         //TODO
     }
 

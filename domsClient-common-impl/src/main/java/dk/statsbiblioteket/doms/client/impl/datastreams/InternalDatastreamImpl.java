@@ -10,6 +10,8 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.objects.DigitalObject;
 
+import java.util.logging.Logger;
+
 /**
  * Created by IntelliJ IDEA.
  * User: abr
@@ -18,6 +20,8 @@ import dk.statsbiblioteket.doms.client.objects.DigitalObject;
  * To change this template use File | Settings | File Templates.
  */
 public class InternalDatastreamImpl extends SaveableDatastreamImpl implements InternalDatastream {
+
+    static Logger logger = Logger.getLogger(InternalDatastreamImpl.class.getName());
 
     private String contents;
 
@@ -60,15 +64,18 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
     @Override
     public void preSave() throws ServerOperationFailed, XMLParseException {
+        logger.info("In preSave() for " + getId());
         if (hasBeenSDOparsed()) {
-
+            logger.info("Saving to datastream for " + getSDOParsedDocument());
             getSDOParsedDocument().saveToDatastream();
 
         }
         if (contents == null || (!isVirtual() && originalContents == null)) {
+            logger.info("Null contents, saving nothing for " + getId());
             return;
         }
         if (contents.equals(originalContents)) {
+            logger.info("Contents unchanged. Not saving " + getId());
             return;
         }
         try {

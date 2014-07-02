@@ -42,12 +42,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 /**
  * The common functionality of a digital object is implemented here.
  */
 public abstract class AbstractDigitalObject implements DigitalObject {
 
+    Logger logger = Logger.getLogger(AbstractDigitalObject.class.getName());
 
     protected ObjectProfile profile;
     protected CentralWebservice api;
@@ -414,8 +416,11 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         }
         for (Datastream datastream : datastreams) {
             if (datastream instanceof SaveableDatastreamImpl) {
+                logger.info("Saving saveable datastream: " + datastream.getId() + " for " + getPid());
                 SaveableDatastreamImpl saveableDatastream = (SaveableDatastreamImpl) datastream;
                 saveableDatastream.preSave();
+            } else {
+                logger.info("Not saving unsaveble datastream: " + datastream.getId() + " for " + " it is an instance of " + datastream.getClass().getName());
             }
         }
     }

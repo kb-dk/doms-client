@@ -355,19 +355,27 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             myElem.setIndex(values.size());
             values.add(null);
         } else {
-
-            //Problem here if property is abstract ...
-            DataObject myDo = getDataobject().getContainer().createDataObject(
-                    getProperty().getName());
+            Type requiredType = getProperty().getType();
+            if (requiredType.isAbstract()) {  //If the type is abstract, get the concrete type of the actual property value.
+                requiredType = ((DataObject)((List) getDataobject().getContainer().get(getProperty().getName())).get(0)).getType();
+            }
+            DataObject myDo = getDataobject().getContainer().createDataObject(getProperty(), requiredType);
             myElem = new SDOParsedXmlElementImpl(
                     this.myDocument, this.parent, myDo, this.property, parent.getChildren().indexOf(this) + 1);
-
+            if (myDo.getSequence() != null) {
+                copySequence(this.getDataobject(), myDo);
+            }
             if (!isLeaf()) {
-                //createChildren(myElem);
                 createChildrenNew(myElem, this);
             }
-        }
+            try {
+                List<String> valueEnum = (List<String>) SDOUtil.getEnumerationFacet(requiredType);
+                //Just reuse the list. We could also clone it, but there isn't any obvious reason to do so.
+                myElem.setValueEnum(valueEnum);
+            } catch (NullPointerException e) {
 
+            }
+        }
         return myElem;
     }
 
@@ -392,6 +400,24 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             }
         }
 
+    }
+
+    private void copySequence(DataObject oldObject, DataObject newObject) {
+        for (int i= 0; i < oldObject.getSequence().size(); i++) {
+            final Sequence oldObjectSequence = oldObject.getSequence();
+            final Property oldObjectSequenceProperty = oldObjectSequence.getProperty(i);
+            final Object oldObjectSequenceValue = oldObjectSequence.getValue(i);
+            if (oldObjectSequenceProperty != null) {
+                if (!oldObjectSequenceProperty.getType().isAbstract()) {
+                    newObject.getSequence().add(i, oldObjectSequenceProperty.getName(), newObject.createDataObject(oldObjectSequenceProperty));
+                } else {
+                    Type newType = ((DataObject) oldObjectSequenceValue).getType();
+                    DataObjectUtil.createDataObject(newObject, oldObjectSequenceProperty, newType);
+                }
+            } else {
+                newObject.getSequence().add(i, "");
+            }
+        }
     }
 
     private void createChildrenNew(SDOParsedXmlElement element, SDOParsedXmlElement original) {
@@ -422,9 +448,17 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             if (childDo != null) {
                 SDOParsedXmlElementImpl childElement = new SDOParsedXmlElementImpl(this.myDocument, element, childDo, p);
                 element.add(childElement);
+                if (childDo.getSequence() != null) {
+                    copySequence(childOriginal.getDataobject(), childDo);
+                }
                 if (getHelperContext().getXSDHelper().isAttribute(p)) {
+
                     childElement.getDataobject().set(p, "");
-                    childElement.setGuiType(childOriginal.getGuiType());
+                    final GuiType guiType = childOriginal.getGuiType();
+                    childElement.setGuiType(guiType);
+                    if (guiType.equals(GuiType.enumeration)) {
+                        childElement.setValueEnum(SDOUtil.getEnumerationFacet(p.getType()));
+                    }
                 }
                 if (!childElement.isLeaf()) {
                     //What we really want to do here is DataObjectUtil.createDataObject(DataObject dataObject, Property property, Type type)
