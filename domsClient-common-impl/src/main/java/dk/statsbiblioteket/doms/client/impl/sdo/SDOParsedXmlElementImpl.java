@@ -463,7 +463,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                     copySequence(childOriginal.getDataobject(), childDo);
                 }
                 if (getHelperContext().getXSDHelper().isAttribute(p)) {
-                    childElement.getDataobject().set(p, "wrong");
+                    childElement.getDataobject().set(p, "");
                     final GuiType guiType = childOriginal.getGuiType();
                     childElement.setGuiType(guiType);
                     if (guiType.equals(GuiType.enumeration)) {
