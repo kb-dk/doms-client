@@ -508,7 +508,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             }
         } else {
             parent.getChildren().remove(this);
-            dataobject.delete();
+            SdoDataObjectRemovalUtil.delete(dataobject);
         }
     }
 
