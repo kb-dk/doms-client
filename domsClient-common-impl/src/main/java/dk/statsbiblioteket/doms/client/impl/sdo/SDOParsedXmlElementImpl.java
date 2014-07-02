@@ -614,15 +614,22 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
      * @throws XMLParseException
      */
     public void submit(HelperContext context) throws XMLParseException {
+        Type targetType = getProperty().getType();
+        if (targetType.isAbstract()) {
+            targetType = getDataobject().getType();
+        }
+        boolean isSequenced = targetType.isSequenced();
+        boolean isMixed = context.getXSDHelper().isMixed(targetType);
+
         if (isLeaf()) {
             if (this.getValue() != null) {
                 //if (getProperty().getType().isSequenced()) {
                 //    if (context.getXSDHelper().isMixed(getProperty().getType())) {
-                if (getDataobject().getType().isSequenced()) {
+                if (isSequenced) {
                         Sequence seq = getDataobject().getSequence();
                         if (seq != null) {
                             if (seq.size() == 0) {
-                                if (getValue() != null) {
+                                if (getValue() != null && isMixed) {
                                     seq.addText((String) getValue());
                                 }
                             } else {
