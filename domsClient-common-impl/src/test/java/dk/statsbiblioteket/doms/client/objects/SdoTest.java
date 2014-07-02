@@ -328,16 +328,19 @@ public class SdoTest  {
         String originalSdodocString = SdoUtils.parseDoc(sdodoc);
         SDOParsedXmlElement titleInfoElement =  sdodoc.getRootSDOParsedXmlElement().getChildren().get(0);
         assertEquals("Expected a titleinfo titleInfoElement here.", "Titleinfo", titleInfoElement.getLabel());
-        SDOParsedXmlElement newElement =  titleInfoElement.create();
-
-        SDOParsedXmlElement newTitleElement = titleInfoElement.getChildren().get(0).create();
+        SDOParsedXmlElementImpl newElement =  (SDOParsedXmlElementImpl) titleInfoElement.create();
+        newElement.getChildren().get(0).setValue("thenewtitle2");
+        SDOParsedXmlElementImpl newTitleElement = (SDOParsedXmlElementImpl) titleInfoElement.getChildren().get(0).create();
         newTitleElement.setValue("thenewtitle");
-        newTitleElement.getDataobject().getSequence().setValue(0, "thenewtitle");
+        //newTitleElement.submit(newTitleElement.getHelperContext());
+        //newElement.submit(newElement.getHelperContext());
 
         final String sdodocString = SdoUtils.parseDoc(sdodoc);
         String xmlFinal = sdodoc.dumpToString();
         assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle"));
         assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle"));
+        assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle2"));
+        assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle2"));
     }
 
 

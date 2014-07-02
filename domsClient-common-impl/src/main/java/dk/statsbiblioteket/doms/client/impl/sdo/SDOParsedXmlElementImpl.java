@@ -21,8 +21,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
+
+    Logger logger = Logger.getLogger(SDOParsedXmlElementImpl.class.getName());
 
     /**
      * Generally, we remove empty elements and attributes from the SDO tree before we write them back to DOMS. We
@@ -534,6 +537,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
      */
     @Override
     public void setValue(Object value) {
+        logger.fine("Setting value of " + this + " to " + value);
         this.value = value;
         if (value == null) {
             originallySet = true;
@@ -612,8 +616,9 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     public void submit(HelperContext context) throws XMLParseException {
         if (isLeaf()) {
             if (this.getValue() != null) {
-                if (getProperty().getType().isSequenced()) {
-                    if (context.getXSDHelper().isMixed(getProperty().getType())) {
+                //if (getProperty().getType().isSequenced()) {
+                //    if (context.getXSDHelper().isMixed(getProperty().getType())) {
+                if (getDataobject().getType().isSequenced()) {
                         Sequence seq = getDataobject().getSequence();
                         if (seq != null) {
                             if (seq.size() == 0) {
@@ -628,7 +633,8 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                                     }
                                 }
                             }
-                        }
+                   //         }
+                  //      }
                     }
                 } else {
                     if (getProperty().getType().getInstanceClass() != null && !getProperty().getType().isAbstract()) {
