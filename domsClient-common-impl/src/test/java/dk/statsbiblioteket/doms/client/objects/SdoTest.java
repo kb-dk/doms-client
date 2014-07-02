@@ -333,17 +333,50 @@ public class SdoTest  {
         SDOParsedXmlElementImpl newElement =  (SDOParsedXmlElementImpl) titleInfoElement.create();
         newElement.getChildren().get(0).setValue("thenewtitle2");
         SDOParsedXmlElementImpl newTitleElement = (SDOParsedXmlElementImpl) titleInfoElement.getChildren().get(0).create();
-        newTitleElement.setValue("thenewtitle");
+        newTitleElement.setValue("thenewtitle1");
         //newTitleElement.submit(newTitleElement.getHelperContext());
         //newElement.submit(newElement.getHelperContext());
 
         final String sdodocString = SdoUtils.parseDoc(sdodoc);
         String xmlFinal = sdodoc.dumpToString();
-        assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle"));
-        assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle"));
+        assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle1"));
+        assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle1"));
         assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle2"));
         assertTrue(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("thenewtitle2"));
-        assertFalse(sdodocString + "\n" +  xmlFinal, xmlFinal.contains("\"\""));
+        assertFalse(sdodocString + "\n" + xmlFinal, xmlFinal.contains("\"\""));
+    }
+
+    @Test
+    public void testCreateAndSaveNestedElement() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        return SdoUtils.getStringFromFileOnClasspath("MODS31_SIMPLE.xsd");
+                    }
+                };
+            }
+        };
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("MODS31_SIMPLE.xml"));
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        String originalSdodocString = SdoUtils.parseDoc(sdodoc);
+        SDOParsedXmlElement titleInfoElement =  sdodoc.getRootSDOParsedXmlElement().getChildren().get(0);
+        assertEquals("Expected a titleinfo titleInfoElement here.", "Titleinfo", titleInfoElement.getLabel());
+        SDOParsedXmlElementImpl newTitleInfoElement =  (SDOParsedXmlElementImpl) titleInfoElement.create();
+        newTitleInfoElement.getChildren().get(0).setValue("thenewtitle");
+ 
+        final String sdodocString = SdoUtils.parseDoc(sdodoc);
+        String xmlFinal = sdodoc.dumpToString();
+        assertTrue(sdodocString + "\n" + xmlFinal, sdodocString.contains("thenewtitle"));
+        assertTrue(sdodocString + "\n" + xmlFinal, xmlFinal.contains("thenewtitle"));
     }
 
 

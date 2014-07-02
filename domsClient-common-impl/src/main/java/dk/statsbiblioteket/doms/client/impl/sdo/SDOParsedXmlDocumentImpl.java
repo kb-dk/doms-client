@@ -334,7 +334,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     private void handleComplexType(SDOParsedXmlElement currentElement, DataObject currentDataObject,
                                    Property childProperty) {
-        boolean isCycling = (new CycleDetector()).isCycling(visitedProperties.toArray(), 0);
+        boolean isCycling = (new CycleDetector()).isCycling(visitedProperties.toArray(), 2);
         if (isCycling) {
             //TODO by annotating the currentElement with a nesting depth we could actually make
             //the allowed nesting parametrisable per element type.
