@@ -90,6 +90,57 @@ public class SdoTest  {
     }
 
     /**
+     * Test creation of new elements in MODS35-like trees.
+     * @throws ServerOperationFailed
+     * @throws NotFoundException
+     * @throws IOException
+     * @throws XMLParseException
+     * @throws SAXException
+     */
+     @Test
+    public void testSettingElements() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException, SAXException {
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                       return SdoUtils.getStringFromFileOnClasspath("MODS35_SIMPLE.xsd");
+                    }
+                };
+            }
+        };
+        ModsTestHelper modsTestHelper = new ModsTestHelper();
+        final String modsDatastreamContent = modsTestHelper.getModsSimpleString();
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+
+        SDOParsedXmlElementImpl detailElement = (SDOParsedXmlElementImpl) sdodoc.getRootSDOParsedXmlElement().getChildren().get(0).getChildren().get(0);
+        SDOParsedXmlElementImpl newDetailElement = (SDOParsedXmlElementImpl) detailElement.create();
+        SDOParsedXmlElementImpl detailTypeElement = (SDOParsedXmlElementImpl) newDetailElement.getChildren().get(4);
+        assertEquals("Type", detailTypeElement.getLabel());
+        detailTypeElement.setValue("yourenotmytype");
+
+        sdodoc.getRootSDOParsedXmlElement().getChildren().get(1).create();
+        String xmlFinal = sdodoc.dumpToString();
+        Document finalDocument = DOM.stringToDOM(xmlFinal, true);
+
+        final String sdoDocString = SdoUtils.parseDoc(sdodoc);
+        String output = sdoDocString + "\n" + xmlFinal;
+        assertTrue(output, xmlFinal.contains("yourenotmytype"));
+         assertTrue(output, xmlFinal.contains("fooable\">foo"));
+
+
+       log.info(output);
+    }
+
+
+    /**
      * Tests that parsing works correctly when a fixed-value attribute is present
      * @throws ServerOperationFailed
      * @throws NotFoundException

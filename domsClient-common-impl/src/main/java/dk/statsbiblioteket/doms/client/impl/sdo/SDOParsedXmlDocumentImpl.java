@@ -334,7 +334,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     private void handleComplexType(SDOParsedXmlElement currentElement, DataObject currentDataObject,
                                    Property childProperty) {
-        boolean isCycling = (new CycleDetector()).isCycling(visitedProperties.toArray(), 2);
+        boolean isCycling = (new CycleDetector()).isCycling(visitedProperties.toArray(), 0);
         if (isCycling) {
             //TODO by annotating the currentElement with a nesting depth we could actually make
             //the allowed nesting parametrisable per element type.
@@ -355,6 +355,16 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                );
             }
         }
+/*
+        if (getXsdHelper().isMixed(currentPropertyType)) {
+            Sequence sequence = currentDataObject.getSequence();
+            for (int i=0; i < sequence.size(); i++) {
+                Object o = sequence.getValue(i);
+                if (o instanceof String) {
+                    currentElement.setValue(o);
+                }
+            }
+        }*/
 
 
         //Get all types contained in this type
@@ -382,7 +392,30 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 //so we create the childElement node
                 SDOParsedXmlElement childElement = new SDOParsedXmlElementImpl(
                         this, currentElement, childDataObject, childProperty);
+                //childElement.setValue(childDataObject);
                 currentElement.add(childElement);
+
+                if (getXsdHelper().isMixed(childProperty.getType())) {
+                //if (childProperty.getType().isSequenced()) {
+                    Sequence sequence = childDataObject.getSequence();
+                    for (int i=0; i < sequence.size(); i++) {
+                        Object o = sequence.getValue(i);
+                        //if (o instanceof String ) {
+                            //childElement.setValue(o);
+                        if (sequence.getProperty(i) != null) {
+                            SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, currentElement, childDataObject, sequence.getProperty(i));
+                            currentElement.add(childSeqElement);
+                            if (o instanceof String) {
+                                childSeqElement.setValue(o);
+                            }
+                        } else {
+                           if (o instanceof String) {
+                                currentElement.setValue(o);
+                            }
+                        }
+                        //}
+                    }
+                }
 
                 int i = 0;
                 for (Property grandChildProperty : grandChildProperties) { //we iterate on the sub types
@@ -493,6 +526,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         Object value;
         if (currentProperty.getType().isSequenced()) { // and is of sequenced type
             if (getXsdHelper().isMixed(currentProperty.getType())) { //if the type is mixed, the order matters
+                //addLeaf(currentElement, childObject, currentProperty, null, 0);
                 handleLeafSequence(currentElement, currentProperty, childObject);
             } else {
                 // TODO Not mixed, what to do? Currently throws away value, I think?

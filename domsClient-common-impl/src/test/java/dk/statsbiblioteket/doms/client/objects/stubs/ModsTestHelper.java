@@ -45,6 +45,7 @@ public class ModsTestHelper {
              "        <mods:titleInfo type=\"uniform\" >\n" +
              "            <mods:title>adresseavisen1759</mods:title>\n" +
              "        </mods:titleInfo>\n" +
+             "<mods:accessCondition type=\"fooable\">foo</mods:accessCondition>\n" +
              "</mods:mods>";
 
     public void setAdditionalAttributeString(String attributeString) {

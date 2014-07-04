@@ -43,6 +43,7 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
     <xs:group name="modsGroup">
         <xs:choice>
             <xs:element ref="part"/>
+            <xs:element ref="accessCondition"/>
             <xs:element ref="relatedItem"/>
             <xs:element ref="titleInfo"/>
         </xs:choice>
@@ -71,6 +72,7 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
             <xs:element ref="caption"/>
             <xs:element ref="myType"/>
         </xs:choice>
+        <xs:attribute name="level" type="xs:positiveInteger"/>
         <xs:attribute name="type" type="xs:string"/>
         <xs:attribute name="foobarFixedValueIsFoo" fixed="foo"/>
         <!--<xs:attribute name="level" type="xs:positiveInteger"/>-->
@@ -151,6 +153,15 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
         <xs:attribute name="ID" type="xs:ID"/>
         <xs:attributeGroup ref="xlink:simpleLink"/>-->
     </xs:complexType>
+
+    <xs:element name="accessCondition" type="accessConditionDefinition"/>
+    <!-- -->
+    <xs:complexType name="accessConditionDefinition" mixed="true">
+        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="altRepGroup" type="xs:string"/>
+
+    </xs:complexType>
+
 
   <!--
     ****************************************************

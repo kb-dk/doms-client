@@ -9,6 +9,8 @@ import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.apache.tuscany.sdo.api.SDOUtil;
+import org.apache.tuscany.sdo.helper.DataFactoryImpl;
+import org.apache.tuscany.sdo.helper.TypeHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -125,7 +127,8 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 boolean onlyAttributes = true;
                 for (Iterator<Property> i = propType.getProperties().iterator(); i.hasNext(); ) {
                     Property childProperty = i.next();
-                    if (!getHelperContext().getXSDHelper().isAttribute(childProperty)) {
+                    if (!getHelperContext().getXSDHelper().isAttribute(childProperty) || getHelperContext().getXSDHelper().isMixed(propType)) {
+                    //if (!getHelperContext().getXSDHelper().isAttribute(childProperty) ) {
                         onlyAttributes = false;
                         break;
                     }
@@ -372,8 +375,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             if (myDo.getSequence() != null) {
                 copySequence(this.getDataobject(), myDo);
             }
+
             if (!isLeaf()) {
                 createChildrenNew(myElem, this);
+            } else {
+
             }
             try {
                 List<String> valueEnum = (List<String>) SDOUtil.getEnumerationFacet(requiredType);
@@ -410,19 +416,25 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     }
 
     private void copySequence(DataObject oldObject, DataObject newObject) {
-        for (int i= 0; i < oldObject.getSequence().size(); i++) {
-            final Sequence oldObjectSequence = oldObject.getSequence();
+        final Sequence oldObjectSequence = oldObject.getSequence();
+        Sequence newObjectSequence = newObject.getSequence();
+        for (int i= 0; i < oldObjectSequence.size(); i++) {
             final Property oldObjectSequenceProperty = oldObjectSequence.getProperty(i);
             final Object oldObjectSequenceValue = oldObjectSequence.getValue(i);
             if (oldObjectSequenceProperty != null) {
-                if (!oldObjectSequenceProperty.getType().isAbstract()) {
-                    newObject.getSequence().add(i, oldObjectSequenceProperty.getName(), newObject.createDataObject(oldObjectSequenceProperty));
+                if (!oldObjectSequenceProperty.getType().isAbstract() && oldObjectSequenceProperty.isContainment()) {
+                    //final DataObject newDataObject = newObject.createDataObject(oldObjectSequenceProperty);
+                    DataObjectUtil.createDataObject(newObject, oldObjectSequenceProperty, oldObjectSequenceProperty.getType());
+                    //final String newPropertyName = oldObjectSequenceProperty.getName();
+                    //newObjectSequence.add(i, newPropertyName, newDataObject);
                 } else {
-                    Type newType = ((DataObject) oldObjectSequenceValue).getType();
-                    DataObjectUtil.createDataObject(newObject, oldObjectSequenceProperty, newType);
+                    if (oldObjectSequenceValue instanceof DataObject) {
+                        Type newType = ((DataObject) oldObjectSequenceValue).getType();
+                        DataObjectUtil.createDataObject(newObject, oldObjectSequenceProperty, newType);
+                    }
                 }
             } else {
-                newObject.getSequence().add(i, "");
+                newObjectSequence.add(i, "");
             }
         }
     }
@@ -463,7 +475,10 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                     copySequence(childOriginal.getDataobject(), childDo);
                 }
                 if (getHelperContext().getXSDHelper().isAttribute(p)) {
-                    childElement.getDataobject().set(p, "");
+                    TypeHelperImpl typeHelper = new TypeHelperImpl(getHelperContext());
+                    DataFactoryImpl dataFactory = new DataFactoryImpl(getHelperContext());
+                    //childElement.getDataobject().set(p.getName(), p.getType());
+                    //childElement.getDataobject().set(p, "");
                     final GuiType guiType = childOriginal.getGuiType();
                     childElement.setGuiType(guiType);
                     if (guiType.equals(GuiType.enumeration)) {
