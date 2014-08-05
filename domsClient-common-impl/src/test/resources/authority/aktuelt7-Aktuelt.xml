@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<mods xmlns="http://www.loc.gov/mods/v3">
+	<titleInfo>
+		<title>Aktuelt</title>
+	</titleInfo>
+	<titleInfo type="uniform">
+		<title>Aktuelt (1997-2001)</title>
+	</titleInfo>
+	<originInfo>
+		<place>
+			<placeTerm type="text">København</placeTerm>
+		</place>
+		<dateIssued keyDate="yes" encoding="iso8601" point="start">1997-08-08</dateIssued>
+		<dateIssued encoding="iso8601" point="end">2001-04-06</dateIssued>
+		<issuance>serial</issuance>
+	</originInfo>
+	<abstract href="http://dedanskeaviser.dk" xml:lang="dan">læs mere om denne avis i dda</abstract>
+	<note displayLabel="kendte mangler">[kendte mangler]</note>	
+	<genre authority="marcgt">newspaper</genre>
+	<typeOfResource>text</typeOfResource>
+	<identifier type="dda">1-137</identifier>
+	<identifier type="?entydigt id?"></identifier>
+	<identifier type="ninestars avis id">aktuelt_Aktuelt (1997-2001)</identifier>
+	<physicalDescription>
+		<digitalOrigin>digitized microfilm</digitalOrigin>
+		<internetMediaType>text</internetMediaType>
+		<internetMediaType>image/jp2</internetMediaType>
+		<form authority="marcform">electronic</form>
+	</physicalDescription>
+	<location>
+		<url usage="primary display" access="object in context">[link til visning af denne mods post i mediestream]</url>
+	</location>
+	<language>
+		<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+	</language>
+	<subject usage="primary">
+		<temporal point="start" encoding="iso8601">1997-08-08</temporal>
+		<temporal point="end" encoding="iso8601">2001-04-06</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>København</city>
+		</hierarchicalGeographic>
+		<geographicCode>1</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1997-08-08</temporal>
+		<temporal point="end" encoding="iso8601">2001-04-06</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Fyn</area>
+			<city>Odense</city>
+		</hierarchicalGeographic>
+		<geographicCode>39</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1997-08-08</temporal>
+		<temporal point="end" encoding="iso8601">2001-04-06</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Jylland</area>
+			<city>Århus</city>
+		</hierarchicalGeographic>
+		<geographicCode>59</geographicCode>
+	</subject>
+	<accessCondition xml:lang="eng">this ressource has limited ... URL</accessCondition>
+	<accessCondition xml:lang="dan">denne ressource ... URL</accessCondition>
+	<recordInfo> 
+		<languageOfCataloging>
+			<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+		</languageOfCataloging>
+		<recordCreationDate encoding="iso8601">2014-04-03</recordCreationDate>
+	</recordInfo>
+</mods>

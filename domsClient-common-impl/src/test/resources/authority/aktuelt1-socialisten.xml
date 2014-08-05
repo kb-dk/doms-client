@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<mods xmlns="http://www.loc.gov/mods/v3">
+	<titleInfo>
+		<title>Socialisten</title>
+	</titleInfo>
+	<titleInfo type="uniform">
+		<title>Socialisten (1872-1874)</title>
+	</titleInfo>
+	<originInfo>
+		<place>
+			<placeTerm type="text">København</placeTerm>
+		</place>
+		<dateIssued keyDate="yes" encoding="iso8601" point="start">1872-04-02</dateIssued>
+		<dateIssued encoding="iso8601" point="end">1874-05-09</dateIssued>
+		<issuance>serial</issuance>
+	</originInfo>
+	<abstract href="http://dedanskeaviser.dk" xml:lang="dan">læs mere om denne avis i dda</abstract>
+	<note displayLabel="kendte mangler">[kendte mangler]</note>	
+	<genre authority="marcgt">newspaper</genre>
+	<typeOfResource>text</typeOfResource>
+	<identifier type="dda">1-137</identifier>
+	<identifier type="ninestars id">aktuelt</identifier>
+	<identifier type="id">aktuelt_Socialisten (1872-1874)</identifier>
+	<physicalDescription>
+		<digitalOrigin>digitized microfilm</digitalOrigin>
+		<internetMediaType>text</internetMediaType>
+		<internetMediaType>image/jp2</internetMediaType>
+		<form authority="marcform">electronic</form>
+	</physicalDescription>
+	<location>
+		<url usage="primary display" access="object in context">[link til visning af denne mods post i mediestream]</url>
+	</location>
+	<language>
+		<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+	</language>
+	<subject usage="primary">
+		<temporal point="start" encoding="iso8601">1872-04-02</temporal>
+		<temporal point="end" encoding="iso8601">1874-05-09</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>København</city>
+		</hierarchicalGeographic>
+		<geographicCode>1</geographicCode>
+	</subject>
+	<accessCondition xml:lang="eng">this ressource has limited ... URL</accessCondition>
+	<accessCondition xml:lang="dan">denne ressource ... URL</accessCondition>
+	<recordInfo> 
+		<languageOfCataloging>
+			<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+		</languageOfCataloging>
+		<recordCreationDate encoding="iso8601">2014-04-03</recordCreationDate>
+	</recordInfo>
+</mods>

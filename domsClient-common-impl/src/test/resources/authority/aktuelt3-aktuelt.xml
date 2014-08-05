@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<mods xmlns="http://www.loc.gov/mods/v3">
+	<titleInfo>
+		<title>Aktuelt</title>
+	</titleInfo>
+	<titleInfo type="uniform">
+		<title>Aktuelt (1959-1978)</title>
+	</titleInfo>
+	<originInfo>
+		<place>
+			<placeTerm type="text">København</placeTerm>
+		</place>
+		<dateIssued keyDate="yes" encoding="iso8601" point="start">1959-04-01</dateIssued>
+		<dateIssued encoding="iso8601" point="end">1978-01-16</dateIssued>
+		<issuance>serial</issuance>
+	</originInfo>
+	<abstract href="http://dedanskeaviser.dk" xml:lang="dan">læs mere om denne avis i dda</abstract>
+	<note displayLabel="kendte mangler">[kendte mangler]</note>	
+	<genre authority="marcgt">newspaper</genre>
+	<typeOfResource>text</typeOfResource>
+	<identifier type="dda">1-137</identifier>
+	<identifier type="?entydigt id?"></identifier>
+	<identifier type="ninestars avis id">aktuelt_Aktuelt (1959-1978)</identifier>
+	<physicalDescription>
+		<digitalOrigin>digitized microfilm</digitalOrigin>
+		<internetMediaType>text</internetMediaType>
+		<internetMediaType>image/jp2</internetMediaType>
+		<form authority="marcform">electronic</form>
+	</physicalDescription>
+	<location>
+		<url usage="primary display" access="object in context">[link til visning af denne mods post i mediestream]</url>
+	</location>
+	<language>
+		<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+	</language>
+	<subject usage="primary">
+		<temporal point="start" encoding="iso8601">1959-04-01</temporal>
+		<temporal point="end" encoding="iso8601">1978-01-16</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>København</city>
+		</hierarchicalGeographic>
+		<geographicCode>1</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1959-04-01</temporal>
+		<temporal point="end" encoding="iso8601">1959-04-30</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>Lyngby</city>
+		</hierarchicalGeographic>
+		<geographicCode>2</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1912-01-01</temporal>
+		<temporal point="end" encoding="iso8601">1934-05-14</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>Glostrup</city>
+		</hierarchicalGeographic>
+		<geographicCode>3</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1963-01-03</temporal>
+		<temporal point="end" encoding="iso8601">1970-05-26</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>Roskilde</city>
+		</hierarchicalGeographic>
+		<geographicCode>5</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1970-05-27</temporal>
+		<temporal point="end" encoding="iso8601">1978-01-16</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Sjælland</area>
+			<city>Hillerød</city>
+		</hierarchicalGeographic>
+		<geographicCode>8</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1973-10-09</temporal>
+		<temporal point="end" encoding="iso8601">1978-01-16</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Fyn</area>
+			<city>Odense</city>
+		</hierarchicalGeographic>
+		<geographicCode>39</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1973-10-09</temporal>
+		<temporal point="end" encoding="iso8601">1974-11-20</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Jylland</area>
+			<city>Erritsø</city>
+		</hierarchicalGeographic>
+		<geographicCode>51</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1975-01-01</temporal>
+		<temporal point="end" encoding="iso8601">1975-07-07</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Jylland</area>
+			<city>Åbenrå</city>
+		</hierarchicalGeographic>
+		<geographicCode>103</geographicCode>
+	</subject>
+	<subject>
+		<temporal point="start" encoding="iso8601">1974-11-21</temporal>
+		<temporal point="end" encoding="iso8601">1974-12-31</temporal>
+		<hierarchicalGeographic>
+			<country>Danmark</country>
+			<area>Jylland</area>
+			<city>Sønderborg</city>
+		</hierarchicalGeographic>
+		<geographicCode>104</geographicCode>
+	</subject>
+	<accessCondition xml:lang="eng">this ressource has limited ... URL</accessCondition>
+	<accessCondition xml:lang="dan">denne ressource ... URL</accessCondition>
+	<recordInfo> 
+		<languageOfCataloging>
+			<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+		</languageOfCataloging>
+		<recordCreationDate encoding="iso8601">2014-04-03</recordCreationDate>
+	</recordInfo>
+</mods>
