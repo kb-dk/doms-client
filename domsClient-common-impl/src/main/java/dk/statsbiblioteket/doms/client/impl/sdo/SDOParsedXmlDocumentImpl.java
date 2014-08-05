@@ -332,6 +332,13 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         }
     }
 
+    /**
+     * This is one of the more troublesome part of the code. Given a current element and its corresponding DataObject,
+     * it recursively builds the subtree corresponding to a particular child property.
+     * @param currentElement
+     * @param currentDataObject
+     * @param childProperty
+     */
     private void handleComplexType(SDOParsedXmlElement currentElement, DataObject currentDataObject,
                                    Property childProperty) {
         boolean isCycling = (new CycleDetector()).isCycling(visitedProperties.toArray(), 0);
@@ -340,12 +347,15 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             //the allowed nesting parametrisable per element type.
             return;
         }
-        List<DataObject> childDataObjects = getChildObjects(currentDataObject, childProperty);
 
+        // Get the already-existing child object(s) with this property (if any)
+        List<DataObject> childDataObjects = getChildObjects(currentDataObject, childProperty);
+        //The declared type of the child property
         final Type currentPropertyType = childProperty.getType();
+
+        //If there are no existing child objects with this property then create one. This is not possible
+        //if the declared type is abstract, because how could we know what type of object to create?
         if (childDataObjects.isEmpty()) {
-            // if we are traversing hierarchy without an xml data instance
-            // we create an empty placeholder
             if (!currentPropertyType.isAbstract()) {
                 childDataObjects.add(currentDataObject.createDataObject(childProperty));
             } else {
@@ -355,44 +365,24 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                );
             }
         }
-/*
-        if (getXsdHelper().isMixed(currentPropertyType)) {
-            Sequence sequence = currentDataObject.getSequence();
-            for (int i=0; i < sequence.size(); i++) {
-                Object o = sequence.getValue(i);
-                if (o instanceof String) {
-                    currentElement.setValue(o);
-                }
-            }
-        }*/
 
-
-        //Get all types contained in this type
+        //We now need to determine whether the child object we have found or created corresponds to
+        //a leaf in the tree. Do this by checking if it has any grandchild properties.
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
-        log.debug(
-                "Current element: " + currentElement.getLabel() + "|" + currentElement.hashCode()
-                        + "|Child property: " + childProperty.getName() + "|" + childProperty.hashCode()
-        );
-        for (DataObject childDataObject:childDataObjects) {
-            log.debug("|Child object: " + childDataObject.getType().getName());
-        }
-        for (Property grandChildProperty: grandChildProperties) {
-            log.debug("|Grandchild Property: " + grandChildProperty.getName());
-        }
+        //Do some logging here for debugging purposes
+        doLogging(currentElement, childProperty, childDataObjects, grandChildProperties);
 
         if (grandChildProperties.isEmpty()) {//no grand children so add all children as leafs here
             for (DataObject childDataObject : childDataObjects) {
                 handleLeafElement(currentElement, currentDataObject, childProperty, childDataObject);
             }
-        } else {
-            //if there is grand child property, this is a node in the tree, not a leaf
+        } else {//if there is grand child property, this is a node in the tree, not a leaf
 
             for (DataObject childDataObject : childDataObjects) {
                 //so we create the childElement node
                 SDOParsedXmlElement childElement = new SDOParsedXmlElementImpl(
                         this, currentElement, childDataObject, childProperty);
-                //childElement.setValue(childDataObject);
                 currentElement.add(childElement);
 
                 if (getXsdHelper().isMixed(childProperty.getType())) {
@@ -403,6 +393,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                         //if (o instanceof String ) {
                             //childElement.setValue(o);
                         if (sequence.getProperty(i) != null) {
+                            //?? Is this right? Isn't the sequence property a grandChild property? Shouldn't it just be handled
+                            //recursively by a call to handleProperty??
                             SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, currentElement, childDataObject, sequence.getProperty(i));
                             currentElement.add(childSeqElement);
                             if (o instanceof String) {
@@ -433,6 +425,19 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                     }
                 }
             }
+        }
+    }
+
+    private void doLogging(SDOParsedXmlElement currentElement, Property childProperty, List<DataObject> childDataObjects, List<Property> grandChildProperties) {
+        log.debug(
+                "Current element: " + currentElement.getLabel() + "|" + currentElement.hashCode()
+                        + "|Child property: " + childProperty.getName() + "|" + childProperty.hashCode()
+        );
+        for (DataObject childDataObject:childDataObjects) {
+            log.debug("|Child object: " + childDataObject.getType().getName());
+        }
+        for (Property grandChildProperty: grandChildProperties) {
+            log.debug("|Grandchild Property: " + grandChildProperty.getName());
         }
     }
 

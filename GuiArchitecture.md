@@ -24,7 +24,7 @@ Fortunately the javadoc on the base interface/classes is usually quite
 helpful. The three fundamental classes of objects in SDO (as we use it) are
 
 1. Objects. These are rather like Nodes in a w3c DOM tree in that they can represent XML elements, attributes or text-data. Objects in SDO are typed. The allowed types
-are generated dynamically from the XML Schema document and the type of any given object can be found from its getType() method.
+are generated dynamically from the XML schema document and the type of any given object can be found from its getType() method.
 1. Types. A type can be identified by its name (from getName()) which is typically the name of the XML schema type it represents. Each type has associated with it a
 list of Properties which identifies the allowed "children" of objects of this type.
 1. Properties. A property in SDO is something like a relation in an ontology language such as rdf. Properties are named and typed so that SDO specifies relations like "Objects of
@@ -59,12 +59,33 @@ a list of alternating text-elements and xml sub-elements. But the SDO-DOC elemen
 single scalar value to each element. Also problematic is that the property field of each element (ie the SDO Property
  associated with the corresponding DataObject) is assumed to be non-null. However for text-elements in mixed content the Property should be null.)
 
+### The "+" button
+
+When a user presses the "+" button to create a new sibling element for an existing element, this activates the create()
+ method in the class SDOParsedXmlElement. This method essentially clones the current element as a sibling of itself, but with
+ empty content. In particular, the new element uses the same concrete types as the element from which it is cloned, so there
+ is never a problem with trying to create an element of abstract type.
+
 ## Doms -> SDO and SDO-DOC
 
-The parsing of the XML from DOMS into both SDO and SDO-DOC layers is a two-step process. First the XML Schema is parsed
-(using standard SDO API methods) to create a list of Types. This list is available as a field in the SDOParsedXmlDocumentImpl
+The parsing of the XML from DOMS into both SDO and SDO-DOC layers is a two-step process which is carried out in the constructor to SDOParsedXmlDocumentImpl.
+First the XML Schema is parsed (using standard SDO API methods) to create a list of Types. This list is available as a field in the SDOParsedXmlDocumentImpl
 instance.
 
+The SDO and SDO-DOC trees are built in parallel as follows. First the actual XML datastream in parsed as an SDO tree using standard
+SDO API methods. This tree, of course, only contains those elements which are actually present in the datastream XML. For the GUI we
+need to create a tree containing the complete tree structure with empty placeholder elements for all the possible elements which
+could be added. To do this, we proceed as follows:
+
+1. Find the root element of the datastream XML and perform some sanity checks that it is an allowable root element for the schema.
+2. Create the SDOParsedXmlElementImpl representing the root element of the document.
+3. Iterate over every property defined for the type of this root element:
+
+     3.1  If the current property is simple (ie represents a leaf or leaves in the tree) create the leaf elements, taking their value from
+     the original datastream XML if set.
+
+     3.2  If the current property is complex, recurse over all its defined properties in turn, adding new DataObject instances and
+     SDO-DOC elements for any properties which are not set in the datastream.
 
 
 ## SDO-DOC -> SDO
@@ -81,7 +102,8 @@ For non-leaf objects, the submit() method just recurses over child-elements.
 
 The final transformation of the SDO tree to the Doms XML is carried out in the method SDOParsedXmlDocumentImpl.dumpToString().
 In theory, this operation could be carried out using SDO API methods alone. However in practice this produces an
-XML output which is different from the input - it adds empty elements wherever possible. The dumpToString() method
+XML output which is different from the input because it includes all the empty placeholder elements we added when creating the SDO and SDO-DOC trees.
+ The dumpToString() method
 therefore includes an additional pre-processing step which removes all the empty elements which were absent in
 the original parsed XML.
 
@@ -92,6 +114,6 @@ There are two flags: "originallySet" is true if the element or attribute was pre
  the SDO-DOC to SDO, has special logic for empty elements. Specifically, if the element was originally set then its
   value is now set to a temporary placeholder value depending on whether it was originally empty or originally non-empty.
 
-The dumpToString() method (using SdoDataObjectRemovalUtil) then prunes all elements which are still empty and also those
+The dumpToString() method (using utility methods in SdoDataObjectRemovalUtil) then prunes all elements which are still empty and also those
 elements which were originally set but whose content is now empty. After this pruning process, the output is dumped to
 XML using SDO API methods.
