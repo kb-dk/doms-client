@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<mods xmlns="http://www.loc.gov/mods/v3">
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<titleInfo>
 		<title>Social-Demokraten</title>
 	</titleInfo>
@@ -8,13 +8,13 @@
 	</titleInfo>
 	<originInfo>
 		<place>
-			<placeTerm type="text">København</placeTerm>
+			<placeTerm type="text">KÃ¸benhavn</placeTerm>
 		</place>
 		<dateIssued keyDate="yes" encoding="iso8601" point="start">1874-05-10</dateIssued>
 		<dateIssued encoding="iso8601" point="end">1959-03-30</dateIssued>
 		<issuance>serial</issuance>
 	</originInfo>
-	<abstract href="http://dedanskeaviser.dk" xml:lang="dan">læs mere om denne avis i dda</abstract>
+	<abstract xlink:href="http://dedanskeaviser.dk" xml:lang="dan">lÃ¦s mere om denne avis i dda</abstract>
 	<note displayLabel="kendte mangler">[kendte mangler]</note>	
 	<genre authority="marcgt">newspaper</genre>
 	<typeOfResource>text</typeOfResource>
@@ -28,7 +28,7 @@
 		<form authority="marcform">electronic</form>
 	</physicalDescription>
 	<location>
-		<url usage="primary display" access="object in context">[link til visning af denne mods post i mediestream]</url>
+		<url usage="primary display" access="object in context">http://statsbibliotekt.dk/placeholder</url>
 	</location>
 	<language>
 		<languageTerm type="code" authority="iso639-2b">dan</languageTerm>
@@ -38,8 +38,8 @@
 		<temporal point="end" encoding="iso8601">1959-03-30</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>København</city>
+			<area>SjÃ¦lland</area>
+			<city>KÃ¸benhavn</city>
 		</hierarchicalGeographic>
 		<geographicCode>1</geographicCode>
 	</subject>
@@ -48,7 +48,7 @@
 		<temporal point="end" encoding="iso8601">1911-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
+			<area>SjÃ¦lland</area>
 			<city>Lyngby</city>
 		</hierarchicalGeographic>
 		<geographicCode>2</geographicCode>
@@ -58,7 +58,7 @@
 		<temporal point="end" encoding="iso8601">1959-03-30</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
+			<area>SjÃ¦lland</area>
 			<city>Lyngby</city>
 		</hierarchicalGeographic>
 		<geographicCode>2</geographicCode>
@@ -68,7 +68,7 @@
 		<temporal point="end" encoding="iso8601">1934-05-14</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
+			<area>SjÃ¦lland</area>
 			<city>Glostrup</city>
 		</hierarchicalGeographic>
 		<geographicCode>3</geographicCode>
@@ -78,7 +78,7 @@
 		<temporal point="end" encoding="iso8601">1911-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
+			<area>SjÃ¦lland</area>
 			<city>Roskilde</city>
 		</hierarchicalGeographic>
 		<geographicCode>5</geographicCode>
@@ -88,8 +88,8 @@
 		<temporal point="end" encoding="iso8601">1911-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>Hillerød</city>
+			<area>SjÃ¦lland</area>
+			<city>HillerÃ¸d</city>
 		</hierarchicalGeographic>
 		<geographicCode>8</geographicCode>
 	</subject>
@@ -98,8 +98,8 @@
 		<temporal point="end" encoding="iso8601">1911-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>Helsingør</city>
+			<area>SjÃ¦lland</area>
+			<city>HelsingÃ¸r</city>
 		</hierarchicalGeographic>
 		<geographicCode>9</geographicCode>
 	</subject>
@@ -108,8 +108,8 @@
 		<temporal point="end" encoding="iso8601">1910-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>Hørsholm</city>
+			<area>SjÃ¦lland</area>
+			<city>HÃ¸rsholm</city>
 		</hierarchicalGeographic>
 		<geographicCode>10</geographicCode>
 	</subject>
@@ -118,8 +118,8 @@
 		<temporal point="end" encoding="iso8601">1911-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>Frederiksværk</city>
+			<area>SjÃ¦lland</area>
+			<city>FrederiksvÃ¦rk</city>
 		</hierarchicalGeographic>
 		<geographicCode>12</geographicCode>
 	</subject>
@@ -128,8 +128,8 @@
 		<temporal point="end" encoding="iso8601">1911-10-02</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>Holbæk</city>
+			<area>SjÃ¦lland</area>
+			<city>HolbÃ¦k</city>
 		</hierarchicalGeographic>
 		<geographicCode>14</geographicCode>
 	</subject>
@@ -138,8 +138,8 @@
 		<temporal point="end" encoding="iso8601">1911-10-02</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
-			<city>Nykøbing S</city>
+			<area>SjÃ¦lland</area>
+			<city>NykÃ¸bing S</city>
 		</hierarchicalGeographic>
 		<geographicCode>15</geographicCode>
 	</subject>
@@ -148,7 +148,7 @@
 		<temporal point="end" encoding="iso8601">1908-12-31</temporal>
 		<hierarchicalGeographic>
 			<country>Danmark</country>
-			<area>Sjælland</area>
+			<area>SjÃ¦lland</area>
 			<city>Kalundborg</city>
 		</hierarchicalGeographic>
 		<geographicCode>16</geographicCode>
@@ -159,7 +159,7 @@
 		<hierarchicalGeographic>
 			<country>Danmark</country>
 			<area>Bornholm</area>
-			<city>Rønne</city>
+			<city>RÃ¸nne</city>
 		</hierarchicalGeographic>
 		<geographicCode>31</geographicCode>
 	</subject>

@@ -70,9 +70,11 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     public SDOParsedXmlElementImpl(SDOParsedXmlDocumentImpl myDocument, SDOParsedXmlElement parent,
                                    DataObject dataobject, Property property) {
         this.setDataobject(dataobject);
-        this.setProperty(property);
+        if (property != null) {
+            this.setProperty(property);
+            this.setLabel(property.getName());
+        }
         this.setParent(parent);
-        this.setLabel(property.getName());
         this.myDocument = myDocument;
     }
 
@@ -95,6 +97,9 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         org.eclipse.emf.ecore.EModelElement eModelElement;
         org.eclipse.emf.ecore.EAnnotation annotation;
         eModelElement = (org.eclipse.emf.ecore.EModelElement) property;
+        if (eModelElement == null) {
+            return null;
+        }
         annotation = eModelElement.getEAnnotation(source);
         if (annotation != null) {
             appinfo = (String) annotation.getDetails().get("appinfo");
@@ -121,6 +126,9 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
     @Override
     public boolean isLeaf() {
+        if (property == null) {
+            return true;
+        }
         if (property.isContainment() && !property.getType().isDataType()) {
             commonj.sdo.Type propType = property.getType();
             if (propType.getProperties() != null) {
@@ -128,7 +136,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 for (Iterator<Property> i = propType.getProperties().iterator(); i.hasNext(); ) {
                     Property childProperty = i.next();
                     if (!getHelperContext().getXSDHelper().isAttribute(childProperty) || getHelperContext().getXSDHelper().isMixed(propType)) {
-                    //if (!getHelperContext().getXSDHelper().isAttribute(childProperty) ) {
+                        //if (!getHelperContext().getXSDHelper().isAttribute(childProperty) ) {
                         onlyAttributes = false;
                         break;
                     }
@@ -150,7 +158,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         int counter = 0;
         List<SDOParsedXmlElement> elems = parent.getChildren();
         for (SDOParsedXmlElement ele : elems) {
-            if (ele.getProperty().equals(this.property)) {
+            if (ele.getProperty() != null &&  ele.getProperty().equals(this.property)) {
                 counter++;
             }
 
@@ -444,7 +452,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             Property p = (Property) o;
             SDOParsedXmlElement childOriginal = null;
             for (SDOParsedXmlElement child: original.getChildren()) {
-                if (child.getProperty().getName().equals(p.getName())) {
+                if (child.getProperty() != null && child.getProperty().getName().equals(p.getName())) {
                     childOriginal = child;
                 }
             }
@@ -506,7 +514,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
         }
 
-       }
+    }
 
 
 
@@ -542,7 +550,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     @Override
     public void setLabel(String label) {
         this.label = label.toLowerCase()
-                          .replaceFirst(String.valueOf(label.charAt(0)), String.valueOf(label.charAt(0)).toUpperCase());
+                .replaceFirst(String.valueOf(label.charAt(0)), String.valueOf(label.charAt(0)).toUpperCase());
 
     }
 
@@ -636,18 +644,21 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
      * @throws XMLParseException
      */
     public void submit(HelperContext context) throws XMLParseException {
-        Type targetType = getProperty().getType();
-        if (targetType.isAbstract()) {
-            targetType = getDataobject().getType();
-        }
-        boolean isSequenced = targetType.isSequenced();
-        boolean isMixed = context.getXSDHelper().isMixed(targetType);
+        if (getProperty() == null) {
+            dataobject.getSequence().setValue(0, getValue());
+        } else {
+            Type targetType = getProperty().getType();
+            if (targetType.isAbstract()) {
+                targetType = getDataobject().getType();
+            }
+            boolean isSequenced = targetType.isSequenced();
+            boolean isMixed = context.getXSDHelper().isMixed(targetType);
 
-        if (isLeaf()) {
-            if (this.getValue() != null) {
-                //if (getProperty().getType().isSequenced()) {
-                //    if (context.getXSDHelper().isMixed(getProperty().getType())) {
-                if (isSequenced) {
+            if (isLeaf()) {
+                if (this.getValue() != null) {
+                    //if (getProperty().getType().isSequenced()) {
+                    //    if (context.getXSDHelper().isMixed(getProperty().getType())) {
+                    if (isSequenced) {
                         Sequence seq = getDataobject().getSequence();
                         if (seq != null) {
                             if (seq.size() == 0) {
@@ -662,57 +673,23 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                                     }
                                 }
                             }
-                   //         }
-                  //      }
-                    }
-                } else {
-                    if (getProperty().getType().getInstanceClass() != null && !getProperty().getType().isAbstract()) {
-                        Object value;
-                        try {
-                            if (this.property.getType().isAbstract()) {
-                                value = null;
-                            } else  {
-                                value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
-                            }
-
-                        } catch (IllegalArgumentException e) {
-                            if (this.getValue().toString().isEmpty() && !isRequired()) {
-                                value = "";
-                            } else {
-                                throw new XMLParseException(
-                                        "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
-                                                .getProperty()
-                                                .getType()
-                                                .getName(), e
-                                );
-                            }
+                            //         }
+                            //      }
                         }
-                        if (value.toString().isEmpty()) {
-                            if (this.isOriginallySet()) {
-                                if (this.isOriginallySetNonEmpty()) {
-                                    value = PLACEHOLDER_FOR_NOW_EMPTY_STRING;
+                    } else {
+                        if (getProperty().getType().getInstanceClass() != null && !getProperty().getType().isAbstract()) {
+                            Object value;
+                            try {
+                                if (this.property.getType().isAbstract()) {
+                                    value = null;
                                 } else {
-                                    value = PLACEHOLDER_FOR_EMPTY_STRING;
+                                    value = SDOUtil.createFromString(this.getProperty().getType(), valueToSDOType(context));
                                 }
-                            }
-                        }
 
-                        if (this.getProperty().isMany()) {
-                            //TODO here is the list bug. Please find out how to correctly add to lists
-                            getDataobject().getList(this.getProperty());
-                            List values = this.getDataobject().getList(this.getProperty());
-                            if (getIndex() + 1 > values.size()) {
-                                values.add(value);
-                            } else {
-                                values.set(getIndex(), value);
-                            }
-                        } else {
-                            if (value.toString().isEmpty() && !isRequired()) {
-                                this.getDataobject().unset(this.getProperty());
-                            } else {
-                                try {
-                                    this.getDataobject().set(this.getProperty(), value);
-                                } catch (ClassCastException e) {
+                            } catch (IllegalArgumentException e) {
+                                if (this.getValue().toString().isEmpty() && !isRequired()) {
+                                    value = "";
+                                } else {
                                     throw new XMLParseException(
                                             "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
                                                     .getProperty()
@@ -721,17 +698,51 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                                     );
                                 }
                             }
+                            if (value.toString().isEmpty()) {
+                                if (this.isOriginallySet()) {
+                                    if (this.isOriginallySetNonEmpty()) {
+                                        value = PLACEHOLDER_FOR_NOW_EMPTY_STRING;
+                                    } else {
+                                        value = PLACEHOLDER_FOR_EMPTY_STRING;
+                                    }
+                                }
+                            }
+
+                            if (this.getProperty().isMany()) {
+                                //TODO here is the list bug. Please find out how to correctly add to lists
+                                getDataobject().getList(this.getProperty());
+                                List values = this.getDataobject().getList(this.getProperty());
+                                if (getIndex() + 1 > values.size()) {
+                                    values.add(value);
+                                } else {
+                                    values.set(getIndex(), value);
+                                }
+                            } else {
+                                if (value.toString().isEmpty() && !isRequired()) {
+                                    this.getDataobject().unset(this.getProperty());
+                                } else {
+                                    try {
+                                        this.getDataobject().set(this.getProperty(), value);
+                                    } catch (ClassCastException e) {
+                                        throw new XMLParseException(
+                                                "Failed to parse the value '" + this.getValue() + "' of field " + this.getLabel() + " as a " + this
+                                                        .getProperty()
+                                                        .getType()
+                                                        .getName(), e
+                                        );
+                                    }
+                                }
+                            }
                         }
                     }
-                }
 
-            }
-        } else {// end isLeaf
-            for (SDOParsedXmlElement xmlElement : children) {
-                if (xmlElement instanceof SDOParsedXmlElementImpl) {
-                    SDOParsedXmlElementImpl element = (SDOParsedXmlElementImpl) xmlElement;
-                    element.submit(context);
                 }
+            }
+        }
+        for (SDOParsedXmlElement xmlElement : children) {
+            if (xmlElement instanceof SDOParsedXmlElementImpl) {
+                SDOParsedXmlElementImpl element = (SDOParsedXmlElementImpl) xmlElement;
+                element.submit(context);
             }
         }
     }

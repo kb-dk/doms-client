@@ -42,10 +42,10 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
 -->
     <xs:group name="modsGroup">
         <xs:choice>
-            <xs:element ref="part"/>
+            <!--<xs:element ref="part"/> -->
             <xs:element ref="accessCondition"/>
-            <xs:element ref="relatedItem"/>
-            <xs:element ref="titleInfo"/>
+            <!--<xs:element ref="relatedItem"/>
+            <xs:element ref="titleInfo"/> -->
         </xs:choice>
     </xs:group>
 
@@ -70,7 +70,6 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
         <xs:choice maxOccurs="unbounded">
             <xs:element ref="number"/>
             <xs:element ref="caption"/>
-            <xs:element ref="myType"/>
         </xs:choice>
         <xs:attribute name="level" type="xs:positiveInteger"/>
         <xs:attribute name="type" type="xs:string"/>
@@ -80,9 +79,6 @@ The group definition is used by both, where relatedItem says minOccurs="0" and f
     <!-- -->
     <xs:element name="number" type="stringPlusLanguage"/>
     <xs:element name="caption" type="stringPlusLanguage"/>
-    <xs:element name="myType" type="xs:string">
-        <xs:attribute name="fixedValueIsbarfoo" fixed="barfoo"/>
-    </xs:element>
     <!--
 ********** extent **********
 -->

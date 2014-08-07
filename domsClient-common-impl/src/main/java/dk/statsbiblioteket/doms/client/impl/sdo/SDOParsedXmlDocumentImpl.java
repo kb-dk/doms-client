@@ -395,14 +395,20 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                         if (sequence.getProperty(i) != null) {
                             //?? Is this right? Isn't the sequence property a grandChild property? Shouldn't it just be handled
                             //recursively by a call to handleProperty??
-                            SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, currentElement, childDataObject, sequence.getProperty(i));
-                            currentElement.add(childSeqElement);
+                            SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, childElement, childDataObject, sequence.getProperty(i));
+                            childElement.add(childSeqElement);
                             if (o instanceof String) {
                                 childSeqElement.setValue(o);
                             }
                         } else {
-                           if (o instanceof String) {
-                                currentElement.setValue(o);
+                            if (o instanceof String) {
+                                //currentElement.setValue(o);
+                                SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, childElement, childDataObject, null);
+                                childElement.add(childSeqElement);
+                                if (o instanceof String) {
+                                    childSeqElement.setValue(o);
+                                    childSeqElement.setLabel("value");
+                                }
                             }
                         }
                         //}

@@ -27,7 +27,7 @@ public class SdoUtils {
         for (SDOParsedXmlElement child : children) {
             if (child.isLeaf()) {
                 stringBuilder.append(indryk + "'" + child.getLabel() + "': '" + child.getValue() + "'");
-                if (child.getProperty().isMany()) {
+                if (child.getProperty() != null && child.getProperty().isMany()) {
                     if (child.getAddable()) {
                         stringBuilder.append(" (+)");
                     }
@@ -42,7 +42,7 @@ public class SdoUtils {
 
             } else {
                 stringBuilder.append(indryk + "'" + child.getLabel() + "'");
-                if (child.getProperty().isMany()) {
+                if (child.getProperty() != null && child.getProperty().isMany()) {
                     if (child.getAddable()) {
                         stringBuilder.append(" (+)");
                     }

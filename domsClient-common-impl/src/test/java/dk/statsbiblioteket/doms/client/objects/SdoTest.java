@@ -18,12 +18,16 @@ import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
@@ -544,5 +548,106 @@ public class SdoTest  {
         assertTrue(SdoUtils.parseDoc(sdodoc) + "\n" + modsDatastreamContent + "\n" + xmlFinal,  diff.similar());
     }
 
+
+    /**
+     * Test the we can handle and display the value of accessCondition, which is a mixed element.
+     * @throws IOException
+     * @throws XMLParseException
+     * @throws ServerOperationFailed
+     * @throws SAXException
+     */
+    @Test
+    public void testMissingAccessConditionValue() throws IOException, XMLParseException, ServerOperationFailed, SAXException {
+        final String schemaString = SdoUtils.getStringFromFileOnClasspath("MODS35_ACCESSCONDITION.xsd");
+        final String modsFilePath = "authority/simple/aktuelt5-Aktuelt.xml";
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        return schemaString;
+                    }
+                };
+            }
+        };
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(modsFilePath));
+
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+        Validator validator = new Validator(modsDatastreamContent);
+        validator.useXMLSchema(true);
+        validator.setJAXP12SchemaSource(new ByteArrayInputStream(schemaString.getBytes()));
+        assertTrue(validator.toString(),validator.isValid());
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        String xmlFinal = sdodoc.dumpToString();
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+        Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
+        final String sdodocString = SdoUtils.parseDoc(sdodoc);
+        assertTrue(sdodocString, sdodocString.contains("ressource"));
+        System.out.println(sdodocString);
+        assertTrue("SDO-DOC:\n" + sdodocString + "Original Content:\n" + modsDatastreamContent + "Final Content:\n" + xmlFinal, diff.similar());
+    }
+
+    /**
+     * Test that we can also change the value of accessCondition content.
+     * @throws IOException
+     * @throws XMLParseException
+     * @throws ServerOperationFailed
+     * @throws SAXException
+     */
+    @Test
+    public void testSetAccessConditionValue() throws IOException, XMLParseException, ServerOperationFailed, SAXException {
+        final String schemaString = SdoUtils.getStringFromFileOnClasspath("MODS35_ACCESSCONDITION.xsd");
+        final String modsFilePath = "authority/simple/aktuelt5-Aktuelt.xml";
+        final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+            public Datastream getSchema() {
+                return new DatastreamStub() {
+                    @Override
+                    public String getContents() throws ServerOperationFailed {
+                        return schemaString;
+                    }
+                };
+            }
+        };
+        final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(modsFilePath));
+
+        final Datastream modsDatastream = new DatastreamStub() {
+            @Override
+            public String getContents() throws ServerOperationFailed {
+                return modsDatastreamContent;
+            }
+        };
+
+        SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                modsSchemaDatastreamDeclaration, modsDatastream);
+        List<SDOParsedXmlElement> descendants = getAllDescendants(sdodoc.getRootSDOParsedXmlElement());
+        for (SDOParsedXmlElement descendant: descendants) {
+            if (descendant.getStringValue() != null && descendant.getStringValue().contains("ressource")) {
+                descendant.setValue("abcba");
+            }
+        }
+        final String sdodocString = SdoUtils.parseDoc(sdodoc);
+        assertTrue(sdodocString, sdodocString.contains("abcba"));
+        String xmlFinal = sdodoc.dumpToString();
+        assertTrue(xmlFinal, xmlFinal.contains("abcba"));
+        System.out.println(xmlFinal);
+    }
+
+    public List<SDOParsedXmlElement> getAllDescendants(SDOParsedXmlElement root) {
+        List<SDOParsedXmlElement> children = root.getChildren();
+        List<SDOParsedXmlElement> descendants = new ArrayList<SDOParsedXmlElement>(children);
+        for (SDOParsedXmlElement child: children) {
+            descendants.addAll(getAllDescendants(child));
+        }
+        return descendants;
+    }
 
 }
