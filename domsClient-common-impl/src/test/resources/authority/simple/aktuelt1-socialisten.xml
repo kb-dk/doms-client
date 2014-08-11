@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
 
-	<abstract xlink:href="http://dedanskeaviser.dk" xml:lang="dan">læs mere om denne avis i dda</abstract>
+	<abstract xlink:href="http://dedanskeaviser.dk" lang="dan">læs mere om denne avis i dda</abstract>
 
 </mods>
