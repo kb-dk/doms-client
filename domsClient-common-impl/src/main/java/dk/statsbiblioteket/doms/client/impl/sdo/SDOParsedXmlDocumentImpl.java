@@ -250,7 +250,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
             } catch (IOException e) {
                 throw new RuntimeException("String writer failed to write...", e);
             }
-            System.out.println("Created writable output:\n" + writer.toString());
+            log.debug("Created writable output:\n" + writer.toString());
             return writer.toString();
         }
         return null;
@@ -390,11 +390,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                     Sequence sequence = childDataObject.getSequence();
                     for (int i=0; i < sequence.size(); i++) {
                         Object o = sequence.getValue(i);
-                        //if (o instanceof String ) {
-                            //childElement.setValue(o);
                         if (sequence.getProperty(i) != null) {
-                            //?? Is this right? Isn't the sequence property a grandChild property? Shouldn't it just be handled
-                            //recursively by a call to handleProperty??
                             SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, childElement, childDataObject, sequence.getProperty(i));
                             childElement.add(childSeqElement);
                             if (o instanceof String) {
@@ -402,7 +398,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                             }
                         } else {
                             if (o instanceof String) {
-                                //currentElement.setValue(o);
                                 SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, childElement, childDataObject, null);
                                 childElement.add(childSeqElement);
                                 if (o instanceof String) {
@@ -411,7 +406,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                                 }
                             }
                         }
-                        //}
                     }
                 }
 
@@ -535,6 +529,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     private void handleLeafElement(SDOParsedXmlElement currentElement, DataObject currentDataObject,
                                    Property currentProperty, DataObject childObject) {
         Object value;
+        //This next code seems to be in the wrong place. mixed/sequence data doesn't have to be in a leaf element,
         if (currentProperty.getType().isSequenced()) { // and is of sequenced type
             if (getXsdHelper().isMixed(currentProperty.getType())) { //if the type is mixed, the order matters
                 //addLeaf(currentElement, childObject, currentProperty, null, 0);
@@ -554,7 +549,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
 
     private void handleLeafSequence(SDOParsedXmlElement currentElement, Property currentProperty,
                                     DataObject childObject) {
-        Object value;Sequence seq = childObject.getSequence();
+        Object value;
+        Sequence seq = childObject.getSequence();
         if (seq != null) {
             for (int i = 0; i < seq.size(); i++) {
                 Property p = seq.getProperty(i);
