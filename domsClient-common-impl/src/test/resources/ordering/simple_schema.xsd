@@ -1,0 +1,33 @@
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.statsbiblioteket.dk/foobar"
+        xmlns="http://www.statsbiblioteket.dk/foobar"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+    <xsd:element name="foobar" type="foobarTypeDef"/>
+
+    <xsd:complexType name="foobarTypeDef">
+        <xsd:choice>
+            <xsd:element name="el1" type="el1Def" minOccurs="1" maxOccurs="1"/>
+        </xsd:choice>
+    </xsd:complexType>
+
+    <xsd:complexType name="el1Def">
+        <xsd:sequence>
+            <xsd:element name="el2" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="el3" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="el4" type="el4Def" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="attr1" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="el4Def">
+        <xsd:choice maxOccurs="unbounded">
+            <xsd:element name="el5" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="el6" type="xsd:string" minOccurs="1" />
+        </xsd:choice>
+        <xsd:attribute name="attr1" type="xsd:string" />
+    </xsd:complexType>
+
+</xsd:schema>

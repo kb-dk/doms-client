@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import javax.xml.namespace.NamespaceContext;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -791,6 +792,62 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
     public void setValueEnum(List<String> valueEnum) {
         this.guiType = GuiType.enumeration;
         this.valueEnum = valueEnum;
+    }
+
+    /**
+     * Given an element, find any those of its children which are part of its sequence and reorder them so they
+     * come in the same order as they do in the sequence, leaving the other children in the same position.
+     */
+    public void reorderBySequence() {
+        Sequence sequence = getDataobject().getSequence();
+        if (sequence == null || sequence.size() == 0) {
+            return;
+        }
+        List<NameValuePair> fullListOfSequenceObjects = new ArrayList<NameValuePair>();
+        List<NameValuePair> dynamicListOfSequenceObjects = new ArrayList<NameValuePair>();
+        for (int i = 0; i < sequence.size(); i++) {
+            NameValuePair nvp =  new NameValuePair(sequence.getProperty(i).getName(), sequence.getValue(i));
+            fullListOfSequenceObjects.set(i, nvp);
+            dynamicListOfSequenceObjects.set(i, nvp);
+        }
+        for (int i=0; i < getChildren().size(); i++) {
+            SDOParsedXmlElement child = getChildren().get(i);
+            NameValuePair nvp = new NameValuePair(child.getProperty().getName(), child.getValue());
+            if (fullListOfSequenceObjects.contains(nvp)) {
+                getChildren().set(i, null);
+            }
+        }
+
+    }
+
+    private static class NameValuePair {
+        private String name;
+        private Object value;
+
+        private NameValuePair(String name, Object value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            NameValuePair that = (NameValuePair) o;
+
+            if (name != null ? !name.equals(that.name) : that.name != null) return false;
+            if (value != null ? !value.equals(that.value) : that.value != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = name != null ? name.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
     }
 
 }

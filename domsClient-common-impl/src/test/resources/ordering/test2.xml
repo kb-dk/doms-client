@@ -1,0 +1,10 @@
+<foobar xmlns="http://www.statsbiblioteket.dk/foobar">
+      <el1>
+          <el2>foo</el2>
+          <el4>
+              <el5>foo</el5>
+              <el6>foo1</el6>
+              <el5>foo2</el5>
+          </el4>
+      </el1>
+</foobar>

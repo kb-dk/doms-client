@@ -641,6 +641,48 @@ public class SdoTest  {
         System.out.println(xmlFinal);
     }
 
+    @Test
+       public void testSimpleSchemaOrdering() throws XMLParseException, ServerOperationFailed, IOException, SAXException {
+           final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
+               public Datastream getSchema() {
+                   return new DatastreamStub() {
+                       @Override
+                       public String getContents() throws ServerOperationFailed {
+                           try {
+                               return Strings.flush(Thread.currentThread().getContextClassLoader()
+                                                      .getResourceAsStream("ordering/simple_schema.xsd"));
+                           } catch (IOException e) {
+                              throw new RuntimeException(e);
+                           }
+                       }
+                   };
+               }
+           };
+          final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader()
+                       .getResourceAsStream("ordering/test2.xml"));
+
+           final Datastream modsDatastream = new DatastreamStub() {
+               @Override
+               public String getContents() throws ServerOperationFailed {
+                   return modsDatastreamContent;
+               }
+           };
+           SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
+                   modsSchemaDatastreamDeclaration, modsDatastream);
+
+        Validator validator = new Validator(modsDatastreamContent);
+               validator.useXMLSchema(true);
+               validator.setJAXP12SchemaSource(new ByteArrayInputStream(modsSchemaDatastreamDeclaration.getSchema().getContents().getBytes()));
+               assertTrue(validator.toString(),validator.isValid());
+
+        System.out.println(modsDatastreamContent);
+
+        System.out.printf(SdoUtils.parseDoc(sdodoc));
+
+
+       }
+
+
     public List<SDOParsedXmlElement> getAllDescendants(SDOParsedXmlElement root) {
         List<SDOParsedXmlElement> children = root.getChildren();
         List<SDOParsedXmlElement> descendants = new ArrayList<SDOParsedXmlElement>(children);

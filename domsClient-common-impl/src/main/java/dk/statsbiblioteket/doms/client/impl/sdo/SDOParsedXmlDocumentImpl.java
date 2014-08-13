@@ -370,6 +370,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         //a leaf in the tree. Do this by checking if it has any grandchild properties.
         List<Property> grandChildProperties = currentPropertyType.getProperties();
 
+
+
+
+
         //Do some logging here for debugging purposes
         doLogging(currentElement, childProperty, childDataObjects, grandChildProperties);
 
@@ -380,6 +384,9 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         } else {//if there is grand child property, this is a node in the tree, not a leaf
 
             for (DataObject childDataObject : childDataObjects) {
+                //Now what we need to do here is reorder the grandChildProperties list so that the properties found in the childObject.getSequence()
+                //come up front in the list and in the correct order.
+
                 //so we create the childElement node
                 SDOParsedXmlElement childElement = new SDOParsedXmlElementImpl(
                         this, currentElement, childDataObject, childProperty);
@@ -410,6 +417,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 }
 
                 int i = 0;
+                //childDataObject.getInstanceProperties();
                 for (Property grandChildProperty : grandChildProperties) { //we iterate on the sub types
                     i++;
                     if (isAttribute(grandChildProperty)) { //if they are attributes, create a leaf
