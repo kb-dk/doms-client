@@ -8,6 +8,8 @@ import commonj.sdo.helper.HelperContext;
 import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.sdo.api.SDOUtil;
 import org.apache.tuscany.sdo.helper.DataFactoryImpl;
 import org.apache.tuscany.sdo.helper.TypeHelperImpl;
@@ -28,7 +30,8 @@ import java.util.logging.Logger;
 
 public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
 
-    Logger logger = Logger.getLogger(SDOParsedXmlElementImpl.class.getName());
+    private Log log = LogFactory.getLog(SDOParsedXmlElementImpl.class);
+
 
     /**
      * Generally, we remove empty elements and attributes from the SDO tree before we write them back to DOMS. We
@@ -568,7 +571,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
      */
     @Override
     public void setValue(Object value) {
-        logger.fine("Setting value of " + this + " to " + value);
+        log.debug("Setting value of " + this + " to " + value);
         this.value = value;
         if (value == null) {
             originallySet = true;
@@ -794,39 +797,107 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
         this.valueEnum = valueEnum;
     }
 
+
+    public void reorderRecursively() {
+        reorderBySequence();
+        for (SDOParsedXmlElement child:getChildren()) {
+            ((SDOParsedXmlElementImpl) child).reorderRecursively();
+        }
+    }
+
     /**
-     * Given an element, find any those of its children which are part of its sequence and reorder them so they
-     * come in the same order as they do in the sequence, leaving the other children in the same position.
+     * Each element has a list of children. It also may have a Sequence. If it has a sequence, this method finds
+     * those children corresponding to the objects in the Sequence and reorders them so that they appear in the
+     * child-list in the same order that they do in the Sequence. Other members of the child-list are left in their
+     * same initial position.
+     *
+     * The algorithm is as follows. We maintain a full list of all sequence elements corresponding to a child element,
+     * and a dynamic list consisting
+     * only of those we have not yet assigned to a final position in the child-list. We iterate through the child-list.
+     * For each child element, if it corresponds to one of the elements of the full sequence, then we replace it with the first
+     * unused sequence element from the dynamic list. (This could also be done with a single list and a pointer.)
+     *
      */
     public void reorderBySequence() {
         Sequence sequence = getDataobject().getSequence();
         if (sequence == null || sequence.size() == 0) {
             return;
         }
-        List<NameValuePair> fullListOfSequenceObjects = new ArrayList<NameValuePair>();
-        List<NameValuePair> dynamicListOfSequenceObjects = new ArrayList<NameValuePair>();
+        List<NameValuePair> sequenceObjects = new ArrayList<NameValuePair>();
+        List<NameValuePair> fullSequenceObjects = new ArrayList<NameValuePair>();
         for (int i = 0; i < sequence.size(); i++) {
-            NameValuePair nvp =  new NameValuePair(sequence.getProperty(i).getName(), sequence.getValue(i));
-            fullListOfSequenceObjects.set(i, nvp);
-            dynamicListOfSequenceObjects.set(i, nvp);
+            String sequencePropertyName = null;
+            if (sequence.getProperty(i) != null) {
+                sequencePropertyName = sequence.getProperty(i).getName();
+            }
+            NameValuePair nvp =  new NameValuePair(sequencePropertyName, sequence.getValue(i));
+            sequenceObjects.add(i, nvp);
+            fullSequenceObjects.add(i,nvp);
         }
         for (int i=0; i < getChildren().size(); i++) {
             SDOParsedXmlElement child = getChildren().get(i);
-            NameValuePair nvp = new NameValuePair(child.getProperty().getName(), child.getValue());
-            if (fullListOfSequenceObjects.contains(nvp)) {
-                getChildren().set(i, null);
+            NameValuePair nvp = new NameValuePair(getPropertyName(child), getComparisonValue(child));
+            for (NameValuePair nvpSeq: sequenceObjects) {
+                if (nvp.equals(nvpSeq) && nvpSeq.getCorrespondingChildElement() == null) {
+                    nvpSeq.setCorrespondingChildElement(child);
+                    break;
+                }
             }
         }
+        for (int i = 0; i < sequenceObjects.size(); i++) {
+           if (sequenceObjects.get(i).getCorrespondingChildElement() == null) {
+               fullSequenceObjects.remove(sequenceObjects.get(i));
+           }
+        }
+        for (int i=0; i<fullSequenceObjects.size(); i++) {
+            sequenceObjects.set(i, fullSequenceObjects.get(i));
+        }
 
+        int pointer = 0;
+
+        for (int i=0; i < getChildren().size(); i++) {
+            SDOParsedXmlElement child = getChildren().get(i);
+            NameValuePair nvp = new NameValuePair(getPropertyName(child), getComparisonValue(child));
+            if (fullSequenceObjects.contains(nvp)) {
+                //getChildren().set(i, sequenceObjects.remove(0).getCorrespondingChildElement());
+                getChildren().set(i, fullSequenceObjects.get(pointer).getCorrespondingChildElement());
+                pointer++;
+            }
+        }
+    }
+
+    private static String getPropertyName(SDOParsedXmlElement element) {
+         if (element.getProperty() == null) {
+             return null;
+         } else {
+             return element.getProperty().getName();
+         }
+    }
+
+    private static Object getComparisonValue(SDOParsedXmlElement element) {
+         if (element.getValue() != null) {
+             return element.getValue();
+         } else {
+             return element.getDataobject();
+         }
     }
 
     private static class NameValuePair {
         private String name;
         private Object value;
+        private SDOParsedXmlElement correspondingChildElement;
 
         private NameValuePair(String name, Object value) {
             this.name = name;
             this.value = value;
+        }
+
+        public SDOParsedXmlElement getCorrespondingChildElement() {
+            return correspondingChildElement;
+        }
+
+        public void setCorrespondingChildElement(SDOParsedXmlElement correspondingChildElement) {
+            this.correspondingChildElement = correspondingChildElement;
         }
 
         @Override

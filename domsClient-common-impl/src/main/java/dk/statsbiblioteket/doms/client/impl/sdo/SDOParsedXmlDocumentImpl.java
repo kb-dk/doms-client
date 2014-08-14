@@ -211,9 +211,11 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                 handleProperty(getRootSDOParsedXmlElement(), rootDataObject, property);
             }
         }
-
+        getRootSDOParsedXmlElement().reorderRecursively();
 
     }
+
+
 
     private XMLHelper getXmlHelper() {
         return sdoContext.getXMLHelper();
@@ -432,8 +434,10 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                             handleProperty(childElement, childDataObject, grandChildProperty);
                     }
                 }
+                //((SDOParsedXmlElementImpl) childElement).reorderBySequence();
             }
         }
+        //((SDOParsedXmlElementImpl) currentElement).reorderBySequence();
     }
 
     private void doLogging(SDOParsedXmlElement currentElement, Property childProperty, List<DataObject> childDataObjects, List<Property> grandChildProperties) {

@@ -91,7 +91,10 @@ public class AuthorityTest {
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreAttributeOrder(true);
         Diff diff = XMLUnit.compareXML(modsDatastreamContent, xmlFinal);
-        assertTrue("SDO-DOC:\n" + SdoUtils.parseDoc(sdodoc) + "Original Content:\n" + modsDatastreamContent + "Final Content:\n" + xmlFinal,  diff.similar());
+        String message = "SDO-DOC:\n" + SdoUtils.parseDoc(sdodoc) + "Original Content:\n" + modsDatastreamContent + "Final Content:\n" + xmlFinal;
+        assertTrue(message,  diff.similar());
+        System.out.println(message);
+
     }
 
 

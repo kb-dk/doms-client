@@ -17,6 +17,7 @@ import dk.statsbiblioteket.util.xml.XPathSelector;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tuscany.sdo.api.SDOUtil;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -123,6 +124,8 @@ public class SdoTest  {
         };
         SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
                 modsSchemaDatastreamDeclaration, modsDatastream);
+
+        System.out.println(SdoUtils.parseDoc(sdodoc));
 
         SDOParsedXmlElementImpl detailElement = (SDOParsedXmlElementImpl) sdodoc.getRootSDOParsedXmlElement().getChildren().get(0).getChildren().get(0);
         SDOParsedXmlElementImpl newDetailElement = (SDOParsedXmlElementImpl) detailElement.create();
@@ -640,47 +643,6 @@ public class SdoTest  {
         assertTrue(xmlFinal, xmlFinal.contains("abcba"));
         System.out.println(xmlFinal);
     }
-
-    @Test
-       public void testSimpleSchemaOrdering() throws XMLParseException, ServerOperationFailed, IOException, SAXException {
-           final DatastreamDeclaration modsSchemaDatastreamDeclaration = new DatastreamDeclarationStub() {
-               public Datastream getSchema() {
-                   return new DatastreamStub() {
-                       @Override
-                       public String getContents() throws ServerOperationFailed {
-                           try {
-                               return Strings.flush(Thread.currentThread().getContextClassLoader()
-                                                      .getResourceAsStream("ordering/simple_schema.xsd"));
-                           } catch (IOException e) {
-                              throw new RuntimeException(e);
-                           }
-                       }
-                   };
-               }
-           };
-          final String modsDatastreamContent = Strings.flush(Thread.currentThread().getContextClassLoader()
-                       .getResourceAsStream("ordering/test2.xml"));
-
-           final Datastream modsDatastream = new DatastreamStub() {
-               @Override
-               public String getContents() throws ServerOperationFailed {
-                   return modsDatastreamContent;
-               }
-           };
-           SDOParsedXmlDocumentImpl sdodoc = new SDOParsedXmlDocumentImpl(
-                   modsSchemaDatastreamDeclaration, modsDatastream);
-
-        Validator validator = new Validator(modsDatastreamContent);
-               validator.useXMLSchema(true);
-               validator.setJAXP12SchemaSource(new ByteArrayInputStream(modsSchemaDatastreamDeclaration.getSchema().getContents().getBytes()));
-               assertTrue(validator.toString(),validator.isValid());
-
-        System.out.println(modsDatastreamContent);
-
-        System.out.printf(SdoUtils.parseDoc(sdodoc));
-
-
-       }
 
 
     public List<SDOParsedXmlElement> getAllDescendants(SDOParsedXmlElement root) {
