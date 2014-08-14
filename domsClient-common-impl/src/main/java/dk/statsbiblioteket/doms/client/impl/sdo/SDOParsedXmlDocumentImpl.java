@@ -386,9 +386,6 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
         } else {//if there is grand child property, this is a node in the tree, not a leaf
 
             for (DataObject childDataObject : childDataObjects) {
-                //Now what we need to do here is reorder the grandChildProperties list so that the properties found in the childObject.getSequence()
-                //come up front in the list and in the correct order.
-
                 //so we create the childElement node
                 SDOParsedXmlElement childElement = new SDOParsedXmlElementImpl(
                         this, currentElement, childDataObject, childProperty);
@@ -434,10 +431,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                             handleProperty(childElement, childDataObject, grandChildProperty);
                     }
                 }
-                //((SDOParsedXmlElementImpl) childElement).reorderBySequence();
             }
         }
-        //((SDOParsedXmlElementImpl) currentElement).reorderBySequence();
     }
 
     private void doLogging(SDOParsedXmlElement currentElement, Property childProperty, List<DataObject> childDataObjects, List<Property> grandChildProperties) {

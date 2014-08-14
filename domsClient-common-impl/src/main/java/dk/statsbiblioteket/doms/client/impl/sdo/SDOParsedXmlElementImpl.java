@@ -811,11 +811,19 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
      * child-list in the same order that they do in the Sequence. Other members of the child-list are left in their
      * same initial position.
      *
-     * The algorithm is as follows. We maintain a full list of all sequence elements corresponding to a child element,
-     * and a dynamic list consisting
-     * only of those we have not yet assigned to a final position in the child-list. We iterate through the child-list.
-     * For each child element, if it corresponds to one of the elements of the full sequence, then we replace it with the first
-     * unused sequence element from the dynamic list. (This could also be done with a single list and a pointer.)
+     * The algorithm is as follows. We create a list of all sequence elements corresponding to a child element,
+     * We iterate through the child-list.
+     * For each child element, if it corresponds to one of the elements of the sequence, then we replace it with the first
+     * unused sequence element from the dynamic list, using a pointer to determine which elements of the sequence we have used
+     * so far.
+     *
+     * Identity between sequence elements and sdo-doc elements is by means of a name value pair:
+     * For sequence elements:
+     *     name: the name of the Property of the sequence element or null if it is null
+     *     value: the value of the sequence element
+     * For sdo-doc elements:
+     *     name: the name of the Property of the element or null if it is null
+     *     value: the value of the element, or the DataObject of the element if the value is null
      *
      */
     public void reorderBySequence() {
@@ -824,7 +832,7 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             return;
         }
         List<NameValuePair> sequenceObjects = new ArrayList<NameValuePair>();
-        List<NameValuePair> fullSequenceObjects = new ArrayList<NameValuePair>();
+        //Create the list corresponding to the sequence
         for (int i = 0; i < sequence.size(); i++) {
             String sequencePropertyName = null;
             if (sequence.getProperty(i) != null) {
@@ -832,11 +840,13 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
             }
             NameValuePair nvp =  new NameValuePair(sequencePropertyName, sequence.getValue(i));
             sequenceObjects.add(i, nvp);
-            fullSequenceObjects.add(i,nvp);
         }
+        //Find the child element corresponding to each item in the sequence
         for (int i=0; i < getChildren().size(); i++) {
             SDOParsedXmlElement child = getChildren().get(i);
             NameValuePair nvp = new NameValuePair(getPropertyName(child), getComparisonValue(child));
+            //This loop is to handle the case of identical child elements. Iterate until we find the first
+            //suitable sequence object we haven't assigned yet, then break.
             for (NameValuePair nvpSeq: sequenceObjects) {
                 if (nvp.equals(nvpSeq) && nvpSeq.getCorrespondingChildElement() == null) {
                     nvpSeq.setCorrespondingChildElement(child);
@@ -844,23 +854,22 @@ public class SDOParsedXmlElementImpl implements SDOParsedXmlElement {
                 }
             }
         }
-        for (int i = 0; i < sequenceObjects.size(); i++) {
-           if (sequenceObjects.get(i).getCorrespondingChildElement() == null) {
-               fullSequenceObjects.remove(sequenceObjects.get(i));
-           }
+        //Filter the sequence to remove elements that don't correspond to any child element
+        List<NameValuePair> nvpsToRemove = new ArrayList<NameValuePair>();
+        for (NameValuePair nvp: sequenceObjects) {
+            if (nvp.getCorrespondingChildElement() == null) {
+                nvpsToRemove.add(nvp);
+            }
         }
-        for (int i=0; i<fullSequenceObjects.size(); i++) {
-            sequenceObjects.set(i, fullSequenceObjects.get(i));
-        }
+        sequenceObjects.removeAll(nvpsToRemove);
 
+        //Do the actual shuffling of the child elements
         int pointer = 0;
-
         for (int i=0; i < getChildren().size(); i++) {
             SDOParsedXmlElement child = getChildren().get(i);
             NameValuePair nvp = new NameValuePair(getPropertyName(child), getComparisonValue(child));
-            if (fullSequenceObjects.contains(nvp)) {
-                //getChildren().set(i, sequenceObjects.remove(0).getCorrespondingChildElement());
-                getChildren().set(i, fullSequenceObjects.get(pointer).getCorrespondingChildElement());
+            if (sequenceObjects.contains(nvp)) {
+                getChildren().set(i, sequenceObjects.get(pointer).getCorrespondingChildElement());
                 pointer++;
             }
         }
