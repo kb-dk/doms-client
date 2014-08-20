@@ -406,10 +406,8 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
                             if (o instanceof String) {
                                 SDOParsedXmlElement childSeqElement = new SDOParsedXmlElementImpl(this, childElement, childDataObject, null);
                                 childElement.add(childSeqElement);
-                                if (o instanceof String) {
-                                    childSeqElement.setValue(o);
-                                    childSeqElement.setLabel("value");
-                                }
+                                childSeqElement.setValue(o);
+                                childSeqElement.setLabel("value");
                             }
                         }
                     }
