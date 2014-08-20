@@ -23,7 +23,7 @@ SDO is a very rich API for describing structured data and it is easy to blunder 
 Fortunately the javadoc on the base interface/classes is usually quite
 helpful. The three fundamental classes of objects in SDO (as we use it) are
 
-1. Objects. These are rather like Nodes in a w3c DOM tree in that they can represent XML elements, attributes or text-data. Objects in SDO are typed. The allowed types
+1. DataObjects. These are rather like Nodes in a w3c DOM tree in that they can represent XML elements, attributes or text-data. DataObjects in SDO are typed. The allowed types
 are generated dynamically from the XML schema document and the type of any given object can be found from its getType() method.
 1. Types. A type can be identified by its name (from getName()) which is typically the name of the XML schema type it represents. Each type has associated with it a
 list of Properties which identifies the allowed "children" of objects of this type.
@@ -33,9 +33,12 @@ of Type A may have a property called B which refers to an object of Type C".
 ### Mixed and Sequenced Data
 
 This is probably the part of the SDO API which has caused most confusion for us. SDO DataObjects possess an isSequenced() boolean method. Sequenced objects
-in SDO can be used to represent either sequences in an XML Schema or XML mixed data - e.g. an ordered list of text and elements like an html body-element. A
+in SDO can be used to represent choices in an XML Schema or XML mixed data - e.g. an ordered list of text and elements like an html body-element. SDO sequences
+are quite distinct from sequences in XML Schema (see http://pic.dhe.ibm.com/infocenter/esbsoa/wesbv7r5m1/topic/com.ibm.websphere.wesb.programming.doc/topics/cbo_usingsequences.html
+for details). A
 sequenced DataObject has a Sequence which can be accessed with the getSequence() method. The Sequence can be iterated over. Those elements which represent
-sub-elements will have both a Property and a Value, but those representing text in mixed data will only have a Value - their Property is null.
+sub-elements will have both a Property and a Value, but those representing text in mixed data will only have a Value - their Property is null. The Value
+itself may be either a DataObject or primitive, such as a String.
 
 The getInstanceProperties() method of a DataObject will return all its properties, including those defined in its Sequence, but will not include references to
 its text-content.
@@ -56,8 +59,7 @@ value (which may be null) representing explicit content of the corresponding XML
 this is where most of our difficulties occur. In particular, the element-tree model is not rich enough to represent
 all the possible structure which could be present in the SDO layer. As an example, SDO mixed content could consist of
 a list of alternating text-elements and xml sub-elements. But the SDO-DOC element, in its current form, assigns a
-single scalar value to each element. Also problematic is that the property field of each element (ie the SDO Property
- associated with the corresponding DataObject) is assumed to be non-null. However for text-elements in mixed content the Property should be null.)
+single scalar value to each element.)
 
 ### The "+" button
 
@@ -86,11 +88,13 @@ could be added. To do this, we proceed as follows:
 
      3.2  If the current property is complex, recurse over all its defined properties in turn, adding new DataObject instances and
      SDO-DOC elements for any properties which are not set in the datastream.
+4. For each SDOParsedXmlElementImpl, reorder its children so that those children corresponding to Sequence elements come in the same order
+as in the elements DataObject.
 
 
 ## SDO-DOC -> SDO
 
-When there is a changed focus on an element in the GUI, the SEAM front-end calls the submit() method on the
+When there is a changed focus on an element in the GUI (e.g. due to a mouse click), the SEAM front-end calls the submit() method on the
 corresponding SDOParsedXmlElementImpl object in the SDO-DOC tree. This recursively traverses the element and
 its children, updating the corresponding SDO tree. Specifically, if the element is a leaf-element then the value
 of the element is written into the SDO tree by setting the corresponding Property on the correct DataObject. This
@@ -107,7 +111,7 @@ XML output which is different from the input because it includes all the empty p
 therefore includes an additional pre-processing step which removes all the empty elements which were absent in
 the original parsed XML.
 
-In order to for this pruning of empty objects to be carried out correctly, elements in SDO-DOC have to be flagged when
+In order for this pruning of empty objects to be carried out correctly, elements in SDO-DOC have to be flagged when
 they are created.
 There are two flags: "originallySet" is true if the element or attribute was present in the original Doms XML and additionally
  "originallySetNonEmpty" if it was both present and set to a non-empty value. The submit() method, when it processes
