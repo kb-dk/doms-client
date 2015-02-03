@@ -46,7 +46,7 @@ public class CollectionObjectImpl extends DataObjectImpl implements CollectionOb
     @Override
     public Set<ContentModelObject> getContentModels() throws ServerOperationFailed {
         try {
-            List<String> pids = api.getObjectsInCollection(this.getPid(), Constants.CM_CM_PID);
+            List<String> pids = api.getContentModelsInCollection(this.getPid());
             Set<ContentModelObject> result = new HashSet<ContentModelObject>();
             for (String pid : pids) {
                 DigitalObject object = factory.getDigitalObject(pid);
