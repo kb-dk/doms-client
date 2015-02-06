@@ -45,7 +45,7 @@ public class TestBase {
     @org.junit.Before
     public void setUp() throws Exception {
 
-        CentralWebservice domsAPI = new CentralWebserviceService(
+        CentralWebservice domsAPI = new CentralWebserviceService(               // TODO MOCK IT!
                 domsWSAPIEndpoint, CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
         Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI).getRequestContext();
@@ -58,13 +58,6 @@ public class TestBase {
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
     }
-
-    @Test
-    @Ignore
-    public void emptyTest() {
-
-    }
-
 
     protected void emptymize(SDOParsedXmlElement element) {
         ArrayList<SDOParsedXmlElement> children = element.getChildren();
@@ -80,6 +73,4 @@ public class TestBase {
         }
 
     }
-
-
 }
