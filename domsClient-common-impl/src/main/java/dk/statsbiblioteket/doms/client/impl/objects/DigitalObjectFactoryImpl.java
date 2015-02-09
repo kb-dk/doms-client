@@ -94,12 +94,9 @@ public class DigitalObjectFactoryImpl extends AbstractDigitalObjectFactory {
             object = new CollectionObjectImpl(profile, getApi(), this);
         } else if ("FileObject".equals(profile.getType())) {
             object = new FileObjectImpl(profile, getApi(), this);
-
         } else {
             object = new DataObjectImpl(profile, getApi(), this);
         }
         return object;
     }
-
-
 }

@@ -2,29 +2,23 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.central.CentralWebservice;
 import dk.statsbiblioteket.doms.central.CentralWebserviceService;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
-import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlDocument;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: 10/25/11
- * Time: 10:39 AM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class TestBase {
-
     private static final QName CENTRAL_WEBSERVICE_SERVICE = new QName(
             "http://central.doms.statsbiblioteket.dk/", "CentralWebserviceService");
 
@@ -36,6 +30,8 @@ public class TestBase {
 
     public static  final String victimShard = "uuid:c171df65-9ffb-4011-9fae-4f6dccad9b9c";
 
+    public static  final String CMVHSFilePID = "doms:ContentModel_VHSFile";
+
 
     public TestBase() throws MalformedURLException {
         domsWSAPIEndpoint = new URL("http://alhena:7880/centralWebservice-service/central/");
@@ -45,7 +41,7 @@ public class TestBase {
     @org.junit.Before
     public void setUp() throws Exception {
 
-        CentralWebservice domsAPI = new CentralWebserviceService(               // TODO MOCK IT!
+        CentralWebservice domsAPI = new CentralWebserviceService(               // TODO mock in each test, then remove
                 domsWSAPIEndpoint, CENTRAL_WEBSERVICE_SERVICE).getCentralWebservicePort();
 
         Map<String, Object> domsAPILogin = ((BindingProvider) domsAPI).getRequestContext();
