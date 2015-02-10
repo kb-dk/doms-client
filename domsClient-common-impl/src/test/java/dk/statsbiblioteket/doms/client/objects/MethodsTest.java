@@ -32,25 +32,6 @@ public class MethodsTest extends TestBase {
         super();
     }
 
-    @Test
-    public void methodsTest1OLD() throws ServerOperationFailed {
-        ContentModelObject contentModel = (ContentModelObject) factory.getDigitalObject("doms:ContentModel_VHSFile");
-        Set<Method> methods = contentModel.getMethods();
-        assertTrue("No methods defined", methods.size() > 0);
-        for (Method method : methods) {
-            assertEquals("Name of method wrong", "VHS import", method.getName());
-            Set<Parameter> parameters = method.getParameters();
-            assertTrue("No params defined", parameters.size() > 0);
-            for (Parameter parameter : parameters) {
-                parameter.setValue("test");
-            }
-            String result = method.invoke(parameters);
-            System.out.println(result);
-            assertTrue("result wrong", result.length() > 3);
-
-        }
-    }
-
     /**
      * Test that it is possible to invoke methods on Fedora objects
      *
