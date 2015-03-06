@@ -22,6 +22,7 @@ public class SdoIntegrationTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testSdoPBCore() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         SDOParsedXmlDocument doc = program.getDatastream("PBCORE").getSDOParsedDocument();
@@ -31,6 +32,7 @@ public class SdoIntegrationTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testDatastreamAdd() throws Exception {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         Datastream testStream = program.addInternalDatastream("ANNOTATIONS");
@@ -40,6 +42,7 @@ public class SdoIntegrationTest extends TestBase {
 
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testSdoDC() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
 
@@ -64,6 +67,7 @@ public class SdoIntegrationTest extends TestBase {
 
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testSdoRitzau() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
         try {
@@ -87,6 +91,7 @@ public class SdoIntegrationTest extends TestBase {
 
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testSdoRelsExt() throws ServerOperationFailed, NotFoundException, IOException, XMLParseException {
         DigitalObject program = factory.getDigitalObject(victimProgram);
 

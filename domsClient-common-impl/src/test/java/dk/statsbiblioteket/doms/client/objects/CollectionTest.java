@@ -6,6 +6,7 @@ import dk.statsbiblioteket.doms.client.exceptions.XMLParseException;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.relations.RelationModel;
 import dk.statsbiblioteket.doms.client.utils.Constants;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -28,6 +29,7 @@ public class CollectionTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testCollection1() throws ServerOperationFailed, XMLParseException, NotFoundException {
         boolean createdProgram = false;
         boolean createdShard = false;

@@ -6,6 +6,8 @@ import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.sdo.SDOParsedXmlElement;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Ignore;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import java.net.MalformedURLException;
@@ -30,7 +32,6 @@ public class TestBase {
 
     public static  final String victimShard = "uuid:c171df65-9ffb-4011-9fae-4f6dccad9b9c";
 
-    public static  final String CMVHSFilePID = "doms:ContentModel_VHSFile";
 
 
     public TestBase() throws MalformedURLException {

@@ -12,6 +12,7 @@ import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -47,6 +48,7 @@ public class OntologyTest extends TestBase {
 
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testParseOntologyWithoutExceptions() throws ServerOperationFailed, NotFoundException {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
@@ -57,6 +59,7 @@ public class OntologyTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testParseOntology() throws ServerOperationFailed, NotFoundException {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
@@ -88,6 +91,7 @@ public class OntologyTest extends TestBase {
 
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testParseOntologyFromDataObject() throws ServerOperationFailed, NotFoundException {
         DigitalObject programObject = factory.getDigitalObject(victimProgram);
         assertEquals(programObject.getState(), Constants.FedoraState.Active);

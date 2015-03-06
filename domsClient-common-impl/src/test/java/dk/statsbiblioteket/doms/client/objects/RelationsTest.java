@@ -30,6 +30,7 @@ public class RelationsTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testViewRelations() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_Program");
         assertTrue(cmdoms instanceof ContentModelObject);
@@ -52,6 +53,7 @@ public class RelationsTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testAddedRelationLiteral() throws Exception {
         DigitalObject object = factory.getDigitalObject(victimProgram);
 
@@ -98,6 +100,7 @@ public class RelationsTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testAddedRelationObject() throws Exception {
         DigitalObject object = factory.getDigitalObject(victimProgram);
 

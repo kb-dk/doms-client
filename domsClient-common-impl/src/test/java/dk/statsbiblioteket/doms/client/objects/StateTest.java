@@ -2,6 +2,8 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.util.Set;
@@ -29,7 +31,8 @@ public class StateTest extends TestBase {
         object.save("SummaVisible");
     }
 
-    @org.junit.Test
+    @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testSaveState() throws Exception {
 
         int i = 0;

@@ -5,6 +5,7 @@ import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 import dk.statsbiblioteket.doms.client.utils.Constants;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -29,7 +30,8 @@ public class DigitalObjectFactoryTest extends TestBase {
         super();
     }
 
-    @org.junit.Test
+    @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testLoadTime() throws ServerOperationFailed {
         long before = System.currentTimeMillis();
         DigitalObject object = factory.getDigitalObject(victimProgram);
@@ -80,7 +82,8 @@ public class DigitalObjectFactoryTest extends TestBase {
     }
 
 
-    @org.junit.Test
+    @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testGetDigitalObject1() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
@@ -88,7 +91,8 @@ public class DigitalObjectFactoryTest extends TestBase {
     }
 
 
-    @org.junit.Test
+    @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testGetDigitalObject2() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:Root_Collection");
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
@@ -99,6 +103,7 @@ public class DigitalObjectFactoryTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testMostSpecificCM() throws ServerOperationFailed {
         DigitalObject object = factory.getDigitalObject(victimProgram);
         if (object instanceof DataObject) {

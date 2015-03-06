@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.client.objects;
 
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.utils.Constants;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -25,6 +26,7 @@ public class TemplateTest extends TestBase {
     }
 
     @Test
+    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testTemplateCreation() throws ServerOperationFailed {
         DigitalObject template = factory.getDigitalObject("doms:Template_Program");
         if (template instanceof TemplateObject) {
