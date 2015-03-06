@@ -97,7 +97,7 @@ public class DomsWSClientImpl implements DomsWSClient {
 
     @Override
     public String getLabel(String uuid) {
-        ArrayList<String> lst = new ArrayList<>();
+        ArrayList<String> lst = new ArrayList<String>();
         lst.add(uuid);
         return getLabel(lst).get(0);
     }
