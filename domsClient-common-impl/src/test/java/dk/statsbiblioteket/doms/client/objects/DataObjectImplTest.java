@@ -22,7 +22,6 @@ public class DataObjectImplTest extends TestBase {
     }
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testGetLinkPatterns() throws Exception {
         DigitalObject object = factory.getDigitalObject(victimProgram);
 

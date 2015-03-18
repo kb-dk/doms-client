@@ -26,7 +26,6 @@ public class TemplateTest extends TestBase {
     }
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testTemplateCreation() throws ServerOperationFailed {
         DigitalObject template = factory.getDigitalObject("doms:Template_Program");
         if (template instanceof TemplateObject) {

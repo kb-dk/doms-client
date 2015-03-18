@@ -31,7 +31,6 @@ public class DigitalObjectFactoryTest extends TestBase {
     }
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testLoadTime() throws ServerOperationFailed {
         long before = System.currentTimeMillis();
         DigitalObject object = factory.getDigitalObject(victimProgram);
@@ -83,7 +82,6 @@ public class DigitalObjectFactoryTest extends TestBase {
 
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testGetDigitalObject1() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:ContentModel_DOMS");
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
@@ -92,7 +90,6 @@ public class DigitalObjectFactoryTest extends TestBase {
 
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testGetDigitalObject2() throws Exception {
         DigitalObject cmdoms = factory.getDigitalObject("doms:Root_Collection");
         assertEquals(cmdoms.getState(), Constants.FedoraState.Active);
@@ -103,7 +100,6 @@ public class DigitalObjectFactoryTest extends TestBase {
     }
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testMostSpecificCM() throws ServerOperationFailed {
         DigitalObject object = factory.getDigitalObject(victimProgram);
         if (object instanceof DataObject) {

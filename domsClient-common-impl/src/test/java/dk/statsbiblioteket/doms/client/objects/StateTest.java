@@ -32,7 +32,6 @@ public class StateTest extends TestBase {
     }
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testSaveState() throws Exception {
 
         int i = 0;

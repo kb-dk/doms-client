@@ -40,7 +40,6 @@ public class DatastreamTest extends TestBase {
 
 
     @Test
-    @Ignore("Alhena test disabled due to alhena not using java 8")
     public void testDatastreamModel() throws Exception {
         ContentModelObject cmProgram = (ContentModelObject) factory.getDigitalObject("doms:ContentModel_Program");
         assertTrue(cmProgram instanceof ContentModelObject);
