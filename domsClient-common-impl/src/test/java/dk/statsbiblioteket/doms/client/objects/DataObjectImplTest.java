@@ -8,6 +8,7 @@ import dk.statsbiblioteket.doms.central.ObjectProfile;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.links.LinkPattern;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -16,36 +17,38 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * Created with IntelliJ IDEA.
- * User: abr
- * Date: 3/13/13
- * Time: 2:52 PM
- * To change this template use File | Settings | File Templates.
+ * Test that links can be retrieved
  */
-public class DataObjectImplTest extends TestBase {
+public class DataObjectImplTest {
 
-    public DataObjectImplTest() throws MalformedURLException {
+    private DigitalObjectFactory factory;
+    private CentralWebservice centralWebservice;
+
+    public DataObjectImplTest() {
     }
 
-    @Test
-    public void testGetLinkPatterns() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         //Setup test fixture
-        CentralWebservice centralWebservice = mock(CentralWebservice.class);
-        DigitalObjectFactory factory = new DigitalObjectFactoryImpl(centralWebservice);
+        centralWebservice = mock(CentralWebservice.class);
         when(centralWebservice.getObjectProfile("uuid:fafda919-cd27-4f7b-bc6d-cdedb95e85a7"))
                 .thenReturn(createProgramObjectProfile());
         when(centralWebservice.getObjectLinks("uuid:fafda919-cd27-4f7b-bc6d-cdedb95e85a7", -1l))
                 .thenReturn(createLinkList());
+        factory = new DigitalObjectFactoryImpl(centralWebservice);
+    }
 
-        //1. GET OBJECT
-
+    /**
+     * Test getting links for object.
+     */
+    @Test
+    public void testGetLinkPatterns() throws Exception {
         //Call method
         DigitalObject object = factory.getDigitalObject("uuid:fafda919-cd27-4f7b-bc6d-cdedb95e85a7");
         List<LinkPattern> linkPatterns = object.getLinkPatterns();
