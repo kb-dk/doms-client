@@ -49,6 +49,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractDigitalObject implements DigitalObject {
 
+    protected boolean datastreamsLoaded = false;
     Logger logger = Logger.getLogger(AbstractDigitalObject.class.getName());
 
     protected ObjectProfile profile;
@@ -372,6 +373,9 @@ public abstract class AbstractDigitalObject implements DigitalObject {
     }
 
     protected void loadDatastreams() throws ServerOperationFailed {
+        if (datastreamsLoaded) {
+            return;
+        }
         for (DatastreamProfile datastreamProfile : profile.getDatastreams()) {
             if (datastreamProfile.isInternal()) {
                 datastreams.add(new InternalDatastreamImpl(datastreamProfile, this, api));
@@ -379,6 +383,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 datastreams.add(new ExternalDatastreamImpl(datastreamProfile, this, api));
             }
         }
+        datastreamsLoaded = true;
     }
 
     @Override

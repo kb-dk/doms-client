@@ -47,7 +47,6 @@ public class ContentModelObjectImpl extends AbstractDigitalObject implements Con
 
     private DigitalObjectFactory factory;
     private DatastreamModel dsModel;
-    private boolean datastreamsLoaded = false;
     private ParsedOwlOntology ontology;
     private boolean ontologyLoaded = false;
     private RelationModel relationModel;
