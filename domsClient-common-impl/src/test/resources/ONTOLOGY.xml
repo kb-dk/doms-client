@@ -1,0 +1,54 @@
+<rdf:RDF
+        xmlns:owl="http://www.w3.org/2002/07/owl#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+    <owl:Class rdf:about="info:fedora/doms:ContentModel_DOMS#class">
+
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty
+                        rdf:resource="http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection"/>
+                <owl:minCardinality
+                        rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1
+                </owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty
+                        rdf:resource="http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection"/>
+                <owl:allValuesFrom
+                        rdf:resource="info:fedora/doms:ContentModel_Collection#class"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty
+                        rdf:resource="http://doms.statsbiblioteket.dk/relations/default/0/1/#hasLicense"/>
+                <owl:allValuesFrom
+                        rdf:resource="info:fedora/doms:ContentModel_License#class"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty
+                        rdf:resource="http://ecm.sourceforge.net/relations/0/2/#isTemplateFor"/>
+                <owl:allValuesFrom
+                        rdf:resource="info:fedora/fedora-system:ContentModel-3.0#class"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+
+    </owl:Class>
+
+    <owl:ObjectProperty
+            rdf:about="http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection"/>
+
+    <owl:ObjectProperty rdf:about="http://doms.statsbiblioteket.dk/relations/default/0/1/#hasLicense"/>
+
+    <owl:ObjectProperty rdf:about="http://ecm.sourceforge.net/relations/0/2/#isTemplateFor"/>
+
+</rdf:RDF>
