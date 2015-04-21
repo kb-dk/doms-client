@@ -1,6 +1,12 @@
 package dk.statsbiblioteket.doms.client.objects;
 
-import dk.statsbiblioteket.doms.central.*;
+import dk.statsbiblioteket.doms.central.CentralWebservice;
+import dk.statsbiblioteket.doms.central.InvalidCredentialsException;
+import dk.statsbiblioteket.doms.central.InvalidResourceException;
+import dk.statsbiblioteket.doms.central.MethodFailedException;
+import dk.statsbiblioteket.doms.central.ObjectProfile;
+import dk.statsbiblioteket.doms.central.Pair;
+import dk.statsbiblioteket.doms.central.Parameters;
 import dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed;
 import dk.statsbiblioteket.doms.client.impl.objects.DigitalObjectFactoryImpl;
 import dk.statsbiblioteket.doms.client.methods.Method;
@@ -67,7 +73,6 @@ public class MethodsTest  {
                 parameter.setValue("test");
             }
             String result = method.invoke(parameters);
-            System.out.println(result); // TODO remove
             assertTrue("result wrong", result.length() > 3);
         }
     }

@@ -186,6 +186,7 @@ public class DatastreamTest {
             if (child.isLeaf()) {
                 if (child.getLabel().equals(field)) {
                     child.setValue(newvalue);
+                    return;
                 }
             } else {
                 changeField(child, field, newvalue);

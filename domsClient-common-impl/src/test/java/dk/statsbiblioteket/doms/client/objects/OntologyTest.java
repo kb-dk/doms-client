@@ -22,6 +22,7 @@ import dk.statsbiblioteket.doms.client.relations.RelationDeclaration;
 import dk.statsbiblioteket.doms.client.utils.Constants;
 import dk.statsbiblioteket.util.Strings;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class OntologyTest {
     @Before
     public void setUp() throws Exception {
         domsAPI = mock(CentralWebservice.class);
-        when(domsAPI.getDatastreamContents("doms:ContentModel_DOMS", "ONTOLOGY")).thenReturn(Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream("ONTOLOGY.xml")));
+        when(domsAPI.getDatastreamContents("doms:ContentModel_DOMS", "ONTOLOGY")).thenReturn(createOntologyContents());
         when(domsAPI.getObjectProfile("uuid:XXX")).thenReturn(createObjectProfile());
         when(domsAPI.getObjectProfile("doms:ContentModel_DOMS")).thenReturn(createCMDOMSObjectProfile());
         when(domsAPI.getObjectProfile("doms:ContentModel_License")).thenReturn(createCMLicenseObjectProfile());
@@ -186,7 +187,6 @@ public class OntologyTest {
         return profile;
     }
 
-
     private ObjectProfile createCMDOMSObjectProfile() {
         ObjectProfile profile = createCMObjectProfile("doms:ContentModel_DOMS");
         DatastreamProfile datastreamProfile = new DatastreamProfile();
@@ -197,6 +197,7 @@ public class OntologyTest {
         profile.getDatastreams().add(datastreamProfile);
         return profile;
     }
+
 
     private ObjectProfile createCMCollectionObjectProfile() {
         return createCMObjectProfile("doms:ContentModel_Collection");
@@ -212,5 +213,62 @@ public class OntologyTest {
         profile.setState("A");
         profile.setType("ContentModel");
         return profile;
+    }
+
+    private String createOntologyContents() throws IOException {
+        return "<rdf:RDF\n"
+                + "        xmlns:owl=\"http://www.w3.org/2002/07/owl#\"\n"
+                + "        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
+                + "        xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n"
+                + "\n"
+                + "    <owl:Class rdf:about=\"info:fedora/doms:ContentModel_DOMS#class\">\n"
+                + "\n"
+                + "        <rdfs:subClassOf>\n"
+                + "            <owl:Restriction>\n"
+                + "                <owl:onProperty\n"
+                + "                        rdf:resource=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection\"/>\n"
+                + "                <owl:minCardinality\n"
+                + "                        rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">1\n"
+                + "                </owl:minCardinality>\n"
+                + "            </owl:Restriction>\n"
+                + "        </rdfs:subClassOf>\n"
+                + "\n"
+                + "        <rdfs:subClassOf>\n"
+                + "            <owl:Restriction>\n"
+                + "                <owl:onProperty\n"
+                + "                        rdf:resource=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection\"/>\n"
+                + "                <owl:allValuesFrom\n"
+                + "                        rdf:resource=\"info:fedora/doms:ContentModel_Collection#class\"/>\n"
+                + "            </owl:Restriction>\n"
+                + "        </rdfs:subClassOf>\n"
+                + "\n"
+                + "        <rdfs:subClassOf>\n"
+                + "            <owl:Restriction>\n"
+                + "                <owl:onProperty\n"
+                + "                        rdf:resource=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#hasLicense\"/>\n"
+                + "                <owl:allValuesFrom\n"
+                + "                        rdf:resource=\"info:fedora/doms:ContentModel_License#class\"/>\n"
+                + "            </owl:Restriction>\n"
+                + "        </rdfs:subClassOf>\n"
+                + "\n"
+                + "        <rdfs:subClassOf>\n"
+                + "            <owl:Restriction>\n"
+                + "                <owl:onProperty\n"
+                + "                        rdf:resource=\"http://ecm.sourceforge.net/relations/0/2/#isTemplateFor\"/>\n"
+                + "                <owl:allValuesFrom\n"
+                + "                        rdf:resource=\"info:fedora/fedora-system:ContentModel-3.0#class\"/>\n"
+                + "            </owl:Restriction>\n"
+                + "        </rdfs:subClassOf>\n"
+                + "\n"
+                + "    </owl:Class>\n"
+                + "\n"
+                + "    <owl:ObjectProperty\n"
+                + "            rdf:about=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#isPartOfCollection\"/>\n"
+                + "\n"
+                + "    <owl:ObjectProperty rdf:about=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#hasLicense\"/>\n"
+                + "\n"
+                + "    <owl:ObjectProperty rdf:about=\"http://ecm.sourceforge.net/relations/0/2/#isTemplateFor\"/>\n"
+                + "\n"
+                + "</rdf:RDF>\n";
     }
 }

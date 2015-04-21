@@ -125,7 +125,7 @@ public class CollectionTest {
         verifyNoMoreInteractions(centralWebservice);
 
         //Check result
-        assertEquals("Should have one result", 1, entryTemplates.size());
+        assertEquals("Should have one result, but was " + entryTemplates, 1, entryTemplates.size());
         TemplateObject entryTemplate = entryTemplates.iterator().next();
         assertEquals("Should find template object", "doms:Template_Program", entryTemplate.getPid());
 

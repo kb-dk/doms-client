@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 /**
  * Integration test for SDO
  */
+@Ignore("This is an integrationtest")
 public class SdoIntegrationTest {
     public static final String victimProgram = "uuid:fafda919-cd27-4f7b-bc6d-cdedb95e85a7";
     public static  final String victimShard = "uuid:c171df65-9ffb-4011-9fae-4f6dccad9b9c";

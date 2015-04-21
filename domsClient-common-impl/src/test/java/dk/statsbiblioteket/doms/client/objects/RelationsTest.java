@@ -15,6 +15,7 @@ import dk.statsbiblioteket.doms.client.relations.ObjectRelation;
 import dk.statsbiblioteket.doms.client.relations.Relation;
 
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -48,6 +49,7 @@ public class RelationsTest {
         when(domsAPI.getObjectProfile(UUID)).thenReturn(createObjectProfile());
         when(domsAPI.getObjectProfile(CM_PID)).thenReturn(createCMObjectProfile());
         when(domsAPI.getDatastreamContents(CM_PID, "VIEW")).thenReturn(createView());
+        when(domsAPI.getInverseRelations(CM_PID)).thenReturn(createInverseRelations());
     }
 
     /**
@@ -78,6 +80,7 @@ public class RelationsTest {
         assertEquals("http://doms.statsbiblioteket.dk/relations/default/0/1/#hasFile", relationsWithViewAngle.get(0));
     }
 
+
     /**
      * Test getting inverse relations.
      * @throws Exception
@@ -99,11 +102,19 @@ public class RelationsTest {
         verifyNoMoreInteractions(domsAPI);
 
         //Check results
-        for (ObjectRelation inverseRelation : inverseRelations) {
-            assertEquals(inverseRelation.getObjectPid(), cmdoms.getPid());
-            assertNotNull(inverseRelation.getSubject());
-        }
+        assertEquals(1, inverseRelations.size());
+        assertEquals(inverseRelations.get(0).getObjectPid(), cmdoms.getPid());
+        assertNotNull(inverseRelations.get(0).getSubjectPid());
         verifyNoMoreInteractions(domsAPI);
+
+        //Check object can be read from relation
+        DigitalObject subject = inverseRelations.get(0).getSubject();
+
+        //Reads object from DOMS
+        verify(domsAPI).getObjectProfile(UUID);
+
+        //Is right object
+        assertEquals(UUID, subject.getPid());
     }
 
     /**
@@ -157,7 +168,7 @@ public class RelationsTest {
                 break;
             }
         }
-        assertNotNull(literalRelation);
+        assertNotNull("A literal relation should be found", literalRelation);
 
         //Remove literal relation
         literalRelation.remove();
@@ -189,8 +200,7 @@ public class RelationsTest {
         verifyNoMoreInteractions(domsAPI);
 
         //Add a relation
-        object.addObjectRelation("http://domclient.unittests/#testRelationPredicateObject",
-                                                   object);
+        object.addObjectRelation("http://domsclient.unittests/#testRelationPredicateObject", object);
 
         //This should not call DOMS until the object is saved.
         verifyNoMoreInteractions(domsAPI);
@@ -200,7 +210,7 @@ public class RelationsTest {
 
         //This should call DOMS
         verify(domsAPI).addRelation(eq(UUID),
-                                    isThisRelation(UUID, "http://domclient.unittests/#testRelationPredicateObject",
+                                    isThisRelation(UUID, "http://domsclient.unittests/#testRelationPredicateObject",
                                                    UUID, false), anyString());
         verifyNoMoreInteractions(domsAPI);
     }
@@ -288,6 +298,16 @@ public class RelationsTest {
                 + "        <v:inverseRelations/>\n"
                 + "    </v:viewangle>\n"
                 + "</v:views>\n";
+    }
+
+    private List<dk.statsbiblioteket.doms.central.Relation> createInverseRelations() {
+        dk.statsbiblioteket.doms.central.Relation relation = new dk.statsbiblioteket.doms.central.Relation();
+        relation.setSubject(UUID);
+        relation.setPredicate("dk.statsbiblioteket.doms.client.objects.RelationsTest.testInverseRelations");
+        relation.setObject(CM_PID);
+        relation.setLiteral(false);
+
+        return Arrays.asList(relation);
     }
 
 
