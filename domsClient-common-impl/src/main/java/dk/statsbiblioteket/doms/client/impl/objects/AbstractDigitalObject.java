@@ -372,7 +372,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
     }
 
-    protected void loadDatastreams() throws ServerOperationFailed {
+    protected synchronized void loadDatastreams() throws ServerOperationFailed {
         if (datastreamsLoaded) {
             return;
         }
