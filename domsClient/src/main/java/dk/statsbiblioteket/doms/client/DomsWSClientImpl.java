@@ -378,6 +378,17 @@ public class DomsWSClientImpl implements DomsWSClient {
         }
     }
 
+    public String getViewBundleFromSpecificTime(String entryObjectPID, String viewID, long time) throws ServerOperationFailed {
+        try {
+            ViewBundle viewBundle = domsAPI.getViewBundleFromSpecificTime(entryObjectPID, viewID, time);
+            return viewBundle.getContents();
+        } catch (Exception exception) {
+            throw new ServerOperationFailed(
+                    "Failed retrieving the view record (viewID=" + viewID + ") containing the specified object (objectPID = " + entryObjectPID + ").",
+                    exception);
+        }
+    }
+
     public void setObjectLabel(String objectPID, String objectLabel, String comment) throws ServerOperationFailed {
         try {
             domsAPI.setObjectLabel(objectPID, objectLabel, comment);

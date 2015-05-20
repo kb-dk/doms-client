@@ -383,6 +383,29 @@ public interface DomsWSClient {
     String getViewBundle(String entryObjectPID, String viewID) throws ServerOperationFailed;
 
     /**
+     * Get the view bundle for the view specified by <code>viewID</code> for the
+     * DOMS object with the PID <code>entryObjectPID</code>. The returned bundle
+     * contains all information from the object, and objects associated with it,
+     * which is relevant for the specified view.
+     * The bundle will be as the object looked at a given specific time (inverse relations will be
+     * calculated from current time, though)
+     *
+     * @param entryObjectPID The PID of the entry (i.e. root) object to fetch a view bundle
+     *                       for.
+     * @param viewID         ID of the view which the DOMS must use when building the
+     *                       bundle.
+     * @param time           ID of the view which the DOMS must use when building the
+     *                       time at which the bundle should have been picked up.
+     *
+     * @return A <code>String</code> containing an XML document with all the
+     * information from the object and its associated objects which is
+     * relevant to the specified view.
+     * @throws dk.statsbiblioteket.doms.client.exceptions.ServerOperationFailed if the view bundle cannot be retrieved
+     *                                                                          from the DOMS.
+     */
+    String getViewBundleFromSpecificTime(String entryObjectPID, String viewID, long time) throws ServerOperationFailed;
+
+    /**
      * Set the object label specified by <code>objectLabel</code> on the DOMS
      * object identified by the PID specified by <code>objectPID</code>.
      *
