@@ -71,7 +71,8 @@ public class Constants {
         uploadable,
         readonly,
         invisible,
-        undefined;
+        undefined,
+        rawxml;
 
         public static GuiRepresentation fromString(String a) {
             return GuiRepresentation.valueOf(a);
