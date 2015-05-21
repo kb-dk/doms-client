@@ -8,7 +8,7 @@
 
     <groupId>dk.statsbiblioteket.doms.client</groupId>
     <artifactId>domsClient-parent</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
     <name>Doms Admin Client</name>
 
     <packaging>pom</packaging>
@@ -17,7 +17,7 @@
         <connection>scm:git:git://github.com/statsbiblioteket/doms-client.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/doms-client.git</developerConnection>
         <url>https://github.com/statsbiblioteket/doms-client</url>
-      <tag>domsClient-parent-1.3</tag>
+      <tag>HEAD</tag>
   </scm>
 
 
@@ -100,7 +100,7 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.central</groupId>
                 <artifactId>centralWebservice-interface</artifactId>
-                <version>1.9</version>
+                <version>1.10-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>dk.statsbiblioteket.doms.authchecker</groupId>
