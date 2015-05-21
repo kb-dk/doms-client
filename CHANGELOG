@@ -1,3 +1,7 @@
+1.3
+ * Use correct lastModifiedDate when getting changed objects
+ * Remeber correct date for getting records when iterating
+
 1.2
  * Newest version of doms-central interface - supports new update tracker
  * Better unit tests
