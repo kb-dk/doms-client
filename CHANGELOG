@@ -1,4 +1,5 @@
 1.3
+ * Support for datastreams of type "rawxml"
  * Use correct lastModifiedDate when getting changed objects
  * Remeber correct date for getting records when iterating
 
