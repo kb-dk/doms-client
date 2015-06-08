@@ -11,5 +11,12 @@ package dk.statsbiblioteket.doms.client.datastreams;
 public interface InternalDatastream extends Datastream {
 
     public void setContent(String content);
+
+    /**
+        Use setContent instead
+        @see #setContent(String)
+        @deprecated
+     */
+    @Deprecated()
     public void replace(String content);
 }

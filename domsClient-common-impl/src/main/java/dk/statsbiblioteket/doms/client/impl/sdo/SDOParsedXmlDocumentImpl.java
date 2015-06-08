@@ -262,7 +262,7 @@ public class SDOParsedXmlDocumentImpl implements SDOParsedXmlDocument {
     public void saveToDatastream() throws XMLParseException {
         if (datastream instanceof InternalDatastream) {
             InternalDatastream internalDatastream = (InternalDatastream) datastream;
-            internalDatastream.replace(dumpToString());
+            internalDatastream.setContent(dumpToString());
         } else {
             throw new IllegalAccessError("You should not attempt to save SDO to an external datastream");
         }
