@@ -50,6 +50,11 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
     }
 
     @Override
+    public void setContent(String content) {
+        replace(content);
+    }
+
+    @Override
     public synchronized String getContents() throws ServerOperationFailed {
         if (contents != null) {
             return contents;
