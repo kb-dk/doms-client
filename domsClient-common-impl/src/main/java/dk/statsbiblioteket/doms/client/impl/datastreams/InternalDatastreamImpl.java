@@ -45,13 +45,13 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
 
 
     @Override
-    public synchronized void replace(String content) {
-        setContent(content);
+    public synchronized void replace(String contents) {
+        setContents(contents);
     }
 
     @Override
-    public void setContent(String content) {
-        contents = content;
+    public void setContents(String contents) {
+        this.contents = contents;
     }
 
     @Override
