@@ -50,7 +50,7 @@ public class InternalDatastreamImpl extends SaveableDatastreamImpl implements In
     }
 
     @Override
-    public void setContents(String contents) {
+    public synchronized void setContents(String contents) {
         this.contents = contents;
     }
 
