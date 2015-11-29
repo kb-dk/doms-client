@@ -274,7 +274,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         if (relsloaded) {
             return;
         }
-        relsloaded = true;
 
         List<dk.statsbiblioteket.doms.central.Relation> frelations = profile.getRelations();
 
@@ -291,6 +290,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                              );
             }
         }
+        relsloaded = true;
     }
 
 
