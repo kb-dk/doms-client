@@ -13,10 +13,12 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration test of Collection objects using our achernar test server.
@@ -59,6 +61,10 @@ public class CollectionObjectImplIT {
         Set<ContentModelObject> entryContentModels = collection.getEntryContentModels("GUI");
 
         assertEquals("There should be two entry content models", 2, entryContentModels.size());
-
+        Iterator<ContentModelObject> iterator = entryContentModels.iterator();
+        String pid1 = iterator.next().getPid();
+        String pid2 = iterator.next().getPid();
+        assertTrue(pid1.equals("doms:ContentModel_Newspaper") || pid1.equals("doms:ContentModel_Edition"));
+        assertTrue(pid2.equals("doms:ContentModel_Newspaper") || pid2.equals("doms:ContentModel_Edition"));
     }
 }
