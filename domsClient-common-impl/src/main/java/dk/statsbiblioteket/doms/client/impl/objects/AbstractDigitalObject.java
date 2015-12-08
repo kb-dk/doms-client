@@ -303,7 +303,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
         if (invrelsloaded) {
             return;
         }
-        invrelsloaded = true;
 
         List<Relation> frelations;
         try {
@@ -318,6 +317,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                             frelation.getSubject(), frelation.getPredicate(), frelation.getObject(), factory)
                                 );
         }
+        invrelsloaded = true;
     }
 
 
@@ -331,7 +331,6 @@ public abstract class AbstractDigitalObject implements DigitalObject {
             return;
         }
 
-        cmloaded = true;
 
         for (String contentModel : profile.getContentmodels()) {
             DigitalObject cm_object = factory.getDigitalObject(contentModel);
@@ -345,13 +344,13 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                 );
             }
         }
+        cmloaded = true;
     }
 
     protected synchronized void loadProfile() throws ServerOperationFailed {
         if (profileloaded) {
             return;
         }
-        profileloaded = true;
 
         if (profile == null) {
             try {
@@ -370,6 +369,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
 
         loadDatastreams();
 
+        profileloaded = true;
     }
 
     protected synchronized void loadDatastreams() throws ServerOperationFailed {
@@ -853,7 +853,7 @@ public abstract class AbstractDigitalObject implements DigitalObject {
                     linkSoap.getName(), linkSoap.getDescription(), linkSoap.getValue());
             links.add(linkPattern);
         }
-
+        linksParsed = true;
     }
 
     @Override
